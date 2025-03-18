@@ -1,0 +1,65 @@
+{
+	"name": "df_CallsDWHF0",
+	"properties": {
+		"folder": {
+			"name": "DWHF0"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"linkedService": {
+						"referenceName": "ls_adsl",
+						"type": "LinkedServiceReference"
+					},
+					"name": "sourceCallsGoldF0"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_PostgreSql",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "alterRow1"
+				},
+				{
+					"name": "MapDrifted1",
+					"description": "Crea una asignación explícita para cada columna de desfase."
+				}
+			],
+			"scriptLines": [
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'delta',",
+				"     fileSystem: 'gold',",
+				"     folderPath: 'lakehousef0/calls') ~> sourceCallsGoldF0",
+				"MapDrifted1 alterRow(insertIf(true()),",
+				"     partitionBy('hash', 1)) ~> alterRow1",
+				"sourceCallsGoldF0 derive(direction = toString(byName('direction')),",
+				"          duration = toInteger(byName('duration')),",
+				"          id = toString(byName('id')),",
+				"          started_at = toTimestamp(byName('started_at')),",
+				"          filepath = toString(byName('filepath')),",
+				"          processdate = toTimestamp(byName('processdate')),",
+				"     partitionBy('hash', 1)) ~> MapDrifted1",
+				"alterRow1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     truncate:true,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
+			]
+		}
+	}
+}

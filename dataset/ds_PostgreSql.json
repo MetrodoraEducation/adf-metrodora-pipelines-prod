@@ -1,0 +1,33 @@
+{
+	"name": "ds_PostgreSql",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_PostgreSql",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"schema": {
+				"type": "string",
+				"defaultValue": "public"
+			},
+			"table": {
+				"type": "string",
+				"defaultValue": "f0calls"
+			}
+		},
+		"annotations": [],
+		"type": "AzurePostgreSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": {
+				"value": "@dataset().schema",
+				"type": "Expression"
+			},
+			"table": {
+				"value": "@dataset().table",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

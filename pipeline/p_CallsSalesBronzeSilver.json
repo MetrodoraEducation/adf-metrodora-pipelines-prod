@@ -1,0 +1,136 @@
+{
+	"name": "p_CallsSalesBronzeSilver",
+	"properties": {
+		"activities": [
+			{
+				"name": "ExecutePipelineSalesBronze_Full",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "p_SalesBronze",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"dayToLoad": {
+							"value": "@pipeline().parameters.dayToLoad",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "ExecutePipelineClienitfyOdooSilver",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "ExecutePipelineSalesBronze_Full",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "p_ClienitfyOdooSilver",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "ExecutePipelineSalesSilver",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "ExecutePipelineClienitfyOdooSilver",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "p_SalesSilver",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "ExecutePipelineAircallCallsBronze",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "p_AircallCallsBronze",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"dayToLoad": {
+							"value": "@pipeline().parameters.dayToLoad",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "NotebookAircallCallsSilver",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "ExecutePipelineAircallCallsBronze",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Lakehouse/Silver/AircallCallsSilver"
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_AzureDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"dayToLoad": {
+				"type": "string",
+				"defaultValue": "7"
+			}
+		},
+		"folder": {
+			"name": "Lakehouse/Bronze"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-01-15T14:16:03Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

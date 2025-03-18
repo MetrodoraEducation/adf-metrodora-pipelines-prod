@@ -1,0 +1,108 @@
+{
+	"name": "p_AircallCallsBronze",
+	"properties": {
+		"activities": [
+			{
+				"name": "CopyDataAircallToBronze",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "SetVariableDateToLoad",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:01:40",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "GET",
+						"paginationRules": {
+							"AbsoluteUrl": "$.meta.next_page_link"
+						}
+					},
+					"sink": {
+						"type": "JsonSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "JsonWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_Aircall",
+						"type": "DatasetReference",
+						"parameters": {
+							"relativeurl": {
+								"value": "@concat('v1/calls?per_page=50&from=',variables('unix'))",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_adsl_json",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "bronze",
+							"folder": {
+								"value": "@concat('lakehouse/aircall/calls/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))\n\n\n\n",
+								"type": "Expression"
+							},
+							"filename": "aircallcalls.json"
+						}
+					}
+				]
+			},
+			{
+				"name": "SetVariableDateToLoad",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "unix",
+					"value": {
+						"value": "@{div(sub(ticks(addDays(utcnow(),int(concat('-',string(pipeline().parameters.dayToLoad))))), ticks('1970-01-01')),10000000)}",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"dayToLoad": {
+				"type": "string",
+				"defaultValue": "7"
+			}
+		},
+		"variables": {
+			"unix": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Lakehouse/Bronze"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-12-17T10:21:12Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

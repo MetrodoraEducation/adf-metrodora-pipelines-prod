@@ -1,0 +1,89 @@
+{
+	"name": "df_SalesDWHF0",
+	"properties": {
+		"folder": {
+			"name": "DWHF0"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"linkedService": {
+						"referenceName": "ls_adsl",
+						"type": "LinkedServiceReference"
+					},
+					"name": "sourceSalesGoldF0"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_PostgreSql",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "alterRow1"
+				},
+				{
+					"name": "MapDrifted1",
+					"description": "Crea una asignación explícita para cada columna de desfase."
+				}
+			],
+			"scriptLines": [
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'delta',",
+				"     fileSystem: 'gold',",
+				"     folderPath: 'lakehousef0/sales') ~> sourceSalesGoldF0",
+				"MapDrifted1 alterRow(insertIf(true()),",
+				"     partitionBy('hash', 1)) ~> alterRow1",
+				"sourceSalesGoldF0 derive(amount = toDouble(byName('amount')),",
+				"          created = toTimestamp(byName('created')),",
+				"          id = toString(byName('id')),",
+				"          name = toString(byName('name')),",
+				"          filepath = toString(byName('filepath')),",
+				"          descuento = toDouble(byName('descuento')),",
+				"          descuento_matricula = toDouble(byName('descuento_matricula')),",
+				"          fecha_inscripcion = toTimestamp(byName('fecha_inscripcion')),",
+				"          processdate = toTimestamp(byName('processdate')),",
+				"          sourcesystem = toString(byName('sourcesystem')),",
+				"          modified = toTimestamp(byName('modified')),",
+				"          centro = toString(byName('centro')),",
+				"          source = toString(byName('source')),",
+				"          date_closed = toTimestamp(byName('date_closed')),",
+				"          owner_name = toString(byName('owner_name')),",
+				"          estudio = toString(byName('estudio')),",
+				"          contact_email = toString(byName('contact_email')),",
+				"          contact_phone = toString(byName('contact_phone')),",
+				"          stage_value = toString(byName('stage_value')),",
+				"          status_desc = toString(byName('status_desc')),",
+				"          byratings_rating = toString(byName('byratings_rating')),",
+				"          sede = toString(byName('sede')),",
+				"          modalidad = toString(byName('modalidad')),",
+				"          lost_reason_value = toString(byName('lost_reason_value')),",
+				"          tiempo_de_maduracion = toDouble(byName('tiempo_de_maduracion')),",
+				"          new_enrollent = toInteger(byName('new_enrollent')),",
+				"          lead_neto = toInteger(byName('lead_neto')),",
+				"          status_final = toString(byName('status_final')),",
+				"          created_date = toDate(byName('created_date')),",
+				"     partitionBy('hash', 1)) ~> MapDrifted1",
+				"alterRow1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     recreate:true,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> sink1"
+			]
+		}
+	}
+}

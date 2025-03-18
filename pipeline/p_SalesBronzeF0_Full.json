@@ -1,0 +1,77 @@
+{
+	"name": "p_SalesBronzeF0_Full",
+	"properties": {
+		"activities": [
+			{
+				"name": "ExecutePipelineClientifyDealsBronzeF0_Full",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "p_ClientifyDealsBronzeF0_Full",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "ExecutePipelineOdooLeadBronzeF0_Full",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "p_OdooLeadBronzeF0_Full",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "ExecutePipelineClientifyDealsBronzeF0_LostReason_Full",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "p_ClientifyDealsBronzeF0_LostReason_Full",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "ExecutePipelineClientifyDealsBronzeF0_IdForDelete",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "p_ClientifyDealsBronzeF0_IdForDelete",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"folder": {
+			"name": "LakehouseF0/BronzeF0"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-11-25T09:23:38Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

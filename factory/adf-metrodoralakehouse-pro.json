@@ -1,0 +1,9 @@
+{
+	"name": "adf-metrodoralakehouse-pro",
+	"location": "westeurope",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "835caf10-f30d-4d7e-888a-b9733f560da4",
+		"tenantId": "ea02811f-665c-48df-a919-4bdd65678d3f"
+	}
+}

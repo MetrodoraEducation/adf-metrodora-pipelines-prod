@@ -1,0 +1,37 @@
+{
+	"name": "p_SalesGoldF0_Full",
+	"properties": {
+		"activities": [
+			{
+				"name": "DataFlowSalesGoldF0_Full",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "df_SalesGoldF0_Full",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"folder": {
+			"name": "LakehouseF0/GoldF0"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-11-07T14:29:07Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

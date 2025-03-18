@@ -1,0 +1,47 @@
+{
+	"name": "p_ClientifyDealsSilverF0_LostReason",
+	"properties": {
+		"activities": [
+			{
+				"name": "DataflowClientifyDealsSilverF0_LostReason",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "df_ClientifyDealsSilverF0_LostReason",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"sourceClientifyLostReasonBronze": {
+								"container": "bronze",
+								"folder": {
+									"value": "@concat('lakehousef0/clientify/lostreason/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+									"type": "Expression"
+								},
+								"filename": "clientifydealslostreason.json"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"folder": {
+			"name": "LakehouseF0/SilverF0"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-11-25T08:37:24Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

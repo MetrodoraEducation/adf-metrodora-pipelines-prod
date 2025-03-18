@@ -1,0 +1,74 @@
+{
+	"name": "df_BudgetDWHF0",
+	"properties": {
+		"folder": {
+			"name": "DWHF0"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"linkedService": {
+						"referenceName": "ls_adsl",
+						"type": "LinkedServiceReference"
+					},
+					"name": "sourceBudgetGoldF0"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_PostgreSql",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "alterRow1"
+				},
+				{
+					"name": "MapDrifted2",
+					"description": "Crea una asignación explícita para cada columna de desfase."
+				}
+			],
+			"scriptLines": [
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'delta',",
+				"     fileSystem: 'gold',",
+				"     folderPath: 'lakehousef0/budget') ~> sourceBudgetGoldF0",
+				"MapDrifted2 alterRow(insertIf(true()),",
+				"     partitionBy('hash', 1)) ~> alterRow1",
+				"sourceBudgetGoldF0 derive(fecha = toDate(byName('fecha')),",
+				"          escenario = toString(byName('escenario')),",
+				"          titulacion = toString(byName('titulacion')),",
+				"          centro = toString(byName('centro')),",
+				"          sede = toString(byName('sede')),",
+				"          modalidad = toString(byName('modalidad')),",
+				"          num_leads_netos = toInteger(byName('num_leads_netos')),",
+				"          num_leads_brutos = toInteger(byName('num_leads_brutos')),",
+				"          new_enrollment = toInteger(byName('new_enrollment')),",
+				"          importe_venta_neta = toDouble(byName('importe_venta_neta')),",
+				"          importe_venta_bruta = toDouble(byName('importe_venta_bruta')),",
+				"          importe_captacion = toDouble(byName('importe_captacion')),",
+				"          filepath = toString(byName('filepath')),",
+				"          processdate = toTimestamp(byName('processdate')),",
+				"     partitionBy('hash', 1)) ~> MapDrifted2",
+				"alterRow1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     recreate:true,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> sink1"
+			]
+		}
+	}
+}

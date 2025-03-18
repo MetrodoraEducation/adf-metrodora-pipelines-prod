@@ -1,0 +1,163 @@
+{
+	"name": "p_General_dimEstudio",
+	"properties": {
+		"activities": [
+			{
+				"name": "CopyDataDimEstudioBronze",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "ParquetSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "ParquetWriteSettings"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_adsl_csv",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "master",
+							"folder": "dim_estudio",
+							"filename": "dim_estudio.csv"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_adsl_parquet",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "bronze",
+							"folder": {
+								"value": "@concat('lakehouse/dim_estudio/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+								"type": "Expression"
+							},
+							"filename": "dim_estudio.parquet"
+						}
+					}
+				]
+			},
+			{
+				"name": "NotebookDimEstudioSilver",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "CopyDataDimEstudioBronze",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Lakehouse/Silver/dim_estudio_silver"
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_AzureDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "NotebookDimEstudioGold",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "NotebookDimEstudioSilver",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Lakehouse/Gold/dim_estudio_gold"
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_AzureDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "NotebookDimEstudioDWH",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "NotebookDimEstudioGold",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Lakehouse/DWH/dim_estudio"
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_AzureDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Lakehouse/General/General_dimFijas_Mapeo"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-12-17T11:15:48Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

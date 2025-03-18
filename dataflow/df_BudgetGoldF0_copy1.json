@@ -1,0 +1,99 @@
+{
+	"name": "df_BudgetGoldF0_copy1",
+	"properties": {
+		"folder": {
+			"name": "GoldF0"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_adsl_parquet",
+						"type": "DatasetReference"
+					},
+					"name": "sourceBudgetBronzeF0"
+				}
+			],
+			"sinks": [
+				{
+					"linkedService": {
+						"referenceName": "ls_adsl",
+						"type": "LinkedServiceReference"
+					},
+					"name": "sinkBudgetGoldF0"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "select1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Fecha as string,",
+				"          Escenario as string,",
+				"          Titulacion as string,",
+				"          Centro as string,",
+				"          Sede as string,",
+				"          Modalidad as string,",
+				"          numLeadsNetos as integer,",
+				"          numLeadsBrutos as integer,",
+				"          NewEnrollment as integer,",
+				"          importeVentaNeta as double,",
+				"          importeVentaBruta as double,",
+				"          importeCaptacion as double",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     rowUrlColumn: 'filepath',",
+				"     format: 'parquet',",
+				"     partitionBy('hash', 1)) ~> sourceBudgetBronzeF0",
+				"select1 derive(processdate = currentUTC(),",
+				"          fecha = toDate(fecha,'dd/MM/yyyy'),",
+				"     partitionBy('hash', 1)) ~> derivedColumn1",
+				"sourceBudgetBronzeF0 select(mapColumn(",
+				"          fecha = Fecha,",
+				"          escenario = Escenario,",
+				"          titulacion = Titulacion,",
+				"          centro = Centro,",
+				"          sede = Sede,",
+				"          modalidad = Modalidad,",
+				"          num_leads_netos = numLeadsNetos,",
+				"          num_leads_brutos = numLeadsBrutos,",
+				"          new_enrollment = NewEnrollment,",
+				"          importe_venta_neta = importeVentaNeta,",
+				"          importe_venta_bruta = importeVentaBruta,",
+				"          importe_captacion = importeCaptacion,",
+				"          filepath",
+				"     ),",
+				"     partitionBy('hash', 1),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'delta',",
+				"     fileSystem: 'gold',",
+				"     folderPath: 'lakehousef0/budget',",
+				"     deltaTruncate: true,",
+				"     mergeSchema: false,",
+				"     autoCompact: false,",
+				"     optimizedWrite: false,",
+				"     vacuum: 0,",
+				"     deletable: false,",
+				"     insertable: true,",
+				"     updateable: false,",
+				"     upsertable: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sinkBudgetGoldF0"
+			]
+		}
+	}
+}

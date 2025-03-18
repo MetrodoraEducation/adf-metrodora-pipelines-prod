@@ -1,0 +1,25 @@
+{
+	"name": "ds_Aircall",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_Aircall",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"relativeurl": {
+				"type": "string",
+				"defaultValue": "v1/calls?per_page=50"
+			}
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"typeProperties": {
+			"relativeUrl": {
+				"value": "@dataset().relativeurl",
+				"type": "Expression"
+			}
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

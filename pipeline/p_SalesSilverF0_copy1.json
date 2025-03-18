@@ -1,0 +1,45 @@
+{
+	"name": "p_SalesSilverF0_copy1",
+	"properties": {
+		"activities": [
+			{
+				"name": "ExecutePipelineClientifyDealsSilverF0",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "p_ClientifyDealsSilverF0",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "ExecutePipelineOdooLeadSilverF0",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "p_OdooLeadSilverF0",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"folder": {
+			"name": "LakehouseF0/SilverF0"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-11-25T09:24:51Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -1,0 +1,47 @@
+{
+	"name": "p_ClientifyDealsSilverF0",
+	"properties": {
+		"activities": [
+			{
+				"name": "DataFlowClientifySilver",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "df_ClientifyDealsSilverF0",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"sourceClientifyBronze": {
+								"container": "bronze",
+								"folder": {
+									"value": "@concat('lakehousef0/clientify/deals/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+									"type": "Expression"
+								},
+								"filename": "clientifydeals.json"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"folder": {
+			"name": "LakehouseF0/SilverF0"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-11-07T14:29:07Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
