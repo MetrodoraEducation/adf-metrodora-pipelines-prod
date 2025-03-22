@@ -5,7 +5,14 @@
 			{
 				"name": "Dim_campania_gold",
 				"type": "DatabricksNotebook",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Dim_motivo_cierre_gold",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -62,7 +69,7 @@
 					{
 						"activity": "Dim_vertical_gold",
 						"dependencyConditions": [
-							"Succeeded"
+							"Completed"
 						]
 					}
 				],
@@ -268,7 +275,14 @@
 			{
 				"name": "Dim_origen_campania_gold",
 				"type": "DatabricksNotebook",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Dim_estudiante",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -438,7 +452,7 @@
 					{
 						"activity": "Dim_motivo_perdida_gold",
 						"dependencyConditions": [
-							"Succeeded"
+							"Completed"
 						]
 					}
 				],
@@ -644,7 +658,14 @@
 			{
 				"name": "dim_concepto_cobro_gold",
 				"type": "DatabricksNotebook",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Dim_motivo_perdida_llamada_gold",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
