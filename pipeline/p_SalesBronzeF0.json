@@ -1,0 +1,101 @@
+{
+	"name": "p_SalesBronzeF0",
+	"properties": {
+		"activities": [
+			{
+				"name": "ExecutePipelineClientifyDealsBronzeF0",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "p_ClientifyDealsBronzeF0",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"dayToLoad": {
+							"value": "@pipeline().parameters.dayToLoad",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "ExecutePipelineOdooLeadBronzeF0",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "p_OdooLeadBronzeF0",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"dayToLoad": {
+							"value": "@pipeline().parameters.dayToLoad",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "ExecutePipelineClientifyDealsBronzeF0_LostReason",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "p_ClientifyDealsBronzeF0_LostReason",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"dayToLoad": {
+							"value": "@pipeline().parameters.dayToLoad",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "ExecutePipelineClientifyDealsBronzeF0_IdForDelete",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "p_ClientifyDealsBronzeF0_IdForDelete",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"parameters": {
+			"dayToLoad": {
+				"type": "string",
+				"defaultValue": "7"
+			}
+		},
+		"folder": {
+			"name": "LakehouseF0/BronzeF0"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-03-22T17:50:21Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

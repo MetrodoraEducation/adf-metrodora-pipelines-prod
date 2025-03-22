@@ -1,0 +1,150 @@
+{
+	"name": "p_General_MapeoEstudio",
+	"properties": {
+		"activities": [
+			{
+				"name": "CopyDataMapeoEstudio",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "ParquetSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "ParquetWriteSettings"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_adsl_csv",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "master",
+							"folder": "mapeo",
+							"filename": "mapeo_estudio.csv"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_adsl_parquet",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "bronze",
+							"folder": {
+								"value": "@concat('lakehouse/mapeo_estudio/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+								"type": "Expression"
+							},
+							"filename": "mapeo_estudio.parquet"
+						}
+					}
+				]
+			},
+			{
+				"name": "MapeoEstudioSilver",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "CopyDataMapeoEstudio",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": {
+						"value": "@concat(pipeline().parameters.silver_storage_databricks, 'mapeo_estudio_silver')",
+						"type": "Expression"
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_AzureDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "MapeoEstudioGold",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "MapeoEstudioSilver",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": {
+						"value": "@concat(pipeline().parameters.gold_storage_databricks, 'mapeo_estudio_gold')",
+						"type": "Expression"
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_AzureDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"silver_storage_databricks": {
+				"type": "string"
+			},
+			"gold_storage_databricks": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Lakehouse/General/General_dimFijas_Mapeo"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-03-22T17:50:20Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

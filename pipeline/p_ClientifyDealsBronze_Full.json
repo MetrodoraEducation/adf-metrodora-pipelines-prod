@@ -1,0 +1,298 @@
+{
+	"name": "p_ClientifyDealsBronze_Full",
+	"properties": {
+		"activities": [
+			{
+				"name": "CopyDataClientifyBronze",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "WebGetToken",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:01:40",
+						"requestInterval": "00.00:00:01.500",
+						"requestMethod": "GET",
+						"additionalHeaders": {
+							"Content-Type": "application/json",
+							"Authorization": {
+								"value": "@concat('Token ',activity('WebGetToken').output.value)",
+								"type": "Expression"
+							}
+						},
+						"paginationRules": {
+							"AbsoluteUrl": "$.next"
+						}
+					},
+					"sink": {
+						"type": "JsonSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "JsonWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_Clientify",
+						"type": "DatasetReference",
+						"parameters": {
+							"relativeurl": {
+								"value": "@concat('v1/mob/deals/?serializer=DealDynamic&page_size=250&fields=id, owner, owner_name, name, amount, amount_user, currency, contact, contact_name, contact_email, contact_phone, contact_medium, contact_source, created, modified, expected_closed_date, actual_closed_date, company, company_name, source, deal_source, status, lost_reason, status_desc, probability, probability_desc, pipeline_stage, pipeline_stage_desc, pipeline, pipeline_desc, custom_fields&created[gte]=09-01-2023&created[lt]=',formatDateTime(addDays(utcnow(),+1),'MM-dd-yyyy'))",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_adsl_json",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "bronze",
+							"folder": {
+								"value": "@concat('lakehouse/clientify/deals/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+								"type": "Expression"
+							},
+							"filename": "clientifydeals.json"
+						}
+					}
+				]
+			},
+			{
+				"name": "WebGetToken",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "GET",
+					"url": "https://kvmetrodoralakehousedev.vault.azure.net/secrets/clientifytoken/71f1cbb9aa6a4569ba657a15bcbd0350?api-version=7.0",
+					"authentication": {
+						"type": "MSI",
+						"resource": "https://vault.azure.net"
+					}
+				}
+			},
+			{
+				"name": "WebGetToken CIEP",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "GET",
+					"url": "https://kvmetrodoralakehousedev.vault.azure.net/secrets/clientifyCIEP/2dc5256643a6405392ec37abd7b74d55?api-version=7.0",
+					"authentication": {
+						"type": "MSI",
+						"resource": "https://vault.azure.net"
+					}
+				}
+			},
+			{
+				"name": "CopyDataClientifyBronze_Ciep",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "WebGetToken CIEP",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:01:40",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "GET",
+						"additionalHeaders": {
+							"Content-Type": "application/json",
+							"Authorization": {
+								"value": "@concat('Token ',activity('WebGetToken CIEP').output.value)",
+								"type": "Expression"
+							}
+						},
+						"paginationRules": {
+							"AbsoluteUrl": "$.next"
+						}
+					},
+					"sink": {
+						"type": "JsonSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "JsonWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_Clientify_Ciep",
+						"type": "DatasetReference",
+						"parameters": {
+							"relativeurl": {
+								"value": "@concat('v1/mob/deals/?serializer=DealDynamic&page_size=250&fields=id, owner, owner_name, name, amount, amount_user, currency, contact, contact_name, contact_email, contact_phone, contact_medium, contact_source, created, modified, expected_closed_date, actual_closed_date, company, company_name, source, deal_source, status, lost_reason, status_desc, probability, probability_desc, pipeline_stage, pipeline_stage_desc, pipeline, pipeline_desc, custom_fields&created[gte]=09-01-2023&created[lt]=',formatDateTime(addDays(utcnow(),+1),'MM-dd-yyyy'))",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_adsl_json",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "bronze",
+							"folder": {
+								"value": "@concat('lakehouse/clientify/deals/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+								"type": "Expression"
+							},
+							"filename": "clientifydealsciep.json"
+						}
+					}
+				]
+			},
+			{
+				"name": "WebGetToken FP",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "GET",
+					"url": "https://kvmetrodoralakehousedev.vault.azure.net/secrets/clientifytokenFP/4498a027b1af41fd8d8fe01dc9f45b46?api-version=7.0",
+					"authentication": {
+						"type": "MSI",
+						"resource": "https://vault.azure.net"
+					}
+				}
+			},
+			{
+				"name": "CopyDataClientifyBronze_Fp",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "WebGetToken FP",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:01:40",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "GET",
+						"additionalHeaders": {
+							"Content-Type": "application/json",
+							"Authorization": {
+								"value": "@concat('Token ',activity('WebGetToken FP').output.value)",
+								"type": "Expression"
+							}
+						},
+						"paginationRules": {
+							"AbsoluteUrl": "$.next"
+						}
+					},
+					"sink": {
+						"type": "JsonSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "JsonWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_Clientify_Fp",
+						"type": "DatasetReference",
+						"parameters": {
+							"relativeurl": {
+								"value": "@concat('v1/mob/deals/?serializer=DealDynamic&page_size=250&fields=id, owner, owner_name, name, amount, amount_user, currency, contact, contact_name, contact_email, contact_phone, contact_medium, contact_source, created, modified, expected_closed_date, actual_closed_date, company, company_name, source, deal_source, status, lost_reason, status_desc, probability, probability_desc, pipeline_stage, pipeline_stage_desc, pipeline, pipeline_desc, custom_fields&created[gte]=09-01-2023&created[lt]=',formatDateTime(addDays(utcnow(),+1),'MM-dd-yyyy'))",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_adsl_json",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "bronze",
+							"folder": {
+								"value": "@concat('lakehouse/clientify/deals/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+								"type": "Expression"
+							},
+							"filename": "clientifydealsfp.json"
+						}
+					}
+				]
+			}
+		],
+		"folder": {
+			"name": "Lakehouse/Bronze"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-03-22T17:50:20Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

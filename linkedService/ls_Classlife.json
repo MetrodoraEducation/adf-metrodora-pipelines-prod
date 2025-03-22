@@ -1,0 +1,14 @@
+{
+	"name": "ls_Classlife",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"description": "LinkedService to Classlife",
+		"annotations": [],
+		"type": "RestService",
+		"typeProperties": {
+			"url": "https://api.classlife.io/api/v1",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Anonymous"
+		}
+	}
+}

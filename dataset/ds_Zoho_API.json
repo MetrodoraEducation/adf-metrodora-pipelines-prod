@@ -1,0 +1,28 @@
+{
+	"name": "ds_Zoho_API",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_Zoho",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"access_token": "1000.6a14e39d5caac09fc6308b3de63ef181.8e42c15e2b69e73cd01e6ac2adfb5d34"
+			}
+		},
+		"parameters": {
+			"relativeUrl": {
+				"type": "string",
+				"defaultValue": "@dataset().relativeUrl"
+			}
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"typeProperties": {
+			"relativeUrl": {
+				"value": "@dataset().relativeUrl",
+				"type": "Expression"
+			}
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

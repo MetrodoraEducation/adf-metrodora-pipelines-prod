@@ -1,0 +1,83 @@
+{
+	"name": "df_ClientifyDealsSilverF0_LostReason",
+	"properties": {
+		"folder": {
+			"name": "SilverF0"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_adsl_json",
+						"type": "DatasetReference"
+					},
+					"name": "sourceClientifyLostReasonBronze"
+				}
+			],
+			"sinks": [
+				{
+					"linkedService": {
+						"referenceName": "ls_adsl",
+						"type": "LinkedServiceReference"
+					},
+					"name": "sinkClientifyLostReasonSilver"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "alterRow1"
+				},
+				{
+					"name": "flatten1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          count as integer,",
+				"          next as string,",
+				"          previous as string,",
+				"          results as (id as integer, lost_reason as string)[]",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'documentPerLine') ~> sourceClientifyLostReasonBronze",
+				"flatten1 derive(id = toString(id),",
+				"     partitionBy('hash', 1)) ~> derivedColumn1",
+				"derivedColumn1 alterRow(insertIf(true()),",
+				"     partitionBy('hash', 1)) ~> alterRow1",
+				"sourceClientifyLostReasonBronze foldDown(unroll(results),",
+				"     mapColumn(",
+				"          id = results.id,",
+				"          lost_reason = results.lost_reason",
+				"     ),",
+				"     partitionBy('hash', 1),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> flatten1",
+				"alterRow1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'delta',",
+				"     fileSystem: 'silver',",
+				"     folderPath: 'lakehousef0/clientifydealslostreason',",
+				"     deltaTruncate: true,",
+				"     mergeSchema: false,",
+				"     autoCompact: false,",
+				"     optimizedWrite: false,",
+				"     vacuum: 0,",
+				"     deletable: false,",
+				"     insertable: true,",
+				"     updateable: false,",
+				"     upsertable: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sinkClientifyLostReasonSilver"
+			]
+		}
+	}
+}

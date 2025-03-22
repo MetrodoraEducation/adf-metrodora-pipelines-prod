@@ -1,0 +1,22 @@
+{
+	"name": "ls_Aircall",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "RestService",
+		"typeProperties": {
+			"url": "https://api.aircall.io/",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Basic",
+			"userName": "c668cd9a3a86775ddb72333278d0b7bb",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "ls_KeyVault",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "aircallpwd"
+			}
+		}
+	}
+}

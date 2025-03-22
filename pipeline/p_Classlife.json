@@ -1,0 +1,451 @@
+{
+	"name": "p_Classlife",
+	"properties": {
+		"activities": [
+			{
+				"name": "WebClasslifeEnroll_groups",
+				"description": "Activity web that calls the endpoint enroll_groups",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "GET",
+					"headers": {
+						"apiKey": {
+							"value": "@pipeline().parameters.API_KEY",
+							"type": "Expression"
+						},
+						"clientId": {
+							"value": "@pipeline().parameters.API_CLIENT",
+							"type": "Expression"
+						}
+					},
+					"url": {
+						"value": "@concat('https://api.classlife.io/api/v1/enroll_groups')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "ClasslifeProductos",
+				"description": "ClasslifeEnrollGroups",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "WebClasslifeEnroll_groups",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:01:40",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "GET",
+						"additionalHeaders": {
+							"Content-Type": "application/json",
+							"apiKey": {
+								"value": "@pipeline().parameters.API_KEY",
+								"type": "Expression"
+							},
+							"clientId": {
+								"value": "@pipeline().parameters.API_CLIENT",
+								"type": "Expression"
+							}
+						},
+						"paginationRules": {
+							"supportRFC5988": "true"
+						}
+					},
+					"sink": {
+						"type": "JsonSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "JsonWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_Classlife",
+						"type": "DatasetReference",
+						"parameters": {
+							"relativeUrl": "enroll_groups?showMetas=1"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_adsl_json",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "bronze",
+							"folder": {
+								"value": "@concat('lakehouse/classlife/enroll_groups/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+								"type": "Expression"
+							},
+							"filename": "JsaClassLifeProductos.json"
+						}
+					}
+				]
+			},
+			{
+				"name": "WebClasslifeStudents",
+				"description": "Activity web that calls the endpoint Students",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "GET",
+					"headers": {
+						"apiKey": {
+							"value": "@pipeline().parameters.API_KEY",
+							"type": "Expression"
+						},
+						"clientId": {
+							"value": "@pipeline().parameters.API_CLIENT",
+							"type": "Expression"
+						}
+					},
+					"url": {
+						"value": "@concat('https://api.classlife.io/api/v1/students')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "ClasslifeStudents",
+				"description": "ClasslifeStudents",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "WebClasslifeStudents",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:01:40",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "GET",
+						"additionalHeaders": {
+							"Content-Type": "application/json",
+							"apiKey": {
+								"value": "@pipeline().parameters.API_KEY",
+								"type": "Expression"
+							},
+							"clientId": {
+								"value": "@pipeline().parameters.API_CLIENT",
+								"type": "Expression"
+							}
+						},
+						"paginationRules": {
+							"supportRFC5988": "true"
+						}
+					},
+					"sink": {
+						"type": "JsonSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "JsonWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_Classlife",
+						"type": "DatasetReference",
+						"parameters": {
+							"relativeUrl": "students?showMetas=1"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_adsl_json",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "bronze",
+							"folder": {
+								"value": "@concat('lakehouse/classlife/students/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+								"type": "Expression"
+							},
+							"filename": "JsaClassLifeStudents.json"
+						}
+					}
+				]
+			},
+			{
+				"name": "WebClasslifeEnrollments",
+				"description": "Activity web that calls the endpoint Enrollments",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "GET",
+					"headers": {
+						"apiKey": {
+							"value": "@pipeline().parameters.API_KEY",
+							"type": "Expression"
+						},
+						"clientId": {
+							"value": "@pipeline().parameters.API_CLIENT",
+							"type": "Expression"
+						}
+					},
+					"url": {
+						"value": "@concat('https://api.classlife.io/api/v1/enrollments')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Enrollments",
+				"description": "Enrollments",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "WebClasslifeEnrollments",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:01:40",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "GET",
+						"additionalHeaders": {
+							"Content-Type": "application/json",
+							"apiKey": {
+								"value": "@pipeline().parameters.API_KEY",
+								"type": "Expression"
+							},
+							"clientId": {
+								"value": "@pipeline().parameters.API_CLIENT",
+								"type": "Expression"
+							}
+						},
+						"paginationRules": {
+							"supportRFC5988": "true"
+						}
+					},
+					"sink": {
+						"type": "JsonSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "JsonWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_Classlife",
+						"type": "DatasetReference",
+						"parameters": {
+							"relativeUrl": "enrollments?showMetas=1"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_adsl_json",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "bronze",
+							"folder": {
+								"value": "@concat('lakehouse/classlife/enrollments/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+								"type": "Expression"
+							},
+							"filename": "JsaClassLifeEnrollments.json"
+						}
+					}
+				]
+			},
+			{
+				"name": "WebClasslifeReceipts",
+				"description": "Activity web that calls the endpoint Receipts",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "GET",
+					"headers": {
+						"apiKey": {
+							"value": "@pipeline().parameters.API_KEY",
+							"type": "Expression"
+						},
+						"clientId": {
+							"value": "@pipeline().parameters.API_CLIENT",
+							"type": "Expression"
+						}
+					},
+					"url": {
+						"value": "@concat('https://api.classlife.io/api/v1/enrollments')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Receipts",
+				"description": "Receipts",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "WebClasslifeReceipts",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:01:40",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "GET",
+						"additionalHeaders": {
+							"Content-Type": "application/json",
+							"apiKey": {
+								"value": "@pipeline().parameters.API_KEY",
+								"type": "Expression"
+							},
+							"clientId": {
+								"value": "@pipeline().parameters.API_CLIENT",
+								"type": "Expression"
+							}
+						},
+						"paginationRules": {
+							"supportRFC5988": "true"
+						}
+					},
+					"sink": {
+						"type": "JsonSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "JsonWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_Classlife",
+						"type": "DatasetReference",
+						"parameters": {
+							"relativeUrl": "receipts?showMetas=1"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_adsl_json",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "bronze",
+							"folder": {
+								"value": "@concat('lakehouse/classlife/receipts/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+								"type": "Expression"
+							},
+							"filename": "JsaClassLifeReceipts.json"
+						}
+					}
+				]
+			}
+		],
+		"parameters": {
+			"API_CLIENT": {
+				"type": "string",
+				"defaultValue": "919"
+			},
+			"API_KEY": {
+				"type": "string",
+				"defaultValue": "C!Fd4e045d16e5544"
+			}
+		},
+		"folder": {
+			"name": "Lakehouse/Bronze"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-03-22T17:50:20Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

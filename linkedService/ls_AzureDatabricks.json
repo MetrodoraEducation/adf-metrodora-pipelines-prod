@@ -1,0 +1,14 @@
+{
+	"name": "ls_AzureDatabricks",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureDatabricks",
+		"typeProperties": {
+			"domain": "https://adb-738676796567959.19.azuredatabricks.net",
+			"authentication": "MSI",
+			"workspaceResourceId": "/subscriptions/d987d0e4-08ec-4622-b7ef-cdc8669f181b/resourceGroups/rg-lakehouse-dev/providers/Microsoft.Databricks/workspaces/dbw-metrodoralakehouse-dev",
+			"existingClusterId": "1212-104707-fmkh3hmk"
+		}
+	}
+}

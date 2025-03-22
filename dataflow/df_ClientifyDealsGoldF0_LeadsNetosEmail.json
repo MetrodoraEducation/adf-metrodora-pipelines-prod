@@ -1,0 +1,189 @@
+{
+	"name": "df_ClientifyDealsGoldF0_LeadsNetosEmail",
+	"properties": {
+		"folder": {
+			"name": "GoldF0"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"linkedService": {
+						"referenceName": "ls_adsl",
+						"type": "LinkedServiceReference"
+					},
+					"name": "sourceSalesGoldF0"
+				}
+			],
+			"sinks": [
+				{
+					"linkedService": {
+						"referenceName": "ls_adsl",
+						"type": "LinkedServiceReference"
+					},
+					"name": "sinkSalesGoldF0"
+				}
+			],
+			"transformations": [
+				{
+					"name": "filter1"
+				},
+				{
+					"name": "window1"
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "select2"
+				},
+				{
+					"name": "alterRow1"
+				},
+				{
+					"name": "MapDrifted1",
+					"description": "Crea una asignación explícita para cada columna de desfase."
+				}
+			],
+			"scriptLines": [
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'delta',",
+				"     fileSystem: 'gold',",
+				"     folderPath: 'lakehousef0/sales') ~> sourceSalesGoldF0",
+				"MapDrifted1 filter(sourcesystem=='Clientify' && stage_value=='Sin Gestionar' && lead_neto==1 && contact_email!='false'&& !isNull(contact_email),",
+				"     partitionBy('hash', 1)) ~> filter1",
+				"filter1 window(over(contact_email),",
+				"     desc(created, true),",
+				"     ranking = rank(),",
+				"     partitionBy('hash', 1)) ~> window1",
+				"window1 select(mapColumn(",
+				"          amount,",
+				"          created,",
+				"          id,",
+				"          name,",
+				"          filepath,",
+				"          descuento,",
+				"          descuento_matricula,",
+				"          fecha_inscripcion,",
+				"          processdate,",
+				"          sourcesystem,",
+				"          modified,",
+				"          centro,",
+				"          source,",
+				"          date_closed,",
+				"          owner_name,",
+				"          estudio,",
+				"          contact_email,",
+				"          contact_phone,",
+				"          stage_value,",
+				"          status_desc,",
+				"          byratings_rating,",
+				"          lost_reason_value,",
+				"          tiempo_de_maduracion,",
+				"          new_enrollent,",
+				"          lead_neto,",
+				"          status_final,",
+				"          created_date,",
+				"          sede,",
+				"          modalidad,",
+				"          ranking",
+				"     ),",
+				"     partitionBy('hash', 1),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 derive(lead_neto = iif(ranking>1, 0, 1),",
+				"     partitionBy('hash', 1)) ~> derivedColumn1",
+				"derivedColumn1 select(mapColumn(",
+				"          amount,",
+				"          created,",
+				"          id,",
+				"          name,",
+				"          filepath,",
+				"          descuento,",
+				"          descuento_matricula,",
+				"          fecha_inscripcion,",
+				"          processdate,",
+				"          sourcesystem,",
+				"          modified,",
+				"          centro,",
+				"          source,",
+				"          date_closed,",
+				"          owner_name,",
+				"          estudio,",
+				"          contact_email,",
+				"          contact_phone,",
+				"          stage_value,",
+				"          status_desc,",
+				"          byratings_rating,",
+				"          lost_reason_value,",
+				"          tiempo_de_maduracion,",
+				"          new_enrollent,",
+				"          lead_neto,",
+				"          status_final,",
+				"          created_date,",
+				"          sede,",
+				"          modalidad",
+				"     ),",
+				"     partitionBy('hash', 1),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select2",
+				"select2 alterRow(upsertIf(true()),",
+				"     partitionBy('hash', 1)) ~> alterRow1",
+				"sourceSalesGoldF0 derive(amount = toDouble(byName('amount')),",
+				"          created = toTimestamp(byName('created')),",
+				"          id = toString(byName('id')),",
+				"          name = toString(byName('name')),",
+				"          filepath = toString(byName('filepath')),",
+				"          descuento = toDouble(byName('descuento')),",
+				"          descuento_matricula = toDouble(byName('descuento_matricula')),",
+				"          fecha_inscripcion = toTimestamp(byName('fecha_inscripcion')),",
+				"          processdate = toTimestamp(byName('processdate')),",
+				"          sourcesystem = toString(byName('sourcesystem')),",
+				"          modified = toTimestamp(byName('modified')),",
+				"          centro = toString(byName('centro')),",
+				"          source = toString(byName('source')),",
+				"          date_closed = toTimestamp(byName('date_closed')),",
+				"          owner_name = toString(byName('owner_name')),",
+				"          estudio = toString(byName('estudio')),",
+				"          contact_email = toString(byName('contact_email')),",
+				"          contact_phone = toString(byName('contact_phone')),",
+				"          stage_value = toString(byName('stage_value')),",
+				"          status_desc = toString(byName('status_desc')),",
+				"          byratings_rating = toString(byName('byratings_rating')),",
+				"          sede = toString(byName('sede')),",
+				"          modalidad = toString(byName('modalidad')),",
+				"          lost_reason_value = toString(byName('lost_reason_value')),",
+				"          tiempo_de_maduracion = toDouble(byName('tiempo_de_maduracion')),",
+				"          new_enrollent = toInteger(byName('new_enrollent')),",
+				"          lead_neto = toInteger(byName('lead_neto')),",
+				"          status_final = toString(byName('status_final')),",
+				"          created_date = toDate(byName('created_date')),",
+				"     partitionBy('hash', 1)) ~> MapDrifted1",
+				"alterRow1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'delta',",
+				"     fileSystem: 'gold',",
+				"     folderPath: 'lakehousef0/sales',",
+				"     mergeSchema: false,",
+				"     autoCompact: false,",
+				"     optimizedWrite: false,",
+				"     vacuum: 0,",
+				"     deletable: false,",
+				"     insertable: false,",
+				"     updateable: false,",
+				"     upsertable: true,",
+				"     keys:['id','sourcesystem'],",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sinkSalesGoldF0"
+			]
+		}
+	}
+}

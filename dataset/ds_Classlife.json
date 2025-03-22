@@ -1,0 +1,25 @@
+{
+	"name": "ds_Classlife",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_Classlife",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"relativeUrl": {
+				"type": "string",
+				"defaultValue": "/enroll_groups"
+			}
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"typeProperties": {
+			"relativeUrl": {
+				"value": "@dataset().relativeUrl",
+				"type": "Expression"
+			}
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,251 @@
+{
+	"name": "df_ClientifyDealsGoldF0_IdForDelete",
+	"properties": {
+		"folder": {
+			"name": "GoldF0"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"linkedService": {
+						"referenceName": "ls_adsl",
+						"type": "LinkedServiceReference"
+					},
+					"name": "sourceSalesGold"
+				},
+				{
+					"linkedService": {
+						"referenceName": "ls_adsl",
+						"type": "LinkedServiceReference"
+					},
+					"name": "sourceClientifyIdForDeleteSilver"
+				},
+				{
+					"linkedService": {
+						"referenceName": "ls_adsl",
+						"type": "LinkedServiceReference"
+					},
+					"name": "sourceSalesGold2"
+				}
+			],
+			"sinks": [
+				{
+					"linkedService": {
+						"referenceName": "ls_adsl",
+						"type": "LinkedServiceReference"
+					},
+					"name": "sinkSalesGold"
+				}
+			],
+			"transformations": [
+				{
+					"name": "MapDriftedSalesGold",
+					"description": "Crea una asignación explícita para cada columna de desfase."
+				},
+				{
+					"name": "alterRow1"
+				},
+				{
+					"name": "filterClientify"
+				},
+				{
+					"name": "MapDriftedSalesGold2",
+					"description": "Crea una asignación explícita para cada columna de desfase."
+				},
+				{
+					"name": "selectID"
+				},
+				{
+					"name": "aggregate1"
+				},
+				{
+					"name": "sort1"
+				},
+				{
+					"name": "filterCount"
+				},
+				{
+					"name": "joinCount"
+				},
+				{
+					"name": "filterClientify2"
+				},
+				{
+					"name": "select2"
+				},
+				{
+					"name": "MapDriftedClientifyIdForDeleteSilver",
+					"description": "Crea una asignación explícita para cada columna de desfase."
+				},
+				{
+					"name": "exists1"
+				}
+			],
+			"scriptLines": [
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'delta',",
+				"     fileSystem: 'gold',",
+				"     folderPath: 'lakehousef0/sales') ~> sourceSalesGold",
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'delta',",
+				"     fileSystem: 'silver',",
+				"     folderPath: 'lakehousef0/clientifydealsidfordelete') ~> sourceClientifyIdForDeleteSilver",
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'delta',",
+				"     fileSystem: 'gold',",
+				"     folderPath: 'lakehousef0/sales') ~> sourceSalesGold2",
+				"sourceSalesGold derive(amount = toDouble(byName('amount')),",
+				"          created = toTimestamp(byName('created')),",
+				"          id = toString(byName('id')),",
+				"          name = toString(byName('name')),",
+				"          filepath = toString(byName('filepath')),",
+				"          descuento = toDouble(byName('descuento')),",
+				"          descuento_matricula = toDouble(byName('descuento_matricula')),",
+				"          fecha_inscripcion = toTimestamp(byName('fecha_inscripcion')),",
+				"          processdate = toTimestamp(byName('processdate')),",
+				"          sourcesystem = toString(byName('sourcesystem')),",
+				"          modified = toTimestamp(byName('modified')),",
+				"          centro = toString(byName('centro')),",
+				"          source = toString(byName('source')),",
+				"          date_closed = toTimestamp(byName('date_closed')),",
+				"          owner_name = toString(byName('owner_name')),",
+				"          estudio = toString(byName('estudio')),",
+				"          contact_email = toString(byName('contact_email')),",
+				"          contact_phone = toString(byName('contact_phone')),",
+				"          stage_value = toString(byName('stage_value')),",
+				"          status_desc = toString(byName('status_desc')),",
+				"          byratings_rating = toString(byName('byratings_rating')),",
+				"          sede = toString(byName('sede')),",
+				"          modalidad = toString(byName('modalidad')),",
+				"          lost_reason_value = toString(byName('lost_reason_value')),",
+				"          tiempo_de_maduracion = toDouble(byName('tiempo_de_maduracion')),",
+				"          new_enrollent = toInteger(byName('new_enrollent')),",
+				"          lead_neto = toInteger(byName('lead_neto')),",
+				"          status_final = toString(byName('status_final')),",
+				"          created_date = toDate(byName('created_date')),",
+				"     partitionBy('hash', 1)) ~> MapDriftedSalesGold",
+				"exists1 alterRow(deleteIf(true()),",
+				"     partitionBy('hash', 1)) ~> alterRow1",
+				"MapDriftedSalesGold filter(sourcesystem == \"Clientify\",",
+				"     partitionBy('hash', 1)) ~> filterClientify",
+				"sourceSalesGold2 derive(amount = toDouble(byName('amount')),",
+				"          created = toTimestamp(byName('created')),",
+				"          id = toString(byName('id')),",
+				"          name = toString(byName('name')),",
+				"          filepath = toString(byName('filepath')),",
+				"          descuento = toDouble(byName('descuento')),",
+				"          descuento_matricula = toDouble(byName('descuento_matricula')),",
+				"          fecha_inscripcion = toTimestamp(byName('fecha_inscripcion')),",
+				"          processdate = toTimestamp(byName('processdate')),",
+				"          sourcesystem = toString(byName('sourcesystem')),",
+				"          modified = toTimestamp(byName('modified')),",
+				"          centro = toString(byName('centro')),",
+				"          source = toString(byName('source')),",
+				"          date_closed = toTimestamp(byName('date_closed')),",
+				"          owner_name = toString(byName('owner_name')),",
+				"          estudio = toString(byName('estudio')),",
+				"          contact_email = toString(byName('contact_email')),",
+				"          contact_phone = toString(byName('contact_phone')),",
+				"          stage_value = toString(byName('stage_value')),",
+				"          status_desc = toString(byName('status_desc')),",
+				"          byratings_rating = toString(byName('byratings_rating')),",
+				"          sede = toString(byName('sede')),",
+				"          modalidad = toString(byName('modalidad')),",
+				"          lost_reason_value = toString(byName('lost_reason_value')),",
+				"          tiempo_de_maduracion = toDouble(byName('tiempo_de_maduracion')),",
+				"          new_enrollent = toInteger(byName('new_enrollent')),",
+				"          lead_neto = toInteger(byName('lead_neto')),",
+				"          status_final = toString(byName('status_final')),",
+				"          created_date = toDate(byName('created_date')),",
+				"     partitionBy('hash', 1)) ~> MapDriftedSalesGold2",
+				"filterClientify2 select(mapColumn(",
+				"          id",
+				"     ),",
+				"     partitionBy('hash', 1),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> selectID",
+				"selectID aggregate(groupBy(id),",
+				"     countID = count(id),",
+				"     partitionBy('hash', 1)) ~> aggregate1",
+				"aggregate1 sort(desc(countID, true),",
+				"     partitionBy('hash', 1)) ~> sort1",
+				"sort1 filter(countID==1,",
+				"     partitionBy('hash', 1)) ~> filterCount",
+				"filterClientify, filterCount join(MapDriftedSalesGold@id == aggregate1@id,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     partitionBy('hash', 1),",
+				"     broadcast: 'auto')~> joinCount",
+				"MapDriftedSalesGold2 filter(sourcesystem == \"Clientify\",",
+				"     partitionBy('hash', 1)) ~> filterClientify2",
+				"joinCount select(mapColumn(",
+				"          amount,",
+				"          created,",
+				"          id = MapDriftedSalesGold@id,",
+				"          name,",
+				"          filepath,",
+				"          descuento,",
+				"          descuento_matricula,",
+				"          fecha_inscripcion,",
+				"          processdate,",
+				"          sourcesystem,",
+				"          modified,",
+				"          centro,",
+				"          source,",
+				"          date_closed,",
+				"          owner_name,",
+				"          estudio,",
+				"          contact_email,",
+				"          contact_phone,",
+				"          stage_value,",
+				"          status_desc,",
+				"          byratings_rating,",
+				"          sede,",
+				"          modalidad,",
+				"          lost_reason_value,",
+				"          tiempo_de_maduracion,",
+				"          new_enrollent,",
+				"          lead_neto,",
+				"          status_final,",
+				"          created_date",
+				"     ),",
+				"     partitionBy('hash', 1),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select2",
+				"sourceClientifyIdForDeleteSilver derive(id = toString(byName('id')),",
+				"     partitionBy('hash', 1)) ~> MapDriftedClientifyIdForDeleteSilver",
+				"select2, MapDriftedClientifyIdForDeleteSilver exists(select2@id == MapDriftedClientifyIdForDeleteSilver@id,",
+				"     negate:true,",
+				"     partitionBy('hash', 1),",
+				"     broadcast: 'auto')~> exists1",
+				"alterRow1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'delta',",
+				"     fileSystem: 'gold',",
+				"     folderPath: 'lakehousef0/sales',",
+				"     mergeSchema: false,",
+				"     autoCompact: false,",
+				"     optimizedWrite: false,",
+				"     vacuum: 0,",
+				"     deletable: true,",
+				"     insertable: false,",
+				"     updateable: false,",
+				"     upsertable: false,",
+				"     keys:['id','sourcesystem'],",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sinkSalesGold"
+			]
+		}
+	}
+}
