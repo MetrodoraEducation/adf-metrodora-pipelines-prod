@@ -287,10 +287,6 @@
 							"typeProperties": {
 								"source": {
 									"type": "AzurePostgreSqlSource",
-									"query": {
-										"value": "select count(*) from public.fct_recibos",
-										"type": "Expression"
-									},
 									"partitionOption": "None"
 								},
 								"dataset": {
