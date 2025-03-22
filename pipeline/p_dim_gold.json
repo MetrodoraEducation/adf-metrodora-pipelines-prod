@@ -5,7 +5,14 @@
 			{
 				"name": "Dim_campania_gold",
 				"type": "DatabricksNotebook",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Dim_programa_gold",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -62,7 +69,7 @@
 					{
 						"activity": "Dim_vertical_gold",
 						"dependencyConditions": [
-							"Completed"
+							"Succeeded"
 						]
 					}
 				],
@@ -92,7 +99,7 @@
 					{
 						"activity": "Dim_tipo_formacion_gold",
 						"dependencyConditions": [
-							"Completed"
+							"Succeeded"
 						]
 					}
 				],
@@ -122,7 +129,7 @@
 					{
 						"activity": "Dim_estado_venta_gold",
 						"dependencyConditions": [
-							"Completed"
+							"Succeeded"
 						]
 					}
 				],
@@ -152,7 +159,7 @@
 					{
 						"activity": "Dim_etapa_venta_gold",
 						"dependencyConditions": [
-							"Completed"
+							"Succeeded"
 						]
 					}
 				],
@@ -212,7 +219,7 @@
 					{
 						"activity": "Dim_jerarquia_marketing_gold",
 						"dependencyConditions": [
-							"Completed"
+							"Succeeded"
 						]
 					}
 				],
@@ -242,7 +249,7 @@
 					{
 						"activity": "Dim_tipo_negocio_gold",
 						"dependencyConditions": [
-							"Completed"
+							"Succeeded"
 						]
 					}
 				],
@@ -272,7 +279,7 @@
 					{
 						"activity": "Dim_estudiante",
 						"dependencyConditions": [
-							"Completed"
+							"Succeeded"
 						]
 					}
 				],
@@ -332,7 +339,7 @@
 					{
 						"activity": "Dim_especialidad_gold",
 						"dependencyConditions": [
-							"Completed"
+							"Succeeded"
 						]
 					}
 				],
@@ -445,7 +452,7 @@
 					{
 						"activity": "Dim_motivo_perdida_gold",
 						"dependencyConditions": [
-							"Completed"
+							"Succeeded"
 						]
 					}
 				],
