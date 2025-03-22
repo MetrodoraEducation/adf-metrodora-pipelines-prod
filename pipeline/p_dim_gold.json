@@ -92,7 +92,6 @@
 					{
 						"activity": "Dim_tipo_formacion_gold",
 						"dependencyConditions": [
-							"Succeeded",
 							"Completed"
 						]
 					}
@@ -209,7 +208,14 @@
 			{
 				"name": "Dim_motivo_cierre_gold",
 				"type": "DatabricksNotebook",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Dim_jerarquia_marketing_gold",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -232,7 +238,14 @@
 			{
 				"name": "Dim_motivo_perdida_llamada_gold",
 				"type": "DatabricksNotebook",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Dim_tipo_negocio_gold",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -312,7 +325,7 @@
 					{
 						"activity": "Dim_especialidad_gold",
 						"dependencyConditions": [
-							"Succeeded"
+							"Completed"
 						]
 					}
 				],
