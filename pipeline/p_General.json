@@ -292,7 +292,7 @@
 			},
 			"silver_storage_databricks": {
 				"type": "string",
-				"defaultValue": "/Repos/development_repository/notebooks-databricks-dev/Lakehouse/Silver/"
+				"defaultValue": "/Workspace/Repos/production_repository/notebooks-databricks-prod/Lakehouse/Silver/"
 			},
 			"gold_storage_databricks": {
 				"type": "string",
