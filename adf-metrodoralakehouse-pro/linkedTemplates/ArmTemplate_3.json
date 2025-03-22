@@ -1,0 +1,3037 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "adf-metrodoralakehouse-pro"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/p_ClientifyDealsGoldF0_LeadsNetosEmail')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "DataFlowClientifyDealsGoldF0_LeadsNetosEmail",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "df_ClientifyDealsGoldF0_LeadsNetosEmail",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"sourceSalesGoldF0": {},
+									"sinkSalesGoldF0": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "LakehouseF0/GoldF0"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-22T17:50:19Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_ClientifyDealsGoldF0_LeadsNetosPhone')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "DataFlowClientifyDealsGoldF0_LeadsNetosPhone",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "df_ClientifyDealsGoldF0_LeadsNetosPhone",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"sourceSalesGoldF0": {},
+									"sinkSalesGoldF0": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "LakehouseF0/GoldF0"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-22T17:50:20Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_ClientifyDealsGoldF0_LostReason')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "DataflowClientifyDealsGoldF0_LostReason",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "df_ClientifyDealsGoldF0_LostReason",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"sourceSalesGold": {},
+									"sourceClientifyLostReasonSilver": {},
+									"sourceSalesGold2": {},
+									"sinkSalesGold": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "LakehouseF0/GoldF0"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-22T17:50:19Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_General_MapeoEstudio')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "CopyDataMapeoEstudio",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_adsl_csv",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "master",
+									"folder": "mapeo",
+									"filename": "mapeo_estudio.csv"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_adsl_parquet",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "bronze",
+									"folder": {
+										"value": "@concat('lakehouse/mapeo_estudio/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+										"type": "Expression"
+									},
+									"filename": "mapeo_estudio.parquet"
+								}
+							}
+						]
+					},
+					{
+						"name": "MapeoEstudioSilver",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "CopyDataMapeoEstudio",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": {
+								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'mapeo_estudio_silver')",
+								"type": "Expression"
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "MapeoEstudioGold",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "MapeoEstudioSilver",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": {
+								"value": "@concat(pipeline().parameters.gold_storage_databricks, 'mapeo_estudio_gold')",
+								"type": "Expression"
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"silver_storage_databricks": {
+						"type": "string"
+					},
+					"gold_storage_databricks": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "Lakehouse/General/General_dimFijas_Mapeo"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-22T17:50:20Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_General_MapeoModalidad')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "CopyDataMapeoModalidad",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_adsl_csv",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "master",
+									"folder": "mapeo",
+									"filename": "mapeo_modalidad.csv"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_adsl_parquet",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "bronze",
+									"folder": {
+										"value": "@concat('lakehouse/mapeo_modalidad/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+										"type": "Expression"
+									},
+									"filename": "mapeo_modalidad.parquet"
+								}
+							}
+						]
+					},
+					{
+						"name": "MapeoModalidadSilver",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "CopyDataMapeoModalidad",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": {
+								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'mapeo_modalidad_silver')",
+								"type": "Expression"
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "MapeoModalidadGold",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "MapeoModalidadSilver",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": {
+								"value": "@concat(pipeline().parameters.gold_storage_databricks, 'mapeo_modalidad_gold')",
+								"type": "Expression"
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"silver_storage_databricks": {
+						"type": "string"
+					},
+					"gold_storage_databricks": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "Lakehouse/General/General_dimFijas_Mapeo"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-22T17:50:20Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_General_MapeoOrigenCampania')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "CopyDataMapeoOrigenCampania",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_adsl_csv",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "master",
+									"folder": "mapeo",
+									"filename": "mapeo_origen_campania.csv"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_adsl_parquet",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "bronze",
+									"folder": {
+										"value": "@concat('lakehouse/mapeo_origen_campania/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+										"type": "Expression"
+									},
+									"filename": "mapeo_origen_campania.parquet"
+								}
+							}
+						]
+					},
+					{
+						"name": "MapeoOrigenCampaniaSilver",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "CopyDataMapeoOrigenCampania",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": {
+								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'mapeo_origen_campania_silver')",
+								"type": "Expression"
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "NotebookMapeoOrigenCampaniaGold",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "MapeoOrigenCampaniaSilver",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": {
+								"value": "@concat(pipeline().parameters.gold_storage_databricks, 'mapeo_origen_campania_gold')",
+								"type": "Expression"
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"silver_storage_databricks": {
+						"type": "string"
+					},
+					"gold_storage_databricks": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "Lakehouse/General/General_dimFijas_Mapeo"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-22T17:50:20Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_General_MapeoSede')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "CopyDataMapeoSede",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_adsl_csv",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "master",
+									"folder": "mapeo",
+									"filename": "mapeo_sede.csv"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_adsl_parquet",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "bronze",
+									"folder": {
+										"value": "@concat('lakehouse/mapeo_sede/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+										"type": "Expression"
+									},
+									"filename": "mapeo_sede.parquet"
+								}
+							}
+						]
+					},
+					{
+						"name": "MapeoSedeSilver",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "CopyDataMapeoSede",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": {
+								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'mapeo_sede_silver')",
+								"type": "Expression"
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "MapeoSedeGold",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "MapeoSedeSilver",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": {
+								"value": "@concat(pipeline().parameters.gold_storage_databricks, 'mapeo_sede_gold')",
+								"type": "Expression"
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"silver_storage_databricks": {
+						"type": "string"
+					},
+					"gold_storage_databricks": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "Lakehouse/General/General_dimFijas_Mapeo"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-22T17:50:20Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_General_dimEstudio')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "CopyDataDimEstudioBronze",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_adsl_csv",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "master",
+									"folder": "dim_estudio",
+									"filename": "dim_estudio.csv"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_adsl_parquet",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "bronze",
+									"folder": {
+										"value": "@concat('lakehouse/dim_estudio/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+										"type": "Expression"
+									},
+									"filename": "dim_estudio.parquet"
+								}
+							}
+						]
+					},
+					{
+						"name": "NotebookDimEstudioSilver",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "CopyDataDimEstudioBronze",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": {
+								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'dim_estudio_silver')",
+								"type": "Expression"
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "NotebookDimEstudioGold",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "NotebookDimEstudioSilver",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": {
+								"value": "@concat(pipeline().parameters.gold_storage_databricks, 'dim_estudio_gold')",
+								"type": "Expression"
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "NotebookDimEstudioDWH",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "NotebookDimEstudioGold",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": {
+								"value": "@concat(pipeline().parameters.dwh_storage_databricks, 'dim_estudio')",
+								"type": "Expression"
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"silver_storage_databricks": {
+						"type": "string"
+					},
+					"gold_storage_databricks": {
+						"type": "string"
+					},
+					"dwh_storage_databricks": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "Lakehouse/General/General_dimFijas_Mapeo"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-22T17:50:20Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_General_dimPais')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "CopyDatadimPaisBronze",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_adsl_csv",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "master",
+									"folder": "dim_pais",
+									"filename": "dim_pais.csv"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_adsl_parquet",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "bronze",
+									"folder": {
+										"value": "@concat('lakehouse/dim_pais/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+										"type": "Expression"
+									},
+									"filename": "dim_pais.parquet"
+								}
+							}
+						]
+					},
+					{
+						"name": "DimPaisSilver",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "CopyDatadimPaisBronze",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": {
+								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'dim_pais_silver')",
+								"type": "Expression"
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "DimPaisGold",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "DimPaisSilver",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": {
+								"value": "@concat(pipeline().parameters.gold_storage_databricks, 'dim_pais_gold')",
+								"type": "Expression"
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "DimPaisDWH",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "DimPaisGold",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "DimNacionalidadGold",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": {
+								"value": "@concat(pipeline().parameters.dwh_storage_databricks, 'dim_pais')",
+								"type": "Expression"
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "DimNacionalidadGold",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "DimPaisSilver",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": {
+								"value": "@concat(pipeline().parameters.gold_storage_databricks, 'dim_nacionalidad_gold')",
+								"type": "Expression"
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"silver_storage_databricks": {
+						"type": "string"
+					},
+					"gold_storage_databricks": {
+						"type": "string"
+					},
+					"dwh_storage_databricks": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "Lakehouse/General/General_dimFijas_Mapeo"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-22T17:50:20Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_OdooLeadBronze')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "WebLogin",
+						"type": "WebActivity",
+						"dependsOn": [
+							{
+								"activity": "WebOdooPwd",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "POST",
+							"headers": {
+								"Content-Type": "application/json"
+							},
+							"url": "https://odoo.isep.es/jsonrpc/",
+							"body": {
+								"value": "@json(concat('{\"jsonrpc\":\"2.0\",\"method\":\"call\",\"params\":{\"service\":\"common\",\"method\":\"login\",\"args\":[\"final\",\"soporteinformatica@isep.es\",\"',activity('WebOdooPwd').output.value,'\"]}}'))",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "CopyDataOdooBronze",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "WebLogin",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RestSource",
+								"httpRequestTimeout": "00:01:40",
+								"requestInterval": "00.00:00:00.010",
+								"requestMethod": "POST",
+								"requestBody": {
+									"value": "@string(json(concat('{\n\t\"jsonrpc\": \"2.0\",\n\t\"method\": \"call\",\n\t\"params\": {\n\t\t\"service\": \"object\",\n\t\t\"method\": \"execute\",\n\t\t\"args\": [\n\t\t\t\"final\",',string(activity('WebLogin').output.result),',\n\t\t\t\"',string(activity('WebOdooPwd').output.value),'\",\n\t\t\t\"crm.lead\",\n\t\t\t\"search_read\",\n\t\t\t[\n\t\t\t\t[\n\t\t\t\t\t\"write_date\",\n\t\t\t\t\t\">=\",\n\t\t\t\t\t\"',formatDateTime(addDays(utcnow(),int(concat('-',string(pipeline().parameters.dayToLoad)))),'MM/dd/yyyy'),'\"\n\t\t\t\t]\n\t\t\t],\n\t\t\t[\n\t\t\t\t\"name\",\n\t\t\t\t\"campaign_id\",\n\t\t\t\t\"company_id\",\n\t\t\t\t\"country_id\",\n\t\t\t\t\"section_id\",\n\t\t\t\t\"state_id\",\n\t\t\t\t\"stage_id\",\n\t\t\t\t\"medium_id\",\n\t\t\t\t\"source_id\",\n\t\t\t\t\"user_id\",\n\t\t\t\t\"title\",\n\t\t\t\t\"city\",\n\t\t\t\t\"contact_name\",\n\t\t\t\t\"email\",\n\t\t\t\t\"fax\",\n\t\t\t\t\"mobile\",\n\t\t\t\t\"partner_name\",\n\t\t\t\t\"phone\",\n\t\t\t\t\"probability\",\n\t\t\t\t\"planned_revenue\",\n\t\t\t\t\"street\",\n\t\t\t\t\"street2\",\n\t\t\t\t\"zip\",\n\t\t\t\t\"create_date\",\n\t\t\t\t\"date_action_last\",\n\t\t\t\t\"date_action_next\",\n\t\t\t\t\"email_from\",\n\t\t\t\t\"email_cc\",\n\t\t\t\t\"date_last_stage_update\",\n\t\t\t\t\"lost_reason\",\n\t\t\t\t\"write_date\",\n\t\t\t\t\"x_curso\",\n\t\t\t\t\"x_studio_field_FM3fX\",\n\t\t\t\t\"x_sede_id\",\n\t\t\t\t\"x_modalidad_id\",\n\t\t\t\t\"sale_amount_total\",\n\t\t\t\t\"x_curso_id\",\n\t\t\t\t\"x_codmodalidad\",\n\t\t\t\t\"x_codcurso\",\n\t\t\t\t\"x_ga_medium\",\n\t\t\t\t\"x_ga_source\",\n\t\t\t\t\"x_ga_utma\",\n\t\t\t\t\"x_ga_campaign\",\n\t\t\t\t\"medium_id\",\n\t\t\t\t\"date_closed\",\n\t\t\t\t\"date_conversion\"\n\t\t\t]\n\t\t]\n\t}\n}'))\n)",
+									"type": "Expression"
+								},
+								"additionalHeaders": {
+									"Content-Type": "application/json"
+								}
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_Odoo",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_adsl_json",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "bronze",
+									"folder": {
+										"value": "@concat('lakehouse/odoo/lead/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))\n\n\n",
+										"type": "Expression"
+									},
+									"filename": "odoolead.json"
+								}
+							}
+						]
+					},
+					{
+						"name": "WebOdooPwd",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "GET",
+							"headers": {},
+							"url": "https://kvmetrodoralakehousedev.vault.azure.net/secrets/odoopwd/95e9aff09463460b88ebcdf8251b56f6?api-version=7.0",
+							"authentication": {
+								"type": "MSI",
+								"resource": "https://vault.azure.net"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"dayToLoad": {
+						"type": "string",
+						"defaultValue": "7"
+					}
+				},
+				"folder": {
+					"name": "Lakehouse/Bronze"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-22T17:50:20Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_OdooLeadBronzeF0')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "WebLogin",
+						"type": "WebActivity",
+						"dependsOn": [
+							{
+								"activity": "WebOdooPwd",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "POST",
+							"headers": {
+								"Content-Type": "application/json"
+							},
+							"url": "https://odoo.isep.es/jsonrpc/",
+							"body": {
+								"value": "@json(concat('{\"jsonrpc\":\"2.0\",\"method\":\"call\",\"params\":{\"service\":\"common\",\"method\":\"login\",\"args\":[\"final\",\"soporteinformatica@isep.es\",\"',activity('WebOdooPwd').output.value,'\"]}}'))",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "CopyDataOdooBronze",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "WebLogin",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RestSource",
+								"httpRequestTimeout": "00:01:40",
+								"requestInterval": "00.00:00:00.010",
+								"requestMethod": "POST",
+								"requestBody": {
+									"value": "@string(json(concat('{\n\t\"jsonrpc\": \"2.0\",\n\t\"method\": \"call\",\n\t\"params\": {\n\t\t\"service\": \"object\",\n\t\t\"method\": \"execute\",\n\t\t\"args\": [\n\t\t\t\"final\",',string(activity('WebLogin').output.result),',\n\t\t\t\"',string(activity('WebOdooPwd').output.value),'\",\n\t\t\t\"crm.lead\",\n\t\t\t\"search_read\",\n\t\t\t[\n\t\t\t\t[\n\t\t\t\t\t\"write_date\",\n\t\t\t\t\t\">=\",\n\t\t\t\t\t\"',formatDateTime(addDays(utcnow(),int(concat('-',string(pipeline().parameters.dayToLoad)))),'MM/dd/yyyy'),'\"\n\t\t\t\t]\n\t\t\t],\n\t\t\t[\n\t\t\t\t\"name\",\n\t\t\t\t\"campaign_id\",\n\t\t\t\t\"company_id\",\n\t\t\t\t\"country_id\",\n\t\t\t\t\"section_id\",\n\t\t\t\t\"state_id\",\n\t\t\t\t\"stage_id\",\n\t\t\t\t\"medium_id\",\n\t\t\t\t\"source_id\",\n\t\t\t\t\"user_id\",\n\t\t\t\t\"title\",\n\t\t\t\t\"city\",\n\t\t\t\t\"contact_name\",\n\t\t\t\t\"email\",\n\t\t\t\t\"fax\",\n\t\t\t\t\"mobile\",\n\t\t\t\t\"partner_name\",\n\t\t\t\t\"phone\",\n\t\t\t\t\"probability\",\n\t\t\t\t\"planned_revenue\",\n\t\t\t\t\"street\",\n\t\t\t\t\"street2\",\n\t\t\t\t\"zip\",\n\t\t\t\t\"create_date\",\n\t\t\t\t\"date_action_last\",\n\t\t\t\t\"date_action_next\",\n\t\t\t\t\"email_from\",\n\t\t\t\t\"email_cc\",\n\t\t\t\t\"date_last_stage_update\",\n\t\t\t\t\"lost_reason\",\n\t\t\t\t\"write_date\",\n\t\t\t\t\"x_curso\",\n\t\t\t\t\"x_studio_field_FM3fX\",\n\t\t\t\t\"x_sede_id\",\n\t\t\t\t\"x_modalidad_id\",\n\t\t\t\t\"sale_amount_total\",\n\t\t\t\t\"x_curso_id\",\n\t\t\t\t\"x_codmodalidad\",\n\t\t\t\t\"x_codcurso\",\n\t\t\t\t\"x_ga_medium\",\n\t\t\t\t\"x_ga_source\",\n\t\t\t\t\"x_ga_utma\",\n\t\t\t\t\"x_ga_campaign\",\n\t\t\t\t\"medium_id\",\n\t\t\t\t\"date_closed\",\n\t\t\t\t\"date_conversion\"\n\t\t\t]\n\t\t]\n\t}\n}'))\n)",
+									"type": "Expression"
+								},
+								"additionalHeaders": {
+									"Content-Type": "application/json"
+								}
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_Odoo",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_adsl_json",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "bronze",
+									"folder": {
+										"value": "@concat('lakehousef0/odoo/lead/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))\n\n\n",
+										"type": "Expression"
+									},
+									"filename": "odoolead.json"
+								}
+							}
+						]
+					},
+					{
+						"name": "WebOdooPwd",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "GET",
+							"headers": {},
+							"url": "https://kvmetrodoralakehousedev.vault.azure.net/secrets/odoopwd/95e9aff09463460b88ebcdf8251b56f6?api-version=7.0",
+							"authentication": {
+								"type": "MSI",
+								"resource": "https://vault.azure.net"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"dayToLoad": {
+						"type": "string",
+						"defaultValue": "7"
+					}
+				},
+				"folder": {
+					"name": "LakehouseF0/BronzeF0"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-22T17:50:20Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_OdooLeadBronzeF0_Full')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "WebLogin",
+						"type": "WebActivity",
+						"dependsOn": [
+							{
+								"activity": "WebOdooPwd",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "POST",
+							"headers": {
+								"Content-Type": "application/json"
+							},
+							"url": "https://odoo.isep.es/jsonrpc/",
+							"body": {
+								"value": "@json(concat('{\"jsonrpc\":\"2.0\",\"method\":\"call\",\"params\":{\"service\":\"common\",\"method\":\"login\",\"args\":[\"final\",\"soporteinformatica@isep.es\",\"',activity('WebOdooPwd').output.value,'\"]}}'))",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "CopyDataOdooBronze",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "WebLogin",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RestSource",
+								"httpRequestTimeout": "00:01:40",
+								"requestInterval": "00.00:00:00.010",
+								"requestMethod": "POST",
+								"requestBody": {
+									"value": "@string(json(concat('{\n\t\"jsonrpc\": \"2.0\",\n\t\"method\": \"call\",\n\t\"params\": {\n\t\t\"service\": \"object\",\n\t\t\"method\": \"execute\",\n\t\t\"args\": [\n\t\t\t\"final\",',string(activity('WebLogin').output.result),',\n\t\t\t\"',string(activity('WebOdooPwd').output.value),'\",\n\t\t\t\"crm.lead\",\n\t\t\t\"search_read\",\n\t\t\t[\n\t\t\t\t[\n\t\t\t\t\t\"create_date\",\n\t\t\t\t\t\">=\",\n\t\t\t\t\t\"09/01/2023\"\n\t\t\t\t]\n\t\t\t],\n\t\t\t[\n\t\t\t\t\"name\",\n\t\t\t\t\"campaign_id\",\n\t\t\t\t\"company_id\",\n\t\t\t\t\"country_id\",\n\t\t\t\t\"section_id\",\n\t\t\t\t\"state_id\",\n\t\t\t\t\"stage_id\",\n\t\t\t\t\"medium_id\",\n\t\t\t\t\"source_id\",\n\t\t\t\t\"user_id\",\n\t\t\t\t\"title\",\n\t\t\t\t\"city\",\n\t\t\t\t\"contact_name\",\n\t\t\t\t\"email\",\n\t\t\t\t\"fax\",\n\t\t\t\t\"mobile\",\n\t\t\t\t\"partner_name\",\n\t\t\t\t\"phone\",\n\t\t\t\t\"probability\",\n\t\t\t\t\"planned_revenue\",\n\t\t\t\t\"street\",\n\t\t\t\t\"street2\",\n\t\t\t\t\"zip\",\n\t\t\t\t\"create_date\",\n\t\t\t\t\"date_action_last\",\n\t\t\t\t\"date_action_next\",\n\t\t\t\t\"email_from\",\n\t\t\t\t\"email_cc\",\n\t\t\t\t\"date_last_stage_update\",\n\t\t\t\t\"lost_reason\",\n\t\t\t\t\"write_date\",\n\t\t\t\t\"x_curso\",\n\t\t\t\t\"x_studio_field_FM3fX\",\n\t\t\t\t\"x_sede_id\",\n\t\t\t\t\"x_modalidad_id\",\n\t\t\t\t\"sale_amount_total\",\n\t\t\t\t\"x_curso_id\",\n\t\t\t\t\"x_codmodalidad\",\n\t\t\t\t\"x_codcurso\",\n\t\t\t\t\"x_ga_medium\",\n\t\t\t\t\"x_ga_source\",\n\t\t\t\t\"x_ga_utma\",\n\t\t\t\t\"x_ga_campaign\",\n\t\t\t\t\"medium_id\",\n\t\t\t\t\"date_closed\",\n\t\t\t\t\"date_conversion\"\n\t\t\t]\n\t\t]\n\t}\n}'))\n)",
+									"type": "Expression"
+								},
+								"additionalHeaders": {
+									"Content-Type": "application/json"
+								}
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_Odoo",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_adsl_json",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "bronze",
+									"folder": {
+										"value": "@concat('lakehousef0/odoo/lead/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))\n\n\n",
+										"type": "Expression"
+									},
+									"filename": "odoolead.json"
+								}
+							}
+						]
+					},
+					{
+						"name": "WebOdooPwd",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "GET",
+							"headers": {},
+							"url": "https://kvmetrodoralakehousedev.vault.azure.net/secrets/odoopwd/95e9aff09463460b88ebcdf8251b56f6?api-version=7.0",
+							"authentication": {
+								"type": "MSI",
+								"resource": "https://vault.azure.net"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "LakehouseF0/BronzeF0"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-22T17:50:20Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_OdooLeadBronze_Full')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "WebLogin",
+						"type": "WebActivity",
+						"dependsOn": [
+							{
+								"activity": "WebOdooPwd",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "POST",
+							"headers": {
+								"Content-Type": "application/json"
+							},
+							"url": "https://odoo.isep.es/jsonrpc/",
+							"body": {
+								"value": "@json(concat('{\"jsonrpc\":\"2.0\",\"method\":\"call\",\"params\":{\"service\":\"common\",\"method\":\"login\",\"args\":[\"final\",\"soporteinformatica@isep.es\",\"',activity('WebOdooPwd').output.value,'\"]}}'))",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "CopyDataOdooBronze",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "WebLogin",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RestSource",
+								"httpRequestTimeout": "00:01:40",
+								"requestInterval": "00.00:00:00.010",
+								"requestMethod": "POST",
+								"requestBody": {
+									"value": "@string(json(concat('{\n\t\"jsonrpc\": \"2.0\",\n\t\"method\": \"call\",\n\t\"params\": {\n\t\t\"service\": \"object\",\n\t\t\"method\": \"execute\",\n\t\t\"args\": [\n\t\t\t\"final\",',string(activity('WebLogin').output.result),',\n\t\t\t\"',string(activity('WebOdooPwd').output.value),'\",\n\t\t\t\"crm.lead\",\n\t\t\t\"search_read\",\n\t\t\t[\n\t\t\t\t[\n\t\t\t\t\t\"create_date\",\n\t\t\t\t\t\">=\",\n\t\t\t\t\t\"09/01/2023\"\n\t\t\t\t]\n\t\t\t],\n\t\t\t[\n\t\t\t\t\"name\",\n\t\t\t\t\"campaign_id\",\n\t\t\t\t\"company_id\",\n\t\t\t\t\"country_id\",\n\t\t\t\t\"section_id\",\n\t\t\t\t\"state_id\",\n\t\t\t\t\"stage_id\",\n\t\t\t\t\"medium_id\",\n\t\t\t\t\"source_id\",\n\t\t\t\t\"user_id\",\n\t\t\t\t\"title\",\n\t\t\t\t\"city\",\n\t\t\t\t\"contact_name\",\n\t\t\t\t\"email\",\n\t\t\t\t\"fax\",\n\t\t\t\t\"mobile\",\n\t\t\t\t\"partner_name\",\n\t\t\t\t\"phone\",\n\t\t\t\t\"probability\",\n\t\t\t\t\"planned_revenue\",\n\t\t\t\t\"street\",\n\t\t\t\t\"street2\",\n\t\t\t\t\"zip\",\n\t\t\t\t\"create_date\",\n\t\t\t\t\"date_action_last\",\n\t\t\t\t\"date_action_next\",\n\t\t\t\t\"email_from\",\n\t\t\t\t\"email_cc\",\n\t\t\t\t\"date_last_stage_update\",\n\t\t\t\t\"lost_reason\",\n\t\t\t\t\"write_date\",\n\t\t\t\t\"x_curso\",\n\t\t\t\t\"x_studio_field_FM3fX\",\n\t\t\t\t\"x_sede_id\",\n\t\t\t\t\"x_modalidad_id\",\n\t\t\t\t\"sale_amount_total\",\n\t\t\t\t\"x_curso_id\",\n\t\t\t\t\"x_codmodalidad\",\n\t\t\t\t\"x_codcurso\",\n\t\t\t\t\"x_ga_medium\",\n\t\t\t\t\"x_ga_source\",\n\t\t\t\t\"x_ga_utma\",\n\t\t\t\t\"x_ga_campaign\",\n\t\t\t\t\"medium_id\",\n\t\t\t\t\"date_closed\",\n\t\t\t\t\"date_conversion\"\n\t\t\t]\n\t\t]\n\t}\n}'))\n)",
+									"type": "Expression"
+								},
+								"additionalHeaders": {
+									"Content-Type": "application/json"
+								}
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_Odoo",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_adsl_json",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "bronze",
+									"folder": {
+										"value": "@concat('lakehouse/odoo/lead/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))\n\n\n",
+										"type": "Expression"
+									},
+									"filename": "odoolead.json"
+								}
+							}
+						]
+					},
+					{
+						"name": "WebOdooPwd",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "GET",
+							"headers": {},
+							"url": "https://kvmetrodoralakehousedev.vault.azure.net/secrets/odoopwd/95e9aff09463460b88ebcdf8251b56f6?api-version=7.0",
+							"authentication": {
+								"type": "MSI",
+								"resource": "https://vault.azure.net"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "Lakehouse/Bronze"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-22T17:50:20Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_OdooLeadGoldF0')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "DataFlowOdooLeadGoldF0",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "df_OdooLeadGoldF0",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"sourceOdooLeadSilverF0": {},
+									"sourceVentasGoldF0": {},
+									"sinkVentasGoldF0": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "LakehouseF0/GoldF0"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-22T17:50:19Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_SalesGoldF0_Full')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "DataFlowSalesGoldF0_Full",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "df_SalesGoldF0_Full",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"sourceClientifyDealsSilverF0": {},
+									"sourceOdooLeadSilverF0": {},
+									"sinkVentasGoldF0": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "LakehouseF0/GoldF0"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-22T17:50:20Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_Zoho')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "CopydataZohoDeals",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "If Modified Since Date",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "NextPageToken",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RestSource",
+								"httpRequestTimeout": "00:01:40",
+								"requestInterval": "00.00:00:00.010",
+								"requestMethod": "GET",
+								"additionalHeaders": {
+									"Content-Type": "application/json",
+									"Authorization": {
+										"value": "@concat('Bearer ', activity('WebZohoAPI').output.access_token)",
+										"type": "Expression"
+									},
+									"If-Modified-Since": {
+										"value": "@variables('ifModifiedSinceDate')",
+										"type": "Expression"
+									},
+									"next_page_token": {
+										"value": "@variables('NextPageToken')",
+										"type": "Expression"
+									}
+								},
+								"paginationRules": {
+									"supportRFC5988": "true",
+									"AbsoluteUrl": "$.next_page_token"
+								}
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_Zoho_API",
+								"type": "DatasetReference",
+								"parameters": {
+									"relativeUrl": {
+										"value": "@concat('https://www.zohoapis.eu/crm/v7/Deals?per_page=200&page=1&fields=Motivo_p_rdida_B2C,ID_Producto,Owner,Motivo_p_rdida_B2B,Residencia1,utm_type,utm_medium,utm_campaign_name,Fecha_hora_Documentaci_n_completada,br_rating,Deal_Name,Exchange_Rate,Currency,Stage,id,utm_ad_id,ID_Classlife,utm_campaign_id,Importe_pagado,br_score,utm_perfil,C_digo_descuento,L_nea_de_Negocio,utm_source,Descuento,Closing_Date,network,utm_adset_id,utm_estrategia,tipo_conversion,Amount,Probability,Profesion_Estudiante,Contact_Name.id,Pipeline,Competencia,utm_term,utm_channel,Tipolog_a_de_cliente,Created_Date,Modified_Time,ID_Lead,Fecha_hora_Pagado_NE,Fecha_hora_Anulaci_n,Nacionalidad1,lead_correlation_id,id_unico,Tipolog_a_del_alumno1,Contact_Name,Created_Time',if(\n        equals(variables('NextPageToken'), ''), \n        '', \n        concat('&next_page_token=', variables('NextPageToken'))\n    )\n)",
+										"type": "Expression"
+									}
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_adsl_json",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "bronze",
+									"folder": {
+										"value": "@concat('lakehouse/zoho/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+										"type": "Expression"
+									},
+									"filename": "JsaZohoDeals.json"
+								}
+							}
+						]
+					},
+					{
+						"name": "CopydataZohoLeads",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "If Modified Since Date",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RestSource",
+								"httpRequestTimeout": "00:01:40",
+								"requestInterval": "00.00:00:00.010",
+								"requestMethod": "GET",
+								"additionalHeaders": {
+									"Content-Type": "application/json",
+									"Authorization": {
+										"value": "@concat('Bearer ', activity('WebZohoAPI').output.access_token)",
+										"type": "Expression"
+									},
+									"If-Modified-Since": {
+										"value": "@variables('ifModifiedSinceDate')",
+										"type": "Expression"
+									}
+								},
+								"paginationRules": {
+									"supportRFC5988": "true",
+									"AbsoluteUrl": "$.next_page_token"
+								}
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_Zoho_API",
+								"type": "DatasetReference",
+								"parameters": {
+									"relativeUrl": {
+										"value": "@concat('https://www.zohoapis.eu/crm/v7/Leads?fields=Created_Date,Apellido_2,Description,device,Email,fbclid,First_Name,gclid1,id,id_producto,id_programa,Last_Name,lead_correlation_id,lead_rating,lead_scoring,Lead_Source,Lead_Status,Mobile,Motivos_de_perdida,Nacionalidad,Owner,Phone,Provincia,Residencia,Sexo,source,Tipolog_a_de_cliente,Typo_Conversion,utm_ad_id,utm_adset_id,utm_campaign_id,utm_campaign_name,utm_channel,utm_estrategia,utm_medium,utm_perfil,utm_source,utm_term,utm_type,Visitor_Score,Modified_Time,Created_Time,L_nea_de_Negocio&per_page=200')",
+										"type": "Expression"
+									}
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_adsl_json",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "bronze",
+									"folder": {
+										"value": "@concat('lakehouse/zoho/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+										"type": "Expression"
+									},
+									"filename": "JsaZohoLeads.json"
+								}
+							}
+						]
+					},
+					{
+						"name": "WebZohoAPI",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "POST",
+							"headers": {
+								"Content-Type": "application/x-www-form-urlencoded"
+							},
+							"url": "https://accounts.zoho.eu/oauth/v2/token",
+							"body": {
+								"value": "@concat('client_id=', pipeline().parameters.client_id, \n        '&client_secret=', pipeline().parameters.client_secret,\n        '&refresh_token=', pipeline().parameters.refresh_token,\n        '&grant_type=refresh_token')",
+								"type": "Expression"
+							},
+							"authentication": {
+								"type": "MSI",
+								"resource": "https://vault.azure.net"
+							}
+						}
+					},
+					{
+						"name": "Set variable Users",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "WebZohoAPI",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "WebActivityName",
+							"value": {
+								"value": "@activity('WebZohoAPI').output.access_token\n",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "CopydataZohoUsers",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Set variable Users",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RestSource",
+								"httpRequestTimeout": "00:01:40",
+								"requestInterval": "00.00:00:00.010",
+								"requestMethod": "GET",
+								"additionalHeaders": {
+									"Content-Type": "application/json",
+									"Authorization": {
+										"value": "@concat('Bearer ', activity('WebZohoAPI').output.access_token)",
+										"type": "Expression"
+									}
+								},
+								"paginationRules": {
+									"supportRFC5988": "true"
+								}
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_Zoho_API",
+								"type": "DatasetReference",
+								"parameters": {
+									"relativeUrl": {
+										"value": "@concat('https://www.zohoapis.eu/crm/v7/users?type=AllUsers')",
+										"type": "Expression"
+									}
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_adsl_json",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "bronze",
+									"folder": {
+										"value": "@concat('lakehouse/zoho/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+										"type": "Expression"
+									},
+									"filename": "JsaZohoUsers.json"
+								}
+							}
+						]
+					},
+					{
+						"name": "CopydataZohoContactos",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Set variable Users",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RestSource",
+								"httpRequestTimeout": "00:01:40",
+								"requestInterval": "00.00:00:00.010",
+								"requestMethod": "GET",
+								"additionalHeaders": {
+									"Content-Type": "application/json",
+									"Authorization": {
+										"value": "@concat('Bearer ', activity('WebZohoAPI').output.access_token)",
+										"type": "Expression"
+									}
+								},
+								"paginationRules": {
+									"supportRFC5988": "true"
+								}
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_Zoho_API",
+								"type": "DatasetReference",
+								"parameters": {
+									"relativeUrl": {
+										"value": "@concat('https://www.zohoapis.eu/crm/v7/Contacts?on_demand_properties=\"$client_portal_permission\"&fields=Email,Mailing_Zip,Other_Zip,Mailing_Street,Other_State,woztellplatformintegration__WhatsApp_Opt_Out,Other_Country,Sexo,Profesion,First_Name,Phone,Estudios,Mailing_Country,recibir_comunicacion,id,Apellidos_2,Provincia,ID_Classlife,Date_of_Birth,Tipo_de_contacto,Mailing_City,Other_City,Home_Phone1,Other_Street,Mobile,Residencia,Nacionalidad,Secondary_Email,Tipo_de_cliente,DNI,ltima_L_nea_de_negocio')",
+										"type": "Expression"
+									}
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_adsl_json",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "bronze",
+									"folder": {
+										"value": "@concat('lakehouse/zoho/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+										"type": "Expression"
+									},
+									"filename": "JsaZohoContacts.json"
+								}
+							}
+						]
+					},
+					{
+						"name": "If Modified Since Date",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Set variable Users",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "ifModifiedSinceDate",
+							"value": {
+								"value": "@formatDateTime(addDays(utcnow(), if(equals(pipeline().parameters.reprocessDate, ''), -7, sub(0, int(pipeline().parameters.reprocessDate)))), 'yyyy-MM-ddTHH:mm:ssZ')",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "GetNextPageToken",
+						"type": "WebActivity",
+						"dependsOn": [
+							{
+								"activity": "WebZohoAPI",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "GET",
+							"headers": {
+								"Authorization": {
+									"value": "@concat('Bearer ', activity('WebZohoAPI').output.access_token)",
+									"type": "Expression"
+								},
+								"Content-Type": "application/json"
+							},
+							"url": {
+								"value": "@concat(\n    'https://www.zohoapis.eu/crm/v7/Deals?fields=Modified_Time,Motivo_p_rdida_B2C&per_page=200',\n    if(\n        equals(variables('NextPageToken'), ''), \n        '', \n        concat('&next_page_token=', variables('NextPageToken'))\n    )\n)",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "NextPageToken",
+						"description": "",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "GetNextPageToken",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "NextPageToken",
+							"value": {
+								"value": "@activity('GetNextPageToken').output.info.next_page_token",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "CopydataZohoCampaigns",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Set variable Users",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RestSource",
+								"httpRequestTimeout": "00:01:40",
+								"requestInterval": "00.00:00:00.010",
+								"requestMethod": "GET",
+								"additionalHeaders": {
+									"Content-Type": "application/json",
+									"Authorization": {
+										"value": "@concat('Bearer ', activity('WebZohoAPI').output.access_token)",
+										"type": "Expression"
+									}
+								},
+								"paginationRules": {
+									"supportRFC5988": "true"
+								}
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_Zoho_API",
+								"type": "DatasetReference",
+								"parameters": {
+									"relativeUrl": {
+										"value": "@concat('https://www.zohoapis.eu/crm/v7/Campaigns?fields=Campaign_Name,Type,Status,', 'Native__Campaigns__Extn__Campaign_Subject,Parent_Campaign,Budgeted_Cost,Actual_Cost,Created_By,Native__Survey__Extn__Department_ID,Description,Layout,Tag,End_Date,Start_Date,Expected_Revenue,Linea_de_negocio,Modified_By,Currency,Num_sent,Owner,Native__Campaigns__Extn__Reply_to_Address,Expected_Response,Native__Campaigns__Extn__Sender_Address,Native__Campaigns__Extn__Sender_Name,Native__Survey__Extn__Survey,Native__Survey__Extn__Survey_Department,Native__Survey__Extn__Survey_Type,Native__Survey__Extn__Survey_URL,Exchange_Rate,Native__Webinar__Extn__Webinar_Duration,Native__Webinar__Extn__Webinar_Launch_URL,Native__Webinar__Extn__Webinar_Registration_URL,Native__Webinar__Extn__Webinar_Schedule')",
+										"type": "Expression"
+									}
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_adsl_json",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "bronze",
+									"folder": {
+										"value": "@concat('lakehouse/zoho/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+										"type": "Expression"
+									},
+									"filename": "JsaZohoCampaigns.json"
+								}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"client_id": {
+						"type": "string",
+						"defaultValue": "1000.1F4VDBCZ89HIY80175SZZF595HBSNO"
+					},
+					"client_secret": {
+						"type": "string",
+						"defaultValue": "d3743dfd871d30ac90d12b3e6ac02de1111c51076e"
+					},
+					"refresh_token": {
+						"type": "string",
+						"defaultValue": "1000.256013fabf162c6a30e7260b66598da2.d706caedd894d618249377cda8b5cf15"
+					},
+					"reprocessDate": {
+						"type": "string",
+						"defaultValue": "7"
+					}
+				},
+				"variables": {
+					"WebActivityName": {
+						"type": "String"
+					},
+					"ifModifiedSinceDate": {
+						"type": "String"
+					},
+					"NextPageToken": {
+						"type": "String"
+					}
+				},
+				"folder": {
+					"name": "Lakehouse/Bronze"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-22T17:50:20Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/df_AircallCallsSilverF0')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "SilverF0"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "ds_adsl_json",
+								"type": "DatasetReference"
+							},
+							"name": "sourceAircallBronze"
+						}
+					],
+					"sinks": [
+						{
+							"linkedService": {
+								"referenceName": "ls_adsl",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sinkAircallSilver"
+						}
+					],
+					"transformations": [
+						{
+							"name": "flattenCalls"
+						},
+						{
+							"name": "select1",
+							"description": "quitado porque array comments, tags teams y assigne_To, number, transferred_by, transferred_to, user porque json"
+						},
+						{
+							"name": "derivedColumn1"
+						},
+						{
+							"name": "alterRow1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          calls as (answered_at as integer, archived as boolean, asset as string, assigned_to as (availability_status as string, available as boolean, created_at as string, direct_link as string, email as string, id as integer, language as string, name as string, state as string, time_zone as string, wrap_up_time as boolean), comments as (content as string, id as integer, posted_at as integer, posted_by as (availability_status as string, available as boolean, created_at as string, direct_link as string, email as string, id as integer, language as string, name as string, state as string, time_zone as string, wrap_up_time as boolean))[], contact as string, cost as double, country_code_a2 as string, direct_link as string, direction as string, duration as short, ended_at as integer, id as long, missed_call_reason as string, number as (availability_status as string, country as string, created_at as string, digits as string, direct_link as string, id as integer, is_ivr as boolean, live_recording_activated as boolean, messages as (after_hours as string, callback_later as string, closed as string, ivr as string, ringing_tone as string, unanswered_call as string, voicemail as string, waiting as string, welcome as string), name as string, open as boolean, priority as string, time_zone as string), pricing_type as string, raw_digits as string, recording as string, recording_short_url as string, sid as string, started_at as integer, status as string, tags as (created_at as integer, id as integer, name as string, tagged_by as (availability_status as string, available as boolean, created_at as string, direct_link as string, email as string, id as integer, language as string, name as string, state as string, time_zone as string, wrap_up_time as boolean))[], teams as (created_at as string, direct_link as string, id as integer, name as string)[], transferred_by as (authentication_token as string, company_id as integer, created_at as string, custom_price as string, custom_twilio_edge as string, custom_twilio_jitter_buffer_size as string, custom_twilio_region as string, default_out_number_id as integer, default_prefix as string, deleted_at as string, email as string, first_name as string, id as integer, intercom_android_hash as string, intercom_hash as string, is_admin as boolean, is_onboarded_for_teams_in_numbers as boolean, is_onboarded_on_app as boolean, language as string, last_name as string, marked_for_deletion as boolean, migrated_on_authentication_manager as boolean, onboarding_step as boolean, phone_numbers_count as boolean, picture_url as string, ring_timeout as short, state as string, time_zone as string, unavailable_until as string, updated_at as string, use_aircall_phonenumber_as_callerid as boolean, use_mobile_incoming_calls as string, use_react_phone as boolean, wrap_up_time as boolean), transferred_to as (availability_status as string, available as boolean, created_at as string, direct_link as string, email as string, id as integer, language as string, name as string, state as string, time_zone as string, wrap_up_time as boolean), user as (availability_status as string, available as boolean, created_at as string, direct_link as string, email as string, id as integer, language as string, name as string, state as string, time_zone as string, wrap_up_time as boolean), voicemail as string, voicemail_short_url as string)[],",
+						"          meta as (count as short, current_page as short, next_page_link as string, per_page as short, previous_page_link as string, total as short)",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     rowUrlColumn: 'filepath',",
+						"     documentForm: 'documentPerLine') ~> sourceAircallBronze",
+						"sourceAircallBronze foldDown(unroll(calls),",
+						"     mapColumn(",
+						"          answered_at = calls.answered_at,",
+						"          archived = calls.archived,",
+						"          asset = calls.asset,",
+						"          assigned_to = calls.assigned_to,",
+						"          assigned_to_availability_status = calls.assigned_to.availability_status,",
+						"          assigned_to_available = calls.assigned_to.available,",
+						"          assigned_to_created_at = calls.assigned_to.created_at,",
+						"          assigned_to_direct_link = calls.assigned_to.direct_link,",
+						"          assigned_to_email = calls.assigned_to.email,",
+						"          assigned_to_id = calls.assigned_to.id,",
+						"          assigned_to_language = calls.assigned_to.language,",
+						"          assigned_to_name = calls.assigned_to.name,",
+						"          assigned_to_state = calls.assigned_to.state,",
+						"          assigned_to_time_zone = calls.assigned_to.time_zone,",
+						"          assigned_to_wrap_up_time = calls.assigned_to.wrap_up_time,",
+						"          comments = calls.comments,",
+						"          contact = calls.contact,",
+						"          cost = calls.cost,",
+						"          country_code_a2 = calls.country_code_a2,",
+						"          direct_link = calls.direct_link,",
+						"          direction = calls.direction,",
+						"          duration = calls.duration,",
+						"          ended_at = calls.ended_at,",
+						"          id = calls.id,",
+						"          missed_call_reason = calls.missed_call_reason,",
+						"          number = calls.number,",
+						"          number_availability_status = calls.number.availability_status,",
+						"          number_country = calls.number.country,",
+						"          number_created_at = calls.number.created_at,",
+						"          number_digits = calls.number.digits,",
+						"          number_direct_link = calls.number.direct_link,",
+						"          number_id = calls.number.id,",
+						"          number_is_ivr = calls.number.is_ivr,",
+						"          number_live_recording_activated = calls.number.live_recording_activated,",
+						"          number_name = calls.number.name,",
+						"          number_open = calls.number.open,",
+						"          number_priority = calls.number.priority,",
+						"          number_time_zone = calls.number.time_zone,",
+						"          number_msg_after_hours = calls.number.messages.after_hours,",
+						"          number_msg_callback_later = calls.number.messages.callback_later,",
+						"          number_msg_closed = calls.number.messages.closed,",
+						"          number_msg_ivr = calls.number.messages.ivr,",
+						"          number_msg_ringing_tone = calls.number.messages.ringing_tone,",
+						"          number_msg_unanswered_call = calls.number.messages.unanswered_call,",
+						"          number_msg_voicemail = calls.number.messages.voicemail,",
+						"          number_msg_waiting = calls.number.messages.waiting,",
+						"          number_msg_welcome = calls.number.messages.welcome,",
+						"          pricing_type = calls.pricing_type,",
+						"          raw_digits = calls.raw_digits,",
+						"          recording = calls.recording,",
+						"          recording_short_url = calls.recording_short_url,",
+						"          sid = calls.sid,",
+						"          started_at = calls.started_at,",
+						"          status = calls.status,",
+						"          tags = calls.tags,",
+						"          teams = calls.teams,",
+						"          transferred_by = calls.transferred_by,",
+						"          transferred_by_authentication_token = calls.transferred_by.authentication_token,",
+						"          transferred_by_company_id = calls.transferred_by.company_id,",
+						"          transferred_by_created_at = calls.transferred_by.created_at,",
+						"          transferred_by_custom_price = calls.transferred_by.custom_price,",
+						"          transferred_by_custom_twilio_edge = calls.transferred_by.custom_twilio_edge,",
+						"          transferred_by_custom_twilio_jitter_buffer_size = calls.transferred_by.custom_twilio_jitter_buffer_size,",
+						"          transferred_by_custom_twilio_region = calls.transferred_by.custom_twilio_region,",
+						"          transferred_by_default_out_number_id = calls.transferred_by.default_out_number_id,",
+						"          transferred_by_default_prefix = calls.transferred_by.default_prefix,",
+						"          transferred_by_deleted_at = calls.transferred_by.deleted_at,",
+						"          transferred_by_email = calls.transferred_by.email,",
+						"          transferred_by_first_name = calls.transferred_by.first_name,",
+						"          transferred_by_id = calls.transferred_by.id,",
+						"          transferred_by_intercom_android_hash = calls.transferred_by.intercom_android_hash,",
+						"          transferred_by_intercom_hash = calls.transferred_by.intercom_hash,",
+						"          transferred_by_is_admin = calls.transferred_by.is_admin,",
+						"          transferred_by_is_onboarded_for_teams_in_numbers = calls.transferred_by.is_onboarded_for_teams_in_numbers,",
+						"          transferred_by_is_onboarded_on_app = calls.transferred_by.is_onboarded_on_app,",
+						"          transferred_by_language = calls.transferred_by.language,",
+						"          transferred_by_last_name = calls.transferred_by.last_name,",
+						"          transferred_by_marked_for_deletion = calls.transferred_by.marked_for_deletion,",
+						"          transferred_by_migrated_on_authentication_manager = calls.transferred_by.migrated_on_authentication_manager,",
+						"          transferred_by_onboarding_step = calls.transferred_by.onboarding_step,",
+						"          transferred_by_phone_numbers_count = calls.transferred_by.phone_numbers_count,",
+						"          transferred_by_picture_url = calls.transferred_by.picture_url,",
+						"          transferred_by_ring_timeout = calls.transferred_by.ring_timeout,",
+						"          transferred_by_state = calls.transferred_by.state,",
+						"          transferred_by_time_zone = calls.transferred_by.time_zone,",
+						"          transferred_by_unavailable_until = calls.transferred_by.unavailable_until,",
+						"          transferred_by_updated_at = calls.transferred_by.updated_at,",
+						"          transferred_by_use_aircall_phonenumber_as_callerid = calls.transferred_by.use_aircall_phonenumber_as_callerid,",
+						"          transferred_by_use_mobile_incoming_calls = calls.transferred_by.use_mobile_incoming_calls,",
+						"          transferred_by_use_react_phone = calls.transferred_by.use_react_phone,",
+						"          transferred_by_wrap_up_time = calls.transferred_by.wrap_up_time,",
+						"          transferred_to = calls.transferred_to,",
+						"          transferred_to_availability_status = calls.transferred_to.availability_status,",
+						"          transferred_to_available = calls.transferred_to.available,",
+						"          transferred_to_created_at = calls.transferred_to.created_at,",
+						"          transferred_to_direct_link = calls.transferred_to.direct_link,",
+						"          transferred_to_email = calls.transferred_to.email,",
+						"          transferred_to_id = calls.transferred_to.id,",
+						"          transferred_to_language = calls.transferred_to.language,",
+						"          transferred_to_name = calls.transferred_to.name,",
+						"          transferred_to_state = calls.transferred_to.state,",
+						"          transferred_to_time_zone = calls.transferred_to.time_zone,",
+						"          transferred_to_wrap_up_time = calls.transferred_to.wrap_up_time,",
+						"          user = calls.user,",
+						"          user_availability_status = calls.user.availability_status,",
+						"          user_available = calls.user.available,",
+						"          user_created_at = calls.user.created_at,",
+						"          user_direct_link = calls.user.direct_link,",
+						"          user_email = calls.user.email,",
+						"          user_id = calls.user.id,",
+						"          user_language = calls.user.language,",
+						"          user_name = calls.user.name,",
+						"          user_state = calls.user.state,",
+						"          user_time_zone = calls.user.time_zone,",
+						"          user_wrap_up_time = calls.user.wrap_up_time,",
+						"          voicemail = calls.voicemail,",
+						"          voicemail_short_url = calls.voicemail_short_url,",
+						"          filepath",
+						"     ),",
+						"     partitionBy('hash', 1),",
+						"     skipDuplicateMapInputs: false,",
+						"     skipDuplicateMapOutputs: false) ~> flattenCalls",
+						"flattenCalls select(mapColumn(",
+						"          answered_at,",
+						"          archived,",
+						"          asset,",
+						"          assigned_to_availability_status,",
+						"          assigned_to_available,",
+						"          assigned_to_created_at,",
+						"          assigned_to_direct_link,",
+						"          assigned_to_email,",
+						"          assigned_to_id,",
+						"          assigned_to_language,",
+						"          assigned_to_name,",
+						"          assigned_to_state,",
+						"          assigned_to_time_zone,",
+						"          assigned_to_wrap_up_time,",
+						"          contact,",
+						"          cost,",
+						"          country_code_a2,",
+						"          direct_link,",
+						"          direction,",
+						"          duration,",
+						"          ended_at,",
+						"          id,",
+						"          missed_call_reason,",
+						"          number_availability_status,",
+						"          number_country,",
+						"          number_created_at,",
+						"          number_digits,",
+						"          number_direct_link,",
+						"          number_id,",
+						"          number_is_ivr,",
+						"          number_live_recording_activated,",
+						"          number_name,",
+						"          number_open,",
+						"          number_priority,",
+						"          number_time_zone,",
+						"          number_msg_after_hours,",
+						"          number_msg_callback_later,",
+						"          number_msg_closed,",
+						"          number_msg_ivr,",
+						"          number_msg_ringing_tone,",
+						"          number_msg_unanswered_call,",
+						"          number_msg_voicemail,",
+						"          number_msg_waiting,",
+						"          number_msg_welcome,",
+						"          pricing_type,",
+						"          raw_digits,",
+						"          recording,",
+						"          recording_short_url,",
+						"          sid,",
+						"          started_at,",
+						"          status,",
+						"          transferred_by_authentication_token,",
+						"          transferred_by_company_id,",
+						"          transferred_by_created_at,",
+						"          transferred_by_custom_price,",
+						"          transferred_by_custom_twilio_edge,",
+						"          transferred_by_custom_twilio_jitter_buffer_size,",
+						"          transferred_by_custom_twilio_region,",
+						"          transferred_by_default_out_number_id,",
+						"          transferred_by_default_prefix,",
+						"          transferred_by_deleted_at,",
+						"          transferred_by_email,",
+						"          transferred_by_first_name,",
+						"          transferred_by_id,",
+						"          transferred_by_intercom_android_hash,",
+						"          transferred_by_intercom_hash,",
+						"          transferred_by_is_admin,",
+						"          transferred_by_is_onboarded_for_teams_in_numbers,",
+						"          transferred_by_is_onboarded_on_app,",
+						"          transferred_by_language,",
+						"          transferred_by_last_name,",
+						"          transferred_by_marked_for_deletion,",
+						"          transferred_by_migrated_on_authentication_manager,",
+						"          transferred_by_onboarding_step,",
+						"          transferred_by_phone_numbers_count,",
+						"          transferred_by_picture_url,",
+						"          transferred_by_ring_timeout,",
+						"          transferred_by_state,",
+						"          transferred_by_time_zone,",
+						"          transferred_by_unavailable_until,",
+						"          transferred_by_updated_at,",
+						"          transferred_by_use_aircall_phonenumber_as_callerid,",
+						"          transferred_by_use_mobile_incoming_calls,",
+						"          transferred_by_use_react_phone,",
+						"          transferred_by_wrap_up_time,",
+						"          transferred_to_availability_status,",
+						"          transferred_to_available,",
+						"          transferred_to_created_at,",
+						"          transferred_to_direct_link,",
+						"          transferred_to_email,",
+						"          transferred_to_id,",
+						"          transferred_to_language,",
+						"          transferred_to_name,",
+						"          transferred_to_state,",
+						"          transferred_to_time_zone,",
+						"          transferred_to_wrap_up_time,",
+						"          user_availability_status,",
+						"          user_available,",
+						"          user_created_at,",
+						"          user_direct_link,",
+						"          user_email,",
+						"          user_id,",
+						"          user_language,",
+						"          user_name,",
+						"          user_state,",
+						"          user_time_zone,",
+						"          user_wrap_up_time,",
+						"          voicemail,",
+						"          voicemail_short_url,",
+						"          filepath",
+						"     ),",
+						"     partitionBy('hash', 1),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"select1 derive(started_at = toTimestamp((started_at)*1000l,\"yyyy-MM-dd HH:mm:ss\"),",
+						"          ended_at = toTimestamp((ended_at)*1000l,\"yyyy-MM-dd HH:mm:ss\"),",
+						"          processdate = currentUTC(),",
+						"          duration = toInteger(duration),",
+						"          id = toString(id),",
+						"          transferred_by_ring_timeout = toInteger(transferred_by_ring_timeout),",
+						"     partitionBy('hash', 1)) ~> derivedColumn1",
+						"derivedColumn1 alterRow(upsertIf(true()),",
+						"     partitionBy('hash', 1)) ~> alterRow1",
+						"alterRow1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'silver',",
+						"     folderPath: 'lakehousef0/aircallcalls',",
+						"     mergeSchema: false,",
+						"     autoCompact: false,",
+						"     optimizedWrite: false,",
+						"     vacuum: 0,",
+						"     deletable: false,",
+						"     insertable: false,",
+						"     updateable: false,",
+						"     upsertable: true,",
+						"     keys:['id'],",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sinkAircallSilver"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/df_BudgetDWHF0')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "DWHF0"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"linkedService": {
+								"referenceName": "ls_adsl",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sourceBudgetGoldF0"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "ds_PostgreSql",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "alterRow1"
+						},
+						{
+							"name": "MapDrifted2",
+							"description": "Crea una asignación explícita para cada columna de desfase."
+						}
+					],
+					"scriptLines": [
+						"source(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'gold',",
+						"     folderPath: 'lakehousef0/budget') ~> sourceBudgetGoldF0",
+						"MapDrifted2 alterRow(insertIf(true()),",
+						"     partitionBy('hash', 1)) ~> alterRow1",
+						"sourceBudgetGoldF0 derive(fecha = toDate(byName('fecha')),",
+						"          escenario = toString(byName('escenario')),",
+						"          titulacion = toString(byName('titulacion')),",
+						"          centro = toString(byName('centro')),",
+						"          sede = toString(byName('sede')),",
+						"          modalidad = toString(byName('modalidad')),",
+						"          num_leads_netos = toInteger(byName('num_leads_netos')),",
+						"          num_leads_brutos = toInteger(byName('num_leads_brutos')),",
+						"          new_enrollment = toInteger(byName('new_enrollment')),",
+						"          importe_venta_neta = toDouble(byName('importe_venta_neta')),",
+						"          importe_venta_bruta = toDouble(byName('importe_venta_bruta')),",
+						"          importe_captacion = toDouble(byName('importe_captacion')),",
+						"          filepath = toString(byName('filepath')),",
+						"          processdate = toTimestamp(byName('processdate')),",
+						"     partitionBy('hash', 1)) ~> MapDrifted2",
+						"alterRow1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     recreate:true,",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> sink1"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/df_BudgetGoldF0')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "GoldF0"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "ds_adsl_parquet",
+								"type": "DatasetReference"
+							},
+							"name": "sourceBudgetBronzeF0"
+						}
+					],
+					"sinks": [
+						{
+							"linkedService": {
+								"referenceName": "ls_adsl",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sinkBudgetGoldF0"
+						}
+					],
+					"transformations": [
+						{
+							"name": "derivedColumn1"
+						},
+						{
+							"name": "select1"
+						},
+						{
+							"name": "derivedColumnImportes"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          Fecha as string,",
+						"          Escenario as string,",
+						"          Titulacion as string,",
+						"          Centro as string,",
+						"          Sede as string,",
+						"          Modalidad as string,",
+						"          numLeadsNetos as integer,",
+						"          numLeadsBrutos as integer,",
+						"          NewEnrollment as integer,",
+						"          importeVentaNeta as string,",
+						"          importeVentaBruta as string,",
+						"          importeCaptacion as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     rowUrlColumn: 'filepath',",
+						"     format: 'parquet',",
+						"     partitionBy('hash', 1)) ~> sourceBudgetBronzeF0",
+						"select1 derive(processdate = currentUTC(),",
+						"          fecha = toDate(fecha,'dd/MM/yyyy'),",
+						"     partitionBy('hash', 1)) ~> derivedColumn1",
+						"derivedColumnImportes select(mapColumn(",
+						"          fecha = Fecha,",
+						"          escenario = Escenario,",
+						"          titulacion = Titulacion,",
+						"          centro = Centro,",
+						"          sede = Sede,",
+						"          modalidad = Modalidad,",
+						"          num_leads_netos = numLeadsNetos,",
+						"          num_leads_brutos = numLeadsBrutos,",
+						"          new_enrollment = NewEnrollment,",
+						"          importe_venta_neta = importeVentaNeta,",
+						"          importe_venta_bruta = importeVentaBruta,",
+						"          importe_captacion = importeCaptacion,",
+						"          filepath",
+						"     ),",
+						"     partitionBy('hash', 1),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"sourceBudgetBronzeF0 derive(importeVentaNeta = toDouble(replace(importeVentaNeta,',','.')),",
+						"          importeVentaBruta = toDouble(replace(importeVentaBruta,',','.')),",
+						"          importeCaptacion = toDouble(replace(importeCaptacion,',','.')),",
+						"     partitionBy('hash', 1)) ~> derivedColumnImportes",
+						"derivedColumn1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'gold',",
+						"     folderPath: 'lakehousef0/budget',",
+						"     deltaTruncate: true,",
+						"     mergeSchema: false,",
+						"     autoCompact: false,",
+						"     optimizedWrite: false,",
+						"     vacuum: 0,",
+						"     deletable: false,",
+						"     insertable: true,",
+						"     updateable: false,",
+						"     upsertable: false,",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sinkBudgetGoldF0"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/df_BudgetGoldF0_copy1')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "GoldF0"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "ds_adsl_parquet",
+								"type": "DatasetReference"
+							},
+							"name": "sourceBudgetBronzeF0"
+						}
+					],
+					"sinks": [
+						{
+							"linkedService": {
+								"referenceName": "ls_adsl",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sinkBudgetGoldF0"
+						}
+					],
+					"transformations": [
+						{
+							"name": "derivedColumn1"
+						},
+						{
+							"name": "select1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          Fecha as string,",
+						"          Escenario as string,",
+						"          Titulacion as string,",
+						"          Centro as string,",
+						"          Sede as string,",
+						"          Modalidad as string,",
+						"          numLeadsNetos as integer,",
+						"          numLeadsBrutos as integer,",
+						"          NewEnrollment as integer,",
+						"          importeVentaNeta as double,",
+						"          importeVentaBruta as double,",
+						"          importeCaptacion as double",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     rowUrlColumn: 'filepath',",
+						"     format: 'parquet',",
+						"     partitionBy('hash', 1)) ~> sourceBudgetBronzeF0",
+						"select1 derive(processdate = currentUTC(),",
+						"          fecha = toDate(fecha,'dd/MM/yyyy'),",
+						"     partitionBy('hash', 1)) ~> derivedColumn1",
+						"sourceBudgetBronzeF0 select(mapColumn(",
+						"          fecha = Fecha,",
+						"          escenario = Escenario,",
+						"          titulacion = Titulacion,",
+						"          centro = Centro,",
+						"          sede = Sede,",
+						"          modalidad = Modalidad,",
+						"          num_leads_netos = numLeadsNetos,",
+						"          num_leads_brutos = numLeadsBrutos,",
+						"          new_enrollment = NewEnrollment,",
+						"          importe_venta_neta = importeVentaNeta,",
+						"          importe_venta_bruta = importeVentaBruta,",
+						"          importe_captacion = importeCaptacion,",
+						"          filepath",
+						"     ),",
+						"     partitionBy('hash', 1),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"derivedColumn1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'gold',",
+						"     folderPath: 'lakehousef0/budget',",
+						"     deltaTruncate: true,",
+						"     mergeSchema: false,",
+						"     autoCompact: false,",
+						"     optimizedWrite: false,",
+						"     vacuum: 0,",
+						"     deletable: false,",
+						"     insertable: true,",
+						"     updateable: false,",
+						"     upsertable: false,",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sinkBudgetGoldF0"
+					]
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}

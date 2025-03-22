@@ -1,0 +1,3694 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "adf-metrodoralakehouse-pro"
+		},
+		"ls_PostgreSql_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'ls_PostgreSql'",
+			"defaultValue": "Host=psql-metrodoralakehouse-pro.postgres.database.azure.com;Port=5432;Database=lakehouse;UID=sqladminuser;EncryptionMethod=1;ValidateServerCertificate=0"
+		},
+		"ls_Aircall_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://api.aircall.io/"
+		},
+		"ls_Aircall_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "c668cd9a3a86775ddb72333278d0b7bb"
+		},
+		"ls_adsl_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://stmetrodoralakehousepro.dfs.core.windows.net/"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/ls_Aircall')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('ls_Aircall_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Basic",
+					"userName": "[parameters('ls_Aircall_properties_typeProperties_userName')]",
+					"password": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "ls_KeyVault",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "aircallpwd"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ls_PostgreSql')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzurePostgreSql",
+				"typeProperties": {
+					"connectionString": "[parameters('ls_PostgreSql_connectionString')]",
+					"password": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "ls_KeyVault",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "psqlpwd"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ls_adsl')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('ls_adsl_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "ls_KeyVault",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "adslkey"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_Aircall')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_Aircall",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"relativeurl": {
+						"type": "string",
+						"defaultValue": "v1/calls?per_page=50"
+					}
+				},
+				"annotations": [],
+				"type": "RestResource",
+				"typeProperties": {
+					"relativeUrl": {
+						"value": "@dataset().relativeurl",
+						"type": "Expression"
+					}
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_Aircall')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_PostgreSql')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_PostgreSql",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"schema": {
+						"type": "string",
+						"defaultValue": "public"
+					},
+					"table": {
+						"type": "string",
+						"defaultValue": "f0calls"
+					}
+				},
+				"annotations": [],
+				"type": "AzurePostgreSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": {
+						"value": "@dataset().schema",
+						"type": "Expression"
+					},
+					"table": {
+						"value": "@dataset().table",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_PostgreSql')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_adsl_csv')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_adsl",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"container": {
+						"type": "string",
+						"defaultValue": "master"
+					},
+					"folder": {
+						"type": "string",
+						"defaultValue": "Budget"
+					},
+					"filename": {
+						"type": "string",
+						"defaultValue": "masterbudget.csv"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().filename",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().folder",
+							"type": "Expression"
+						},
+						"fileSystem": {
+							"value": "@dataset().container",
+							"type": "Expression"
+						}
+					},
+					"columnDelimiter": ";",
+					"encodingName": "ISO-8859-1",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_adsl')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_adsl_json')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_adsl",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"container": {
+						"type": "string",
+						"defaultValue": "bronze"
+					},
+					"folder": {
+						"type": "string"
+					},
+					"filename": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().filename",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().folder",
+							"type": "Expression"
+						},
+						"fileSystem": {
+							"value": "@dataset().container",
+							"type": "Expression"
+						}
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_adsl')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_adsl_parquet')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_adsl",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"container": {
+						"type": "string",
+						"defaultValue": "bronze"
+					},
+					"folder": {
+						"type": "string",
+						"defaultValue": "budget"
+					},
+					"filename": {
+						"type": "string",
+						"defaultValue": "masterbudget.parquet"
+					}
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().filename",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().folder",
+							"type": "Expression"
+						},
+						"fileSystem": {
+							"value": "@dataset().container",
+							"type": "Expression"
+						}
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_adsl')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/df_AircallCallsGoldF0')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "GoldF0"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"linkedService": {
+								"referenceName": "ls_adsl",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sourceAircallCallsSilver"
+						},
+						{
+							"linkedService": {
+								"referenceName": "ls_adsl",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sourceCallsGoldF0"
+						}
+					],
+					"sinks": [
+						{
+							"linkedService": {
+								"referenceName": "ls_adsl",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sinkCallsGoldF0"
+						}
+					],
+					"transformations": [
+						{
+							"name": "select1"
+						},
+						{
+							"name": "MapDriftedAircallCallsSilver",
+							"description": "Crea una asignación explícita para cada columna de desfase."
+						},
+						{
+							"name": "alterRow1"
+						},
+						{
+							"name": "MapDriftedCallsGoldF0",
+							"description": "Crea una asignación explícita para cada columna de desfase."
+						},
+						{
+							"name": "selectCallsGoldF0"
+						},
+						{
+							"name": "aggregateMaxprocessdate"
+						},
+						{
+							"name": "sort1"
+						},
+						{
+							"name": "join1"
+						},
+						{
+							"name": "filterFinal"
+						},
+						{
+							"name": "selectFinal"
+						}
+					],
+					"scriptLines": [
+						"source(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'silver',",
+						"     folderPath: 'lakehousef0/aircallcalls') ~> sourceAircallCallsSilver",
+						"source(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: true,",
+						"     format: 'delta',",
+						"     fileSystem: 'gold',",
+						"     folderPath: 'lakehousef0/calls') ~> sourceCallsGoldF0",
+						"MapDriftedAircallCallsSilver select(mapColumn(",
+						"          direction,",
+						"          duration,",
+						"          id,",
+						"          started_at,",
+						"          filepath,",
+						"          processdate",
+						"     ),",
+						"     partitionBy('hash', 1),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"sourceAircallCallsSilver derive(answered_at = toInteger(byName('answered_at')),",
+						"          archived = toBoolean(byName('archived')),",
+						"          asset = toString(byName('asset')),",
+						"          assigned_to_availability_status = toString(byName('assigned_to_availability_status')),",
+						"          assigned_to_available = toBoolean(byName('assigned_to_available')),",
+						"          assigned_to_created_at = toString(byName('assigned_to_created_at')),",
+						"          assigned_to_direct_link = toString(byName('assigned_to_direct_link')),",
+						"          assigned_to_email = toString(byName('assigned_to_email')),",
+						"          assigned_to_id = toInteger(byName('assigned_to_id')),",
+						"          assigned_to_language = toString(byName('assigned_to_language')),",
+						"          assigned_to_name = toString(byName('assigned_to_name')),",
+						"          assigned_to_state = toString(byName('assigned_to_state')),",
+						"          assigned_to_time_zone = toString(byName('assigned_to_time_zone')),",
+						"          assigned_to_wrap_up_time = toBoolean(byName('assigned_to_wrap_up_time')),",
+						"          contact = toString(byName('contact')),",
+						"          cost = toDouble(byName('cost')),",
+						"          country_code_a2 = toString(byName('country_code_a2')),",
+						"          direct_link = toString(byName('direct_link')),",
+						"          direction = toString(byName('direction')),",
+						"          duration = toInteger(byName('duration')),",
+						"          ended_at = toTimestamp(byName('ended_at')),",
+						"          id = toString(byName('id')),",
+						"          missed_call_reason = toString(byName('missed_call_reason')),",
+						"          number_availability_status = toString(byName('number_availability_status')),",
+						"          number_country = toString(byName('number_country')),",
+						"          number_created_at = toString(byName('number_created_at')),",
+						"          number_digits = toString(byName('number_digits')),",
+						"          number_direct_link = toString(byName('number_direct_link')),",
+						"          number_id = toInteger(byName('number_id')),",
+						"          number_is_ivr = toBoolean(byName('number_is_ivr')),",
+						"          number_live_recording_activated = toBoolean(byName('number_live_recording_activated')),",
+						"          number_name = toString(byName('number_name')),",
+						"          number_open = toBoolean(byName('number_open')),",
+						"          number_priority = toString(byName('number_priority')),",
+						"          number_time_zone = toString(byName('number_time_zone')),",
+						"          number_msg_after_hours = toString(byName('number_msg_after_hours')),",
+						"          number_msg_callback_later = toString(byName('number_msg_callback_later')),",
+						"          number_msg_closed = toString(byName('number_msg_closed')),",
+						"          number_msg_ivr = toString(byName('number_msg_ivr')),",
+						"          number_msg_ringing_tone = toString(byName('number_msg_ringing_tone')),",
+						"          number_msg_unanswered_call = toString(byName('number_msg_unanswered_call')),",
+						"          number_msg_voicemail = toString(byName('number_msg_voicemail')),",
+						"          number_msg_waiting = toString(byName('number_msg_waiting')),",
+						"          number_msg_welcome = toString(byName('number_msg_welcome')),",
+						"          pricing_type = toString(byName('pricing_type')),",
+						"          raw_digits = toString(byName('raw_digits')),",
+						"          recording = toString(byName('recording')),",
+						"          recording_short_url = toString(byName('recording_short_url')),",
+						"          sid = toString(byName('sid')),",
+						"          started_at = toTimestamp(byName('started_at')),",
+						"          status = toString(byName('status')),",
+						"          transferred_by_authentication_token = toString(byName('transferred_by_authentication_token')),",
+						"          transferred_by_company_id = toInteger(byName('transferred_by_company_id')),",
+						"          transferred_by_created_at = toString(byName('transferred_by_created_at')),",
+						"          transferred_by_custom_price = toString(byName('transferred_by_custom_price')),",
+						"          transferred_by_custom_twilio_edge = toString(byName('transferred_by_custom_twilio_edge')),",
+						"          transferred_by_custom_twilio_jitter_buffer_size = toString(byName('transferred_by_custom_twilio_jitter_buffer_size')),",
+						"          transferred_by_custom_twilio_region = toString(byName('transferred_by_custom_twilio_region')),",
+						"          transferred_by_default_out_number_id = toInteger(byName('transferred_by_default_out_number_id')),",
+						"          transferred_by_default_prefix = toString(byName('transferred_by_default_prefix')),",
+						"          transferred_by_deleted_at = toString(byName('transferred_by_deleted_at')),",
+						"          transferred_by_email = toString(byName('transferred_by_email')),",
+						"          transferred_by_first_name = toString(byName('transferred_by_first_name')),",
+						"          transferred_by_id = toInteger(byName('transferred_by_id')),",
+						"          transferred_by_intercom_android_hash = toString(byName('transferred_by_intercom_android_hash')),",
+						"          transferred_by_intercom_hash = toString(byName('transferred_by_intercom_hash')),",
+						"          transferred_by_is_admin = toBoolean(byName('transferred_by_is_admin')),",
+						"          transferred_by_is_onboarded_for_teams_in_numbers = toBoolean(byName('transferred_by_is_onboarded_for_teams_in_numbers')),",
+						"          transferred_by_is_onboarded_on_app = toBoolean(byName('transferred_by_is_onboarded_on_app')),",
+						"          transferred_by_language = toString(byName('transferred_by_language')),",
+						"          transferred_by_last_name = toString(byName('transferred_by_last_name')),",
+						"          transferred_by_marked_for_deletion = toBoolean(byName('transferred_by_marked_for_deletion')),",
+						"          transferred_by_migrated_on_authentication_manager = toBoolean(byName('transferred_by_migrated_on_authentication_manager')),",
+						"          transferred_by_onboarding_step = toBoolean(byName('transferred_by_onboarding_step')),",
+						"          transferred_by_phone_numbers_count = toBoolean(byName('transferred_by_phone_numbers_count')),",
+						"          transferred_by_picture_url = toString(byName('transferred_by_picture_url')),",
+						"          transferred_by_ring_timeout = toInteger(byName('transferred_by_ring_timeout')),",
+						"          transferred_by_state = toString(byName('transferred_by_state')),",
+						"          transferred_by_time_zone = toString(byName('transferred_by_time_zone')),",
+						"          transferred_by_unavailable_until = toString(byName('transferred_by_unavailable_until')),",
+						"          transferred_by_updated_at = toString(byName('transferred_by_updated_at')),",
+						"          transferred_by_use_aircall_phonenumber_as_callerid = toBoolean(byName('transferred_by_use_aircall_phonenumber_as_callerid')),",
+						"          transferred_by_use_mobile_incoming_calls = toString(byName('transferred_by_use_mobile_incoming_calls')),",
+						"          transferred_by_use_react_phone = toBoolean(byName('transferred_by_use_react_phone')),",
+						"          transferred_by_wrap_up_time = toBoolean(byName('transferred_by_wrap_up_time')),",
+						"          transferred_to_availability_status = toString(byName('transferred_to_availability_status')),",
+						"          transferred_to_available = toBoolean(byName('transferred_to_available')),",
+						"          transferred_to_created_at = toString(byName('transferred_to_created_at')),",
+						"          transferred_to_direct_link = toString(byName('transferred_to_direct_link')),",
+						"          transferred_to_email = toString(byName('transferred_to_email')),",
+						"          transferred_to_id = toInteger(byName('transferred_to_id')),",
+						"          transferred_to_language = toString(byName('transferred_to_language')),",
+						"          transferred_to_name = toString(byName('transferred_to_name')),",
+						"          transferred_to_state = toString(byName('transferred_to_state')),",
+						"          transferred_to_time_zone = toString(byName('transferred_to_time_zone')),",
+						"          transferred_to_wrap_up_time = toBoolean(byName('transferred_to_wrap_up_time')),",
+						"          user_availability_status = toString(byName('user_availability_status')),",
+						"          user_available = toBoolean(byName('user_available')),",
+						"          user_created_at = toString(byName('user_created_at')),",
+						"          user_direct_link = toString(byName('user_direct_link')),",
+						"          user_email = toString(byName('user_email')),",
+						"          user_id = toInteger(byName('user_id')),",
+						"          user_language = toString(byName('user_language')),",
+						"          user_name = toString(byName('user_name')),",
+						"          user_state = toString(byName('user_state')),",
+						"          user_time_zone = toString(byName('user_time_zone')),",
+						"          user_wrap_up_time = toBoolean(byName('user_wrap_up_time')),",
+						"          voicemail = toString(byName('voicemail')),",
+						"          voicemail_short_url = toString(byName('voicemail_short_url')),",
+						"          filepath = toString(byName('filepath')),",
+						"          processdate = toTimestamp(byName('processdate')),",
+						"     partitionBy('hash', 1)) ~> MapDriftedAircallCallsSilver",
+						"selectFinal alterRow(upsertIf(true()),",
+						"     partitionBy('hash', 1)) ~> alterRow1",
+						"sourceCallsGoldF0 derive(direction = toString(byName('direction')),",
+						"          duration = toInteger(byName('duration')),",
+						"          id = toString(byName('id')),",
+						"          started_at = toTimestamp(byName('started_at')),",
+						"          filepath = toString(byName('filepath')),",
+						"          processdate = toTimestamp(byName('processdate')),",
+						"     partitionBy('hash', 1)) ~> MapDriftedCallsGoldF0",
+						"MapDriftedCallsGoldF0 select(mapColumn(",
+						"          id,",
+						"          processdate",
+						"     ),",
+						"     partitionBy('hash', 1),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> selectCallsGoldF0",
+						"selectCallsGoldF0 aggregate(maxprocessdate = iifNull(max(processdate),toTimestamp('1900-01-01','yyyy-MM-dd')),",
+						"     partitionBy('hash', 1)) ~> aggregateMaxprocessdate",
+						"select1 sort(desc(processdate, true),",
+						"     partitionBy('hash', 1)) ~> sort1",
+						"sort1, aggregateMaxprocessdate join(1==1,",
+						"     joinType:'cross',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     partitionBy('hash', 1),",
+						"     broadcast: 'auto')~> join1",
+						"join1 filter(processdate>maxprocessdate,",
+						"     partitionBy('hash', 1)) ~> filterFinal",
+						"filterFinal select(mapColumn(",
+						"          direction,",
+						"          duration,",
+						"          id,",
+						"          started_at,",
+						"          filepath,",
+						"          processdate",
+						"     ),",
+						"     partitionBy('hash', 1),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> selectFinal",
+						"alterRow1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'gold',",
+						"     folderPath: 'lakehousef0/calls',",
+						"     mergeSchema: false,",
+						"     autoCompact: false,",
+						"     optimizedWrite: false,",
+						"     vacuum: 0,",
+						"     deletable: false,",
+						"     insertable: false,",
+						"     updateable: false,",
+						"     upsertable: true,",
+						"     keys:['id'],",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sinkCallsGoldF0"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_adsl')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/df_ClientifyDealsGoldF0')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "GoldF0"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"linkedService": {
+								"referenceName": "ls_adsl",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sourceClientifyDealsSilverF0"
+						},
+						{
+							"linkedService": {
+								"referenceName": "ls_adsl",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sourceVentasGoldF0"
+						}
+					],
+					"sinks": [
+						{
+							"linkedService": {
+								"referenceName": "ls_adsl",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sinkVentasGoldF0"
+						}
+					],
+					"transformations": [
+						{
+							"name": "MapDriftedClientifyDealsSilverF0",
+							"description": "Crea una asignación explícita para cada columna de desfase."
+						},
+						{
+							"name": "selectClientifyDealsSilverF0"
+						},
+						{
+							"name": "derivedColumnClientifyDealsSilverF0"
+						},
+						{
+							"name": "alterRow1"
+						},
+						{
+							"name": "filterVentasGoldF0"
+						},
+						{
+							"name": "selectVentasGoldF0"
+						},
+						{
+							"name": "aggregateMaxprocessdate"
+						},
+						{
+							"name": "join1"
+						},
+						{
+							"name": "filterFinal"
+						},
+						{
+							"name": "selectFinal"
+						},
+						{
+							"name": "sort1"
+						},
+						{
+							"name": "MapDriftedVentasGoldF0",
+							"description": "Crea una asignación explícita para cada columna de desfase."
+						}
+					],
+					"scriptLines": [
+						"source(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'silver',",
+						"     folderPath: 'lakehousef0/clientifydeals') ~> sourceClientifyDealsSilverF0",
+						"source(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: true,",
+						"     format: 'delta',",
+						"     fileSystem: 'gold',",
+						"     folderPath: 'lakehousef0/sales') ~> sourceVentasGoldF0",
+						"sourceClientifyDealsSilverF0 derive(actual_closed_date = toDate(byName('actual_closed_date')),",
+						"          amount = toDouble(byName('amount')),",
+						"          amount_user = toString(byName('amount_user')),",
+						"          company = toString(byName('company')),",
+						"          contact = toString(byName('contact')),",
+						"          contact_email = toString(byName('contact_email')),",
+						"          contact_medium = toString(byName('contact_medium')),",
+						"          contact_name = toString(byName('contact_name')),",
+						"          contact_phone = toString(byName('contact_phone')),",
+						"          contact_source = toString(byName('contact_source')),",
+						"          created = toTimestamp(byName('created')),",
+						"          currency = toString(byName('currency')),",
+						"          expected_closed_date = toDate(byName('expected_closed_date')),",
+						"          id = toString(byName('id')),",
+						"          modified = toTimestamp(byName('modified')),",
+						"          name = toString(byName('name')),",
+						"          owner_name = toString(byName('owner_name')),",
+						"          pipeline = toString(byName('pipeline')),",
+						"          pipeline_desc = toString(byName('pipeline_desc')),",
+						"          pipeline_stage = toString(byName('pipeline_stage')),",
+						"          pipeline_stage_desc = toString(byName('pipeline_stage_desc')),",
+						"          probability = toInteger(byName('probability')),",
+						"          probability_desc = toString(byName('probability_desc')),",
+						"          status = toInteger(byName('status')),",
+						"          status_desc = toString(byName('status_desc')),",
+						"          url = toString(byName('url')),",
+						"          filepath = toString(byName('filepath')),",
+						"          custom_fields_ByRatings_Rating = toString(byName('custom_fields_ByRatings_Rating')),",
+						"          custom_fields_ByRatings_Score = toString(byName('custom_fields_ByRatings_Score')),",
+						"          custom_fields_Estudio_Old = toString(byName('custom_fields_Estudio_Old')),",
+						"          custom_fields_ID = toString(byName('custom_fields_ID')),",
+						"          custom_fields_Modalidad_Old = toString(byName('custom_fields_Modalidad_Old')),",
+						"          custom_fields_Sede_Old = toString(byName('custom_fields_Sede_Old')),",
+						"          custom_fields_anio_academico = toString(byName('custom_fields_anio_academico')),",
+						"          custom_fields_campaign_id = toString(byName('custom_fields_campaign_id')),",
+						"          custom_fields_centro = toString(byName('custom_fields_centro')),",
+						"          custom_fields_ciudad = toString(byName('custom_fields_ciudad')),",
+						"          custom_fields_cp = toString(byName('custom_fields_cp')),",
+						"          custom_fields_curso_anio = toString(byName('custom_fields_curso_anio')),",
+						"          custom_fields_descuento = toDouble(byName('custom_fields_descuento')),",
+						"          custom_fields_descuento_matricula = toDouble(byName('custom_fields_descuento_matricula')),",
+						"          custom_fields_estudio = toString(byName('custom_fields_estudio')),",
+						"          custom_fields_fecha_inscripcion = toDate(byName('custom_fields_fecha_inscripcion')),",
+						"          custom_fields_gclid = toString(byName('custom_fields_gclid')),",
+						"          custom_fields_gdpr = toString(byName('custom_fields_gdpr')),",
+						"          custom_fields_google_id = toString(byName('custom_fields_google_id')),",
+						"          custom_fields_linea_negocio = toString(byName('custom_fields_linea_negocio')),",
+						"          custom_fields_matricula = toString(byName('custom_fields_matricula')),",
+						"          custom_fields_mensualidad = toString(byName('custom_fields_mensualidad')),",
+						"          custom_fields_modalidad = toString(byName('custom_fields_modalidad')),",
+						"          custom_fields_pais = toString(byName('custom_fields_pais')),",
+						"          custom_fields_ref = toString(byName('custom_fields_ref')),",
+						"          custom_fields_sede = toString(byName('custom_fields_sede')),",
+						"          custom_fields_tipo_conversion = toString(byName('custom_fields_tipo_conversion')),",
+						"          custom_fields_turno = toString(byName('custom_fields_turno')),",
+						"          custom_fields_ua = toString(byName('custom_fields_ua')),",
+						"          custom_fields_url = toString(byName('custom_fields_url')),",
+						"          custom_fields_utm_ad_id = toString(byName('custom_fields_utm_ad_id')),",
+						"          custom_fields_utm_adset_id = toString(byName('custom_fields_utm_adset_id')),",
+						"          custom_fields_utm_campaign = toString(byName('custom_fields_utm_campaign')),",
+						"          custom_fields_utm_campaign_id = toString(byName('custom_fields_utm_campaign_id')),",
+						"          custom_fields_utm_campaign_name = toString(byName('custom_fields_utm_campaign_name')),",
+						"          custom_fields_utm_channel = toString(byName('custom_fields_utm_channel')),",
+						"          custom_fields_utm_device = toString(byName('custom_fields_utm_device')),",
+						"          custom_fields_utm_estrategia = toString(byName('custom_fields_utm_estrategia')),",
+						"          custom_fields_utm_medium = toString(byName('custom_fields_utm_medium')),",
+						"          custom_fields_utm_network = toString(byName('custom_fields_utm_network')),",
+						"          custom_fields_utm_placement = toString(byName('custom_fields_utm_placement')),",
+						"          custom_fields_utm_site_source_name = toString(byName('custom_fields_utm_site_source_name')),",
+						"          custom_fields_utm_source = toString(byName('custom_fields_utm_source')),",
+						"          custom_fields_utm_term = toString(byName('custom_fields_utm_term')),",
+						"          custom_fields_utm_type = toString(byName('custom_fields_utm_type')),",
+						"          processdate = toTimestamp(byName('processdate')),",
+						"          sourcesystem = toString(byName('sourcesystem')),",
+						"          created_tzh = toString(byName('created_tzh')),",
+						"          modified_tzh = toString(byName('modified_tzh')),",
+						"     partitionBy('hash', 1)) ~> MapDriftedClientifyDealsSilverF0",
+						"MapDriftedClientifyDealsSilverF0 select(mapColumn(",
+						"          amount,",
+						"          created,",
+						"          id,",
+						"          name,",
+						"          filepath,",
+						"          descuento = custom_fields_descuento,",
+						"          descuento_matricula = custom_fields_descuento_matricula,",
+						"          fecha_inscripcion = custom_fields_fecha_inscripcion,",
+						"          processdate,",
+						"          sourcesystem,",
+						"          modified,",
+						"          centro = custom_fields_centro,",
+						"          source = custom_fields_utm_source,",
+						"          date_closed = actual_closed_date,",
+						"          owner_name,",
+						"          estudio = custom_fields_estudio,",
+						"          contact_email,",
+						"          contact_phone,",
+						"          stage_value = pipeline_stage_desc,",
+						"          status_desc,",
+						"          byratings_rating = custom_fields_ByRatings_Rating,",
+						"          sede = custom_fields_sede,",
+						"          modalidad = custom_fields_modalidad",
+						"     ),",
+						"     partitionBy('hash', 1),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> selectClientifyDealsSilverF0",
+						"selectClientifyDealsSilverF0 derive(fecha_inscripcion = toTimestamp(fecha_inscripcion),",
+						"          date_closed = toTimestamp(date_closed),",
+						"          lost_reason_value = '',",
+						"          tiempo_de_maduracion = toDouble(minus(toTimestamp(fecha_inscripcion),created)/(1000*60*60*24)),",
+						"          new_enrollent = iif(isNull(fecha_inscripcion), 0, 1),",
+						"          lead_neto = iif(stage_value=='Duplicado', 0, 1),",
+						"          status_final = toString(iif(or(status_desc=='Lost',status_desc=='Expired'),'Perdida',toString(iif(stage_value=='Traslado a ERP','Ganada',toString(iif(and(and(stage_value=='Seguimiento Interesado',or(status_desc=='Won',status_desc=='Open')),!isNull(fecha_inscripcion)),'Pago Reserva',toString(iif(and(and(stage_value=='Seguimiento Interesado',or(status_desc=='Won',status_desc=='Open')),isNull(fecha_inscripcion)),'Interesado',toString(iif(and(or(or(stage_value=='Seguimiento Primer Contacto',stage_value=='No contesta'),stage_value=='Seguimiento Valorando'),or(status_desc=='Won',status_desc=='Open')),'Seguimiento',toString(iif(and(stage_value=='Sin Gestionar',or(status_desc=='Won',status_desc=='Open')),'Sin asignar')))))))))))),",
+						"          created_date = toDate(created),",
+						"          byratings_rating = iifNull(byratings_rating,''),",
+						"          sede = iifNull(sede,''),",
+						"          modalidad = iifNull(modalidad,''),",
+						"          centro = 'CESIF',",
+						"     partitionBy('hash', 1)) ~> derivedColumnClientifyDealsSilverF0",
+						"selectFinal alterRow(upsertIf(true()),",
+						"     partitionBy('hash', 1)) ~> alterRow1",
+						"selectVentasGoldF0 filter(sourcesystem=='Clientify',",
+						"     partitionBy('hash', 1)) ~> filterVentasGoldF0",
+						"MapDriftedVentasGoldF0 select(mapColumn(",
+						"          id,",
+						"          processdate,",
+						"          sourcesystem",
+						"     ),",
+						"     partitionBy('hash', 1),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> selectVentasGoldF0",
+						"filterVentasGoldF0 aggregate(maxprocessdate = iifNull(max(processdate),toTimestamp('1900-01-01','yyyy-MM-dd')),",
+						"     partitionBy('hash', 1)) ~> aggregateMaxprocessdate",
+						"sort1, aggregateMaxprocessdate join(1==1,",
+						"     joinType:'cross',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     partitionBy('hash', 1),",
+						"     broadcast: 'auto')~> join1",
+						"join1 filter(processdate>maxprocessdate,",
+						"     partitionBy('hash', 1)) ~> filterFinal",
+						"filterFinal select(mapColumn(",
+						"          amount,",
+						"          created,",
+						"          id,",
+						"          name,",
+						"          filepath,",
+						"          descuento,",
+						"          descuento_matricula,",
+						"          fecha_inscripcion,",
+						"          processdate,",
+						"          sourcesystem,",
+						"          modified,",
+						"          centro,",
+						"          source,",
+						"          date_closed,",
+						"          owner_name,",
+						"          estudio,",
+						"          contact_email,",
+						"          contact_phone,",
+						"          stage_value,",
+						"          status_desc,",
+						"          byratings_rating,",
+						"          sede,",
+						"          modalidad,",
+						"          lost_reason_value,",
+						"          tiempo_de_maduracion,",
+						"          new_enrollent,",
+						"          lead_neto,",
+						"          status_final,",
+						"          created_date",
+						"     ),",
+						"     partitionBy('hash', 1),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> selectFinal",
+						"derivedColumnClientifyDealsSilverF0 sort(desc(processdate, true),",
+						"     partitionBy('hash', 1)) ~> sort1",
+						"sourceVentasGoldF0 derive(amount = toDouble(byName('amount')),",
+						"          created = toTimestamp(byName('created')),",
+						"          id = toString(byName('id')),",
+						"          name = toString(byName('name')),",
+						"          filepath = toString(byName('filepath')),",
+						"          descuento = toDouble(byName('descuento')),",
+						"          descuento_matricula = toDouble(byName('descuento_matricula')),",
+						"          fecha_inscripcion = toTimestamp(byName('fecha_inscripcion')),",
+						"          processdate = toTimestamp(byName('processdate')),",
+						"          sourcesystem = toString(byName('sourcesystem')),",
+						"          modified = toTimestamp(byName('modified')),",
+						"          centro = toString(byName('centro')),",
+						"          source = toString(byName('source')),",
+						"          date_closed = toTimestamp(byName('date_closed')),",
+						"          owner_name = toString(byName('owner_name')),",
+						"          estudio = toString(byName('estudio')),",
+						"          contact_email = toString(byName('contact_email')),",
+						"          contact_phone = toString(byName('contact_phone')),",
+						"          stage_value = toString(byName('stage_value')),",
+						"          status_desc = toString(byName('status_desc')),",
+						"          byratings_rating = toString(byName('byratings_rating')),",
+						"          sede = toString(byName('sede')),",
+						"          modalidad = toString(byName('modalidad')),",
+						"          lost_reason_value = toString(byName('lost_reason_value')),",
+						"          tiempo_de_maduracion = toDouble(byName('tiempo_de_maduracion')),",
+						"          new_enrollent = toInteger(byName('new_enrollent')),",
+						"          lead_neto = toInteger(byName('lead_neto')),",
+						"          status_final = toString(byName('status_final')),",
+						"          created_date = toDate(byName('created_date')),",
+						"     partitionBy('hash', 1)) ~> MapDriftedVentasGoldF0",
+						"alterRow1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'gold',",
+						"     folderPath: 'lakehousef0/sales',",
+						"     mergeSchema: false,",
+						"     autoCompact: false,",
+						"     optimizedWrite: false,",
+						"     vacuum: 0,",
+						"     deletable: false,",
+						"     insertable: false,",
+						"     updateable: false,",
+						"     upsertable: true,",
+						"     keys:['id','sourcesystem'],",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sinkVentasGoldF0"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_adsl')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/df_ClientifyDealsGoldF0_IdForDelete')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "GoldF0"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"linkedService": {
+								"referenceName": "ls_adsl",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sourceSalesGold"
+						},
+						{
+							"linkedService": {
+								"referenceName": "ls_adsl",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sourceClientifyIdForDeleteSilver"
+						},
+						{
+							"linkedService": {
+								"referenceName": "ls_adsl",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sourceSalesGold2"
+						}
+					],
+					"sinks": [
+						{
+							"linkedService": {
+								"referenceName": "ls_adsl",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sinkSalesGold"
+						}
+					],
+					"transformations": [
+						{
+							"name": "MapDriftedSalesGold",
+							"description": "Crea una asignación explícita para cada columna de desfase."
+						},
+						{
+							"name": "alterRow1"
+						},
+						{
+							"name": "filterClientify"
+						},
+						{
+							"name": "MapDriftedSalesGold2",
+							"description": "Crea una asignación explícita para cada columna de desfase."
+						},
+						{
+							"name": "selectID"
+						},
+						{
+							"name": "aggregate1"
+						},
+						{
+							"name": "sort1"
+						},
+						{
+							"name": "filterCount"
+						},
+						{
+							"name": "joinCount"
+						},
+						{
+							"name": "filterClientify2"
+						},
+						{
+							"name": "select2"
+						},
+						{
+							"name": "MapDriftedClientifyIdForDeleteSilver",
+							"description": "Crea una asignación explícita para cada columna de desfase."
+						},
+						{
+							"name": "exists1"
+						}
+					],
+					"scriptLines": [
+						"source(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'gold',",
+						"     folderPath: 'lakehousef0/sales') ~> sourceSalesGold",
+						"source(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'silver',",
+						"     folderPath: 'lakehousef0/clientifydealsidfordelete') ~> sourceClientifyIdForDeleteSilver",
+						"source(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'gold',",
+						"     folderPath: 'lakehousef0/sales') ~> sourceSalesGold2",
+						"sourceSalesGold derive(amount = toDouble(byName('amount')),",
+						"          created = toTimestamp(byName('created')),",
+						"          id = toString(byName('id')),",
+						"          name = toString(byName('name')),",
+						"          filepath = toString(byName('filepath')),",
+						"          descuento = toDouble(byName('descuento')),",
+						"          descuento_matricula = toDouble(byName('descuento_matricula')),",
+						"          fecha_inscripcion = toTimestamp(byName('fecha_inscripcion')),",
+						"          processdate = toTimestamp(byName('processdate')),",
+						"          sourcesystem = toString(byName('sourcesystem')),",
+						"          modified = toTimestamp(byName('modified')),",
+						"          centro = toString(byName('centro')),",
+						"          source = toString(byName('source')),",
+						"          date_closed = toTimestamp(byName('date_closed')),",
+						"          owner_name = toString(byName('owner_name')),",
+						"          estudio = toString(byName('estudio')),",
+						"          contact_email = toString(byName('contact_email')),",
+						"          contact_phone = toString(byName('contact_phone')),",
+						"          stage_value = toString(byName('stage_value')),",
+						"          status_desc = toString(byName('status_desc')),",
+						"          byratings_rating = toString(byName('byratings_rating')),",
+						"          sede = toString(byName('sede')),",
+						"          modalidad = toString(byName('modalidad')),",
+						"          lost_reason_value = toString(byName('lost_reason_value')),",
+						"          tiempo_de_maduracion = toDouble(byName('tiempo_de_maduracion')),",
+						"          new_enrollent = toInteger(byName('new_enrollent')),",
+						"          lead_neto = toInteger(byName('lead_neto')),",
+						"          status_final = toString(byName('status_final')),",
+						"          created_date = toDate(byName('created_date')),",
+						"     partitionBy('hash', 1)) ~> MapDriftedSalesGold",
+						"exists1 alterRow(deleteIf(true()),",
+						"     partitionBy('hash', 1)) ~> alterRow1",
+						"MapDriftedSalesGold filter(sourcesystem == \"Clientify\",",
+						"     partitionBy('hash', 1)) ~> filterClientify",
+						"sourceSalesGold2 derive(amount = toDouble(byName('amount')),",
+						"          created = toTimestamp(byName('created')),",
+						"          id = toString(byName('id')),",
+						"          name = toString(byName('name')),",
+						"          filepath = toString(byName('filepath')),",
+						"          descuento = toDouble(byName('descuento')),",
+						"          descuento_matricula = toDouble(byName('descuento_matricula')),",
+						"          fecha_inscripcion = toTimestamp(byName('fecha_inscripcion')),",
+						"          processdate = toTimestamp(byName('processdate')),",
+						"          sourcesystem = toString(byName('sourcesystem')),",
+						"          modified = toTimestamp(byName('modified')),",
+						"          centro = toString(byName('centro')),",
+						"          source = toString(byName('source')),",
+						"          date_closed = toTimestamp(byName('date_closed')),",
+						"          owner_name = toString(byName('owner_name')),",
+						"          estudio = toString(byName('estudio')),",
+						"          contact_email = toString(byName('contact_email')),",
+						"          contact_phone = toString(byName('contact_phone')),",
+						"          stage_value = toString(byName('stage_value')),",
+						"          status_desc = toString(byName('status_desc')),",
+						"          byratings_rating = toString(byName('byratings_rating')),",
+						"          sede = toString(byName('sede')),",
+						"          modalidad = toString(byName('modalidad')),",
+						"          lost_reason_value = toString(byName('lost_reason_value')),",
+						"          tiempo_de_maduracion = toDouble(byName('tiempo_de_maduracion')),",
+						"          new_enrollent = toInteger(byName('new_enrollent')),",
+						"          lead_neto = toInteger(byName('lead_neto')),",
+						"          status_final = toString(byName('status_final')),",
+						"          created_date = toDate(byName('created_date')),",
+						"     partitionBy('hash', 1)) ~> MapDriftedSalesGold2",
+						"filterClientify2 select(mapColumn(",
+						"          id",
+						"     ),",
+						"     partitionBy('hash', 1),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> selectID",
+						"selectID aggregate(groupBy(id),",
+						"     countID = count(id),",
+						"     partitionBy('hash', 1)) ~> aggregate1",
+						"aggregate1 sort(desc(countID, true),",
+						"     partitionBy('hash', 1)) ~> sort1",
+						"sort1 filter(countID==1,",
+						"     partitionBy('hash', 1)) ~> filterCount",
+						"filterClientify, filterCount join(MapDriftedSalesGold@id == aggregate1@id,",
+						"     joinType:'inner',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     partitionBy('hash', 1),",
+						"     broadcast: 'auto')~> joinCount",
+						"MapDriftedSalesGold2 filter(sourcesystem == \"Clientify\",",
+						"     partitionBy('hash', 1)) ~> filterClientify2",
+						"joinCount select(mapColumn(",
+						"          amount,",
+						"          created,",
+						"          id = MapDriftedSalesGold@id,",
+						"          name,",
+						"          filepath,",
+						"          descuento,",
+						"          descuento_matricula,",
+						"          fecha_inscripcion,",
+						"          processdate,",
+						"          sourcesystem,",
+						"          modified,",
+						"          centro,",
+						"          source,",
+						"          date_closed,",
+						"          owner_name,",
+						"          estudio,",
+						"          contact_email,",
+						"          contact_phone,",
+						"          stage_value,",
+						"          status_desc,",
+						"          byratings_rating,",
+						"          sede,",
+						"          modalidad,",
+						"          lost_reason_value,",
+						"          tiempo_de_maduracion,",
+						"          new_enrollent,",
+						"          lead_neto,",
+						"          status_final,",
+						"          created_date",
+						"     ),",
+						"     partitionBy('hash', 1),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select2",
+						"sourceClientifyIdForDeleteSilver derive(id = toString(byName('id')),",
+						"     partitionBy('hash', 1)) ~> MapDriftedClientifyIdForDeleteSilver",
+						"select2, MapDriftedClientifyIdForDeleteSilver exists(select2@id == MapDriftedClientifyIdForDeleteSilver@id,",
+						"     negate:true,",
+						"     partitionBy('hash', 1),",
+						"     broadcast: 'auto')~> exists1",
+						"alterRow1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'gold',",
+						"     folderPath: 'lakehousef0/sales',",
+						"     mergeSchema: false,",
+						"     autoCompact: false,",
+						"     optimizedWrite: false,",
+						"     vacuum: 0,",
+						"     deletable: true,",
+						"     insertable: false,",
+						"     updateable: false,",
+						"     upsertable: false,",
+						"     keys:['id','sourcesystem'],",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sinkSalesGold"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_adsl')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/df_ClientifyDealsGoldF0_LeadsNetosEmail')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "GoldF0"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"linkedService": {
+								"referenceName": "ls_adsl",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sourceSalesGoldF0"
+						}
+					],
+					"sinks": [
+						{
+							"linkedService": {
+								"referenceName": "ls_adsl",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sinkSalesGoldF0"
+						}
+					],
+					"transformations": [
+						{
+							"name": "filter1"
+						},
+						{
+							"name": "window1"
+						},
+						{
+							"name": "select1"
+						},
+						{
+							"name": "derivedColumn1"
+						},
+						{
+							"name": "select2"
+						},
+						{
+							"name": "alterRow1"
+						},
+						{
+							"name": "MapDrifted1",
+							"description": "Crea una asignación explícita para cada columna de desfase."
+						}
+					],
+					"scriptLines": [
+						"source(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'gold',",
+						"     folderPath: 'lakehousef0/sales') ~> sourceSalesGoldF0",
+						"MapDrifted1 filter(sourcesystem=='Clientify' && stage_value=='Sin Gestionar' && lead_neto==1 && contact_email!='false'&& !isNull(contact_email),",
+						"     partitionBy('hash', 1)) ~> filter1",
+						"filter1 window(over(contact_email),",
+						"     desc(created, true),",
+						"     ranking = rank(),",
+						"     partitionBy('hash', 1)) ~> window1",
+						"window1 select(mapColumn(",
+						"          amount,",
+						"          created,",
+						"          id,",
+						"          name,",
+						"          filepath,",
+						"          descuento,",
+						"          descuento_matricula,",
+						"          fecha_inscripcion,",
+						"          processdate,",
+						"          sourcesystem,",
+						"          modified,",
+						"          centro,",
+						"          source,",
+						"          date_closed,",
+						"          owner_name,",
+						"          estudio,",
+						"          contact_email,",
+						"          contact_phone,",
+						"          stage_value,",
+						"          status_desc,",
+						"          byratings_rating,",
+						"          lost_reason_value,",
+						"          tiempo_de_maduracion,",
+						"          new_enrollent,",
+						"          lead_neto,",
+						"          status_final,",
+						"          created_date,",
+						"          sede,",
+						"          modalidad,",
+						"          ranking",
+						"     ),",
+						"     partitionBy('hash', 1),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"select1 derive(lead_neto = iif(ranking>1, 0, 1),",
+						"     partitionBy('hash', 1)) ~> derivedColumn1",
+						"derivedColumn1 select(mapColumn(",
+						"          amount,",
+						"          created,",
+						"          id,",
+						"          name,",
+						"          filepath,",
+						"          descuento,",
+						"          descuento_matricula,",
+						"          fecha_inscripcion,",
+						"          processdate,",
+						"          sourcesystem,",
+						"          modified,",
+						"          centro,",
+						"          source,",
+						"          date_closed,",
+						"          owner_name,",
+						"          estudio,",
+						"          contact_email,",
+						"          contact_phone,",
+						"          stage_value,",
+						"          status_desc,",
+						"          byratings_rating,",
+						"          lost_reason_value,",
+						"          tiempo_de_maduracion,",
+						"          new_enrollent,",
+						"          lead_neto,",
+						"          status_final,",
+						"          created_date,",
+						"          sede,",
+						"          modalidad",
+						"     ),",
+						"     partitionBy('hash', 1),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select2",
+						"select2 alterRow(upsertIf(true()),",
+						"     partitionBy('hash', 1)) ~> alterRow1",
+						"sourceSalesGoldF0 derive(amount = toDouble(byName('amount')),",
+						"          created = toTimestamp(byName('created')),",
+						"          id = toString(byName('id')),",
+						"          name = toString(byName('name')),",
+						"          filepath = toString(byName('filepath')),",
+						"          descuento = toDouble(byName('descuento')),",
+						"          descuento_matricula = toDouble(byName('descuento_matricula')),",
+						"          fecha_inscripcion = toTimestamp(byName('fecha_inscripcion')),",
+						"          processdate = toTimestamp(byName('processdate')),",
+						"          sourcesystem = toString(byName('sourcesystem')),",
+						"          modified = toTimestamp(byName('modified')),",
+						"          centro = toString(byName('centro')),",
+						"          source = toString(byName('source')),",
+						"          date_closed = toTimestamp(byName('date_closed')),",
+						"          owner_name = toString(byName('owner_name')),",
+						"          estudio = toString(byName('estudio')),",
+						"          contact_email = toString(byName('contact_email')),",
+						"          contact_phone = toString(byName('contact_phone')),",
+						"          stage_value = toString(byName('stage_value')),",
+						"          status_desc = toString(byName('status_desc')),",
+						"          byratings_rating = toString(byName('byratings_rating')),",
+						"          sede = toString(byName('sede')),",
+						"          modalidad = toString(byName('modalidad')),",
+						"          lost_reason_value = toString(byName('lost_reason_value')),",
+						"          tiempo_de_maduracion = toDouble(byName('tiempo_de_maduracion')),",
+						"          new_enrollent = toInteger(byName('new_enrollent')),",
+						"          lead_neto = toInteger(byName('lead_neto')),",
+						"          status_final = toString(byName('status_final')),",
+						"          created_date = toDate(byName('created_date')),",
+						"     partitionBy('hash', 1)) ~> MapDrifted1",
+						"alterRow1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'gold',",
+						"     folderPath: 'lakehousef0/sales',",
+						"     mergeSchema: false,",
+						"     autoCompact: false,",
+						"     optimizedWrite: false,",
+						"     vacuum: 0,",
+						"     deletable: false,",
+						"     insertable: false,",
+						"     updateable: false,",
+						"     upsertable: true,",
+						"     keys:['id','sourcesystem'],",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sinkSalesGoldF0"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_adsl')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/df_ClientifyDealsGoldF0_LeadsNetosPhone')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "GoldF0"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"linkedService": {
+								"referenceName": "ls_adsl",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sourceSalesGoldF0"
+						}
+					],
+					"sinks": [
+						{
+							"linkedService": {
+								"referenceName": "ls_adsl",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sinkSalesGoldF0"
+						}
+					],
+					"transformations": [
+						{
+							"name": "filter1"
+						},
+						{
+							"name": "window1"
+						},
+						{
+							"name": "select1"
+						},
+						{
+							"name": "derivedColumn1"
+						},
+						{
+							"name": "select2"
+						},
+						{
+							"name": "alterRow1"
+						},
+						{
+							"name": "MapDrifted1",
+							"description": "Crea una asignación explícita para cada columna de desfase."
+						}
+					],
+					"scriptLines": [
+						"source(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'gold',",
+						"     folderPath: 'lakehousef0/sales') ~> sourceSalesGoldF0",
+						"MapDrifted1 filter(sourcesystem=='Clientify' && stage_value=='Sin Gestionar' && lead_neto==1 && contact_phone!='false'&& !isNull(contact_phone),",
+						"     partitionBy('hash', 1)) ~> filter1",
+						"filter1 window(over(contact_phone),",
+						"     desc(created, true),",
+						"     ranking = rank(),",
+						"     partitionBy('hash', 1)) ~> window1",
+						"window1 select(mapColumn(",
+						"          amount,",
+						"          created,",
+						"          id,",
+						"          name,",
+						"          filepath,",
+						"          descuento,",
+						"          descuento_matricula,",
+						"          fecha_inscripcion,",
+						"          processdate,",
+						"          sourcesystem,",
+						"          modified,",
+						"          centro,",
+						"          source,",
+						"          date_closed,",
+						"          owner_name,",
+						"          estudio,",
+						"          contact_email,",
+						"          contact_phone,",
+						"          stage_value,",
+						"          status_desc,",
+						"          byratings_rating,",
+						"          lost_reason_value,",
+						"          tiempo_de_maduracion,",
+						"          new_enrollent,",
+						"          lead_neto,",
+						"          status_final,",
+						"          created_date,",
+						"          sede,",
+						"          modalidad,",
+						"          ranking",
+						"     ),",
+						"     partitionBy('hash', 1),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"select1 derive(lead_neto = iif(ranking>1, 0, 1),",
+						"     partitionBy('hash', 1)) ~> derivedColumn1",
+						"derivedColumn1 select(mapColumn(",
+						"          amount,",
+						"          created,",
+						"          id,",
+						"          name,",
+						"          filepath,",
+						"          descuento,",
+						"          descuento_matricula,",
+						"          fecha_inscripcion,",
+						"          processdate,",
+						"          sourcesystem,",
+						"          modified,",
+						"          centro,",
+						"          source,",
+						"          date_closed,",
+						"          owner_name,",
+						"          estudio,",
+						"          contact_email,",
+						"          contact_phone,",
+						"          stage_value,",
+						"          status_desc,",
+						"          byratings_rating,",
+						"          lost_reason_value,",
+						"          tiempo_de_maduracion,",
+						"          new_enrollent,",
+						"          lead_neto,",
+						"          status_final,",
+						"          created_date,",
+						"          sede,",
+						"          modalidad",
+						"     ),",
+						"     partitionBy('hash', 1),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select2",
+						"select2 alterRow(upsertIf(true()),",
+						"     partitionBy('hash', 1)) ~> alterRow1",
+						"sourceSalesGoldF0 derive(amount = toDouble(byName('amount')),",
+						"          created = toTimestamp(byName('created')),",
+						"          id = toString(byName('id')),",
+						"          name = toString(byName('name')),",
+						"          filepath = toString(byName('filepath')),",
+						"          descuento = toDouble(byName('descuento')),",
+						"          descuento_matricula = toDouble(byName('descuento_matricula')),",
+						"          fecha_inscripcion = toTimestamp(byName('fecha_inscripcion')),",
+						"          processdate = toTimestamp(byName('processdate')),",
+						"          sourcesystem = toString(byName('sourcesystem')),",
+						"          modified = toTimestamp(byName('modified')),",
+						"          centro = toString(byName('centro')),",
+						"          source = toString(byName('source')),",
+						"          date_closed = toTimestamp(byName('date_closed')),",
+						"          owner_name = toString(byName('owner_name')),",
+						"          estudio = toString(byName('estudio')),",
+						"          contact_email = toString(byName('contact_email')),",
+						"          contact_phone = toString(byName('contact_phone')),",
+						"          stage_value = toString(byName('stage_value')),",
+						"          status_desc = toString(byName('status_desc')),",
+						"          byratings_rating = toString(byName('byratings_rating')),",
+						"          sede = toString(byName('sede')),",
+						"          modalidad = toString(byName('modalidad')),",
+						"          lost_reason_value = toString(byName('lost_reason_value')),",
+						"          tiempo_de_maduracion = toDouble(byName('tiempo_de_maduracion')),",
+						"          new_enrollent = toInteger(byName('new_enrollent')),",
+						"          lead_neto = toInteger(byName('lead_neto')),",
+						"          status_final = toString(byName('status_final')),",
+						"          created_date = toDate(byName('created_date')),",
+						"     partitionBy('hash', 1)) ~> MapDrifted1",
+						"alterRow1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'gold',",
+						"     folderPath: 'lakehousef0/sales',",
+						"     mergeSchema: false,",
+						"     autoCompact: false,",
+						"     optimizedWrite: false,",
+						"     vacuum: 0,",
+						"     deletable: false,",
+						"     insertable: false,",
+						"     updateable: false,",
+						"     upsertable: true,",
+						"     keys:['id','sourcesystem'],",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sinkSalesGoldF0"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_adsl')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/df_ClientifyDealsGoldF0_LostReason')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "GoldF0"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"linkedService": {
+								"referenceName": "ls_adsl",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sourceSalesGold"
+						},
+						{
+							"linkedService": {
+								"referenceName": "ls_adsl",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sourceClientifyLostReasonSilver"
+						},
+						{
+							"linkedService": {
+								"referenceName": "ls_adsl",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sourceSalesGold2"
+						}
+					],
+					"sinks": [
+						{
+							"linkedService": {
+								"referenceName": "ls_adsl",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sinkSalesGold"
+						}
+					],
+					"transformations": [
+						{
+							"name": "MapDriftedSalesGold",
+							"description": "Crea una asignación explícita para cada columna de desfase."
+						},
+						{
+							"name": "joinLostReason"
+						},
+						{
+							"name": "derivedColumn1"
+						},
+						{
+							"name": "select1"
+						},
+						{
+							"name": "alterRow1"
+						},
+						{
+							"name": "MapDriftedClientifyLostReasonSilver",
+							"description": "Crea una asignación explícita para cada columna de desfase."
+						},
+						{
+							"name": "derivedColumnNullValues"
+						},
+						{
+							"name": "filterClientify"
+						},
+						{
+							"name": "MapDriftedSalesGold2",
+							"description": "Crea una asignación explícita para cada columna de desfase."
+						},
+						{
+							"name": "selectID"
+						},
+						{
+							"name": "aggregate1"
+						},
+						{
+							"name": "sort1"
+						},
+						{
+							"name": "filterCount"
+						},
+						{
+							"name": "joinCount"
+						},
+						{
+							"name": "filterClientify2"
+						},
+						{
+							"name": "select2"
+						}
+					],
+					"scriptLines": [
+						"source(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'gold',",
+						"     folderPath: 'lakehousef0/sales') ~> sourceSalesGold",
+						"source(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'silver',",
+						"     folderPath: 'lakehousef0/clientifydealslostreason') ~> sourceClientifyLostReasonSilver",
+						"source(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'gold',",
+						"     folderPath: 'lakehousef0/sales') ~> sourceSalesGold2",
+						"sourceSalesGold derive(amount = toDouble(byName('amount')),",
+						"          created = toTimestamp(byName('created')),",
+						"          id = toString(byName('id')),",
+						"          name = toString(byName('name')),",
+						"          filepath = toString(byName('filepath')),",
+						"          descuento = toDouble(byName('descuento')),",
+						"          descuento_matricula = toDouble(byName('descuento_matricula')),",
+						"          fecha_inscripcion = toTimestamp(byName('fecha_inscripcion')),",
+						"          processdate = toTimestamp(byName('processdate')),",
+						"          sourcesystem = toString(byName('sourcesystem')),",
+						"          modified = toTimestamp(byName('modified')),",
+						"          centro = toString(byName('centro')),",
+						"          source = toString(byName('source')),",
+						"          date_closed = toTimestamp(byName('date_closed')),",
+						"          owner_name = toString(byName('owner_name')),",
+						"          estudio = toString(byName('estudio')),",
+						"          contact_email = toString(byName('contact_email')),",
+						"          contact_phone = toString(byName('contact_phone')),",
+						"          stage_value = toString(byName('stage_value')),",
+						"          status_desc = toString(byName('status_desc')),",
+						"          byratings_rating = toString(byName('byratings_rating')),",
+						"          sede = toString(byName('sede')),",
+						"          modalidad = toString(byName('modalidad')),",
+						"          lost_reason_value = toString(byName('lost_reason_value')),",
+						"          tiempo_de_maduracion = toDouble(byName('tiempo_de_maduracion')),",
+						"          new_enrollent = toInteger(byName('new_enrollent')),",
+						"          lead_neto = toInteger(byName('lead_neto')),",
+						"          status_final = toString(byName('status_final')),",
+						"          created_date = toDate(byName('created_date')),",
+						"     partitionBy('hash', 1)) ~> MapDriftedSalesGold",
+						"select2, derivedColumnNullValues join(select2@id == MapDriftedClientifyLostReasonSilver@id,",
+						"     joinType:'inner',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     partitionBy('hash', 1),",
+						"     broadcast: 'auto')~> joinLostReason",
+						"joinLostReason derive(lost_reason_value = lost_reason,",
+						"          lead_neto = iif((lost_reason=='NV Datos erróneos' || lost_reason=='NV Duplicado' || lost_reason=='NV Busca empleo' || lost_reason=='NV Niño' || lost_reason=='NV Extranjero' || lost_reason=='NV Bot' || lost_reason=='NV Test' ||lost_reason=='NV Lista Robinson'), 0, lead_neto),",
+						"     partitionBy('hash', 1)) ~> derivedColumn1",
+						"derivedColumn1 select(mapColumn(",
+						"          amount,",
+						"          created,",
+						"          id = select2@id,",
+						"          name,",
+						"          filepath,",
+						"          descuento,",
+						"          descuento_matricula,",
+						"          fecha_inscripcion,",
+						"          processdate,",
+						"          sourcesystem,",
+						"          modified,",
+						"          centro,",
+						"          source,",
+						"          date_closed,",
+						"          owner_name,",
+						"          estudio,",
+						"          contact_email,",
+						"          contact_phone,",
+						"          stage_value,",
+						"          status_desc,",
+						"          byratings_rating,",
+						"          sede,",
+						"          modalidad,",
+						"          lost_reason_value,",
+						"          tiempo_de_maduracion,",
+						"          new_enrollent,",
+						"          lead_neto,",
+						"          status_final,",
+						"          created_date",
+						"     ),",
+						"     partitionBy('hash', 1),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"select1 alterRow(updateIf(!(lost_reason_value=='NV Bot'||lost_reason_value=='NV Test')),",
+						"     deleteIf((lost_reason_value=='NV Bot'||lost_reason_value=='NV Test')),",
+						"     partitionBy('hash', 1)) ~> alterRow1",
+						"sourceClientifyLostReasonSilver derive(id = toString(byName('id')),",
+						"          lost_reason = toString(byName('lost_reason')),",
+						"     partitionBy('hash', 1)) ~> MapDriftedClientifyLostReasonSilver",
+						"MapDriftedClientifyLostReasonSilver derive(lost_reason = iifNull(lost_reason,'',lost_reason),",
+						"     partitionBy('hash', 1)) ~> derivedColumnNullValues",
+						"MapDriftedSalesGold filter(sourcesystem == \"Clientify\",",
+						"     partitionBy('hash', 1)) ~> filterClientify",
+						"sourceSalesGold2 derive(amount = toDouble(byName('amount')),",
+						"          created = toTimestamp(byName('created')),",
+						"          id = toString(byName('id')),",
+						"          name = toString(byName('name')),",
+						"          filepath = toString(byName('filepath')),",
+						"          descuento = toDouble(byName('descuento')),",
+						"          descuento_matricula = toDouble(byName('descuento_matricula')),",
+						"          fecha_inscripcion = toTimestamp(byName('fecha_inscripcion')),",
+						"          processdate = toTimestamp(byName('processdate')),",
+						"          sourcesystem = toString(byName('sourcesystem')),",
+						"          modified = toTimestamp(byName('modified')),",
+						"          centro = toString(byName('centro')),",
+						"          source = toString(byName('source')),",
+						"          date_closed = toTimestamp(byName('date_closed')),",
+						"          owner_name = toString(byName('owner_name')),",
+						"          estudio = toString(byName('estudio')),",
+						"          contact_email = toString(byName('contact_email')),",
+						"          contact_phone = toString(byName('contact_phone')),",
+						"          stage_value = toString(byName('stage_value')),",
+						"          status_desc = toString(byName('status_desc')),",
+						"          byratings_rating = toString(byName('byratings_rating')),",
+						"          sede = toString(byName('sede')),",
+						"          modalidad = toString(byName('modalidad')),",
+						"          lost_reason_value = toString(byName('lost_reason_value')),",
+						"          tiempo_de_maduracion = toDouble(byName('tiempo_de_maduracion')),",
+						"          new_enrollent = toInteger(byName('new_enrollent')),",
+						"          lead_neto = toInteger(byName('lead_neto')),",
+						"          status_final = toString(byName('status_final')),",
+						"          created_date = toDate(byName('created_date')),",
+						"     partitionBy('hash', 1)) ~> MapDriftedSalesGold2",
+						"filterClientify2 select(mapColumn(",
+						"          id",
+						"     ),",
+						"     partitionBy('hash', 1),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> selectID",
+						"selectID aggregate(groupBy(id),",
+						"     countID = count(id),",
+						"     partitionBy('hash', 1)) ~> aggregate1",
+						"aggregate1 sort(desc(countID, true),",
+						"     partitionBy('hash', 1)) ~> sort1",
+						"sort1 filter(countID==1,",
+						"     partitionBy('hash', 1)) ~> filterCount",
+						"filterClientify, filterCount join(MapDriftedSalesGold@id == aggregate1@id,",
+						"     joinType:'inner',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     partitionBy('hash', 1),",
+						"     broadcast: 'auto')~> joinCount",
+						"MapDriftedSalesGold2 filter(sourcesystem == \"Clientify\",",
+						"     partitionBy('hash', 1)) ~> filterClientify2",
+						"joinCount select(mapColumn(",
+						"          amount,",
+						"          created,",
+						"          id = MapDriftedSalesGold@id,",
+						"          name,",
+						"          filepath,",
+						"          descuento,",
+						"          descuento_matricula,",
+						"          fecha_inscripcion,",
+						"          processdate,",
+						"          sourcesystem,",
+						"          modified,",
+						"          centro,",
+						"          source,",
+						"          date_closed,",
+						"          owner_name,",
+						"          estudio,",
+						"          contact_email,",
+						"          contact_phone,",
+						"          stage_value,",
+						"          status_desc,",
+						"          byratings_rating,",
+						"          sede,",
+						"          modalidad,",
+						"          lost_reason_value,",
+						"          tiempo_de_maduracion,",
+						"          new_enrollent,",
+						"          lead_neto,",
+						"          status_final,",
+						"          created_date",
+						"     ),",
+						"     partitionBy('hash', 1),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select2",
+						"alterRow1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'gold',",
+						"     folderPath: 'lakehousef0/sales',",
+						"     mergeSchema: false,",
+						"     autoCompact: false,",
+						"     optimizedWrite: false,",
+						"     vacuum: 0,",
+						"     deletable: true,",
+						"     insertable: false,",
+						"     updateable: true,",
+						"     upsertable: false,",
+						"     keys:['id','sourcesystem'],",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sinkSalesGold"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_adsl')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/df_ClientifyDealsGoldF0_LostReason_copy1')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "GoldF0"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"linkedService": {
+								"referenceName": "ls_adsl",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sourceSalesGold"
+						},
+						{
+							"linkedService": {
+								"referenceName": "ls_adsl",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sourceClientifyLostReasonSilver"
+						},
+						{
+							"linkedService": {
+								"referenceName": "ls_adsl",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sourceSalesGold2"
+						}
+					],
+					"sinks": [
+						{
+							"linkedService": {
+								"referenceName": "ls_adsl",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sinkSalesGold"
+						}
+					],
+					"transformations": [
+						{
+							"name": "MapDriftedSalesGold",
+							"description": "Crea una asignación explícita para cada columna de desfase."
+						},
+						{
+							"name": "joinLostReason"
+						},
+						{
+							"name": "derivedColumn1"
+						},
+						{
+							"name": "select1"
+						},
+						{
+							"name": "alterRow1"
+						},
+						{
+							"name": "MapDriftedClientifyLostReasonSilver",
+							"description": "Crea una asignación explícita para cada columna de desfase."
+						},
+						{
+							"name": "derivedColumnNullValues"
+						},
+						{
+							"name": "filterClientify"
+						},
+						{
+							"name": "MapDriftedSalesGold2",
+							"description": "Crea una asignación explícita para cada columna de desfase."
+						},
+						{
+							"name": "selectID"
+						},
+						{
+							"name": "aggregate1"
+						},
+						{
+							"name": "sort1"
+						},
+						{
+							"name": "filterCount"
+						},
+						{
+							"name": "joinCount"
+						},
+						{
+							"name": "filterClientify2"
+						},
+						{
+							"name": "select2"
+						}
+					],
+					"scriptLines": [
+						"source(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'gold',",
+						"     folderPath: 'lakehousef0/sales') ~> sourceSalesGold",
+						"source(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'silver',",
+						"     folderPath: 'lakehousef0/clientifydealslostreason') ~> sourceClientifyLostReasonSilver",
+						"source(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'gold',",
+						"     folderPath: 'lakehousef0/sales') ~> sourceSalesGold2",
+						"sourceSalesGold derive(amount = toDouble(byName('amount')),",
+						"          created = toTimestamp(byName('created')),",
+						"          id = toString(byName('id')),",
+						"          name = toString(byName('name')),",
+						"          filepath = toString(byName('filepath')),",
+						"          descuento = toDouble(byName('descuento')),",
+						"          descuento_matricula = toDouble(byName('descuento_matricula')),",
+						"          fecha_inscripcion = toTimestamp(byName('fecha_inscripcion')),",
+						"          processdate = toTimestamp(byName('processdate')),",
+						"          sourcesystem = toString(byName('sourcesystem')),",
+						"          modified = toTimestamp(byName('modified')),",
+						"          centro = toString(byName('centro')),",
+						"          source = toString(byName('source')),",
+						"          date_closed = toTimestamp(byName('date_closed')),",
+						"          owner_name = toString(byName('owner_name')),",
+						"          estudio = toString(byName('estudio')),",
+						"          contact_email = toString(byName('contact_email')),",
+						"          contact_phone = toString(byName('contact_phone')),",
+						"          stage_value = toString(byName('stage_value')),",
+						"          status_desc = toString(byName('status_desc')),",
+						"          byratings_rating = toString(byName('byratings_rating')),",
+						"          sede = toString(byName('sede')),",
+						"          modalidad = toString(byName('modalidad')),",
+						"          lost_reason_value = toString(byName('lost_reason_value')),",
+						"          tiempo_de_maduracion = toDouble(byName('tiempo_de_maduracion')),",
+						"          new_enrollent = toInteger(byName('new_enrollent')),",
+						"          lead_neto = toInteger(byName('lead_neto')),",
+						"          status_final = toString(byName('status_final')),",
+						"          created_date = toDate(byName('created_date')),",
+						"     partitionBy('hash', 1)) ~> MapDriftedSalesGold",
+						"select2, derivedColumnNullValues join(select2@id == MapDriftedClientifyLostReasonSilver@id,",
+						"     joinType:'inner',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     partitionBy('hash', 1),",
+						"     broadcast: 'auto')~> joinLostReason",
+						"joinLostReason derive(lost_reason_value = lost_reason,",
+						"          lead_neto = iif((lost_reason_value=='NV Datos erróneos' || lost_reason_value=='NV Duplicado' || lost_reason_value=='NV Busca empleo' || lost_reason_value=='NV Niño' || lost_reason_value=='NV Extranjero' || lost_reason_value=='NV Bot' || lost_reason_value=='NV Test'), 0, lead_neto),",
+						"     partitionBy('hash', 1)) ~> derivedColumn1",
+						"derivedColumn1 select(mapColumn(",
+						"          amount,",
+						"          created,",
+						"          id = select2@id,",
+						"          name,",
+						"          filepath,",
+						"          descuento,",
+						"          descuento_matricula,",
+						"          fecha_inscripcion,",
+						"          processdate,",
+						"          sourcesystem,",
+						"          modified,",
+						"          centro,",
+						"          source,",
+						"          date_closed,",
+						"          owner_name,",
+						"          estudio,",
+						"          contact_email,",
+						"          contact_phone,",
+						"          stage_value,",
+						"          status_desc,",
+						"          byratings_rating,",
+						"          sede,",
+						"          modalidad,",
+						"          lost_reason_value,",
+						"          tiempo_de_maduracion,",
+						"          new_enrollent,",
+						"          lead_neto,",
+						"          status_final,",
+						"          created_date",
+						"     ),",
+						"     partitionBy('hash', 1),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"select1 alterRow(updateIf(!(lost_reason_value=='NV Bot'||lost_reason_value=='NV Test')),",
+						"     deleteIf((lost_reason_value=='NV Bot'||lost_reason_value=='NV Test')),",
+						"     partitionBy('hash', 1)) ~> alterRow1",
+						"sourceClientifyLostReasonSilver derive(id = toString(byName('id')),",
+						"          lost_reason = toString(byName('lost_reason')),",
+						"     partitionBy('hash', 1)) ~> MapDriftedClientifyLostReasonSilver",
+						"MapDriftedClientifyLostReasonSilver derive(lost_reason = iifNull(lost_reason,'',lost_reason),",
+						"     partitionBy('hash', 1)) ~> derivedColumnNullValues",
+						"MapDriftedSalesGold filter(sourcesystem == \"Clientify\",",
+						"     partitionBy('hash', 1)) ~> filterClientify",
+						"sourceSalesGold2 derive(amount = toDouble(byName('amount')),",
+						"          created = toTimestamp(byName('created')),",
+						"          id = toString(byName('id')),",
+						"          name = toString(byName('name')),",
+						"          filepath = toString(byName('filepath')),",
+						"          descuento = toDouble(byName('descuento')),",
+						"          descuento_matricula = toDouble(byName('descuento_matricula')),",
+						"          fecha_inscripcion = toTimestamp(byName('fecha_inscripcion')),",
+						"          processdate = toTimestamp(byName('processdate')),",
+						"          sourcesystem = toString(byName('sourcesystem')),",
+						"          modified = toTimestamp(byName('modified')),",
+						"          centro = toString(byName('centro')),",
+						"          source = toString(byName('source')),",
+						"          date_closed = toTimestamp(byName('date_closed')),",
+						"          owner_name = toString(byName('owner_name')),",
+						"          estudio = toString(byName('estudio')),",
+						"          contact_email = toString(byName('contact_email')),",
+						"          contact_phone = toString(byName('contact_phone')),",
+						"          stage_value = toString(byName('stage_value')),",
+						"          status_desc = toString(byName('status_desc')),",
+						"          byratings_rating = toString(byName('byratings_rating')),",
+						"          sede = toString(byName('sede')),",
+						"          modalidad = toString(byName('modalidad')),",
+						"          lost_reason_value = toString(byName('lost_reason_value')),",
+						"          tiempo_de_maduracion = toDouble(byName('tiempo_de_maduracion')),",
+						"          new_enrollent = toInteger(byName('new_enrollent')),",
+						"          lead_neto = toInteger(byName('lead_neto')),",
+						"          status_final = toString(byName('status_final')),",
+						"          created_date = toDate(byName('created_date')),",
+						"     partitionBy('hash', 1)) ~> MapDriftedSalesGold2",
+						"filterClientify2 select(mapColumn(",
+						"          id",
+						"     ),",
+						"     partitionBy('hash', 1),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> selectID",
+						"selectID aggregate(groupBy(id),",
+						"     countID = count(id),",
+						"     partitionBy('hash', 1)) ~> aggregate1",
+						"aggregate1 sort(desc(countID, true),",
+						"     partitionBy('hash', 1)) ~> sort1",
+						"sort1 filter(countID==1,",
+						"     partitionBy('hash', 1)) ~> filterCount",
+						"filterClientify, filterCount join(MapDriftedSalesGold@id == aggregate1@id,",
+						"     joinType:'inner',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     partitionBy('hash', 1),",
+						"     broadcast: 'auto')~> joinCount",
+						"MapDriftedSalesGold2 filter(sourcesystem == \"Clientify\",",
+						"     partitionBy('hash', 1)) ~> filterClientify2",
+						"joinCount select(mapColumn(",
+						"          amount,",
+						"          created,",
+						"          id = MapDriftedSalesGold@id,",
+						"          name,",
+						"          filepath,",
+						"          descuento,",
+						"          descuento_matricula,",
+						"          fecha_inscripcion,",
+						"          processdate,",
+						"          sourcesystem,",
+						"          modified,",
+						"          centro,",
+						"          source,",
+						"          date_closed,",
+						"          owner_name,",
+						"          estudio,",
+						"          contact_email,",
+						"          contact_phone,",
+						"          stage_value,",
+						"          status_desc,",
+						"          byratings_rating,",
+						"          sede,",
+						"          modalidad,",
+						"          lost_reason_value,",
+						"          tiempo_de_maduracion,",
+						"          new_enrollent,",
+						"          lead_neto,",
+						"          status_final,",
+						"          created_date",
+						"     ),",
+						"     partitionBy('hash', 1),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select2",
+						"alterRow1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'gold',",
+						"     folderPath: 'lakehousef0/sales',",
+						"     mergeSchema: false,",
+						"     autoCompact: false,",
+						"     optimizedWrite: false,",
+						"     vacuum: 0,",
+						"     deletable: true,",
+						"     insertable: false,",
+						"     updateable: true,",
+						"     upsertable: false,",
+						"     keys:['id','sourcesystem'],",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sinkSalesGold"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_adsl')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/df_ClientifyDealsGoldF0_LostReason_copy2')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "GoldF0"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"linkedService": {
+								"referenceName": "ls_adsl",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sourceSalesGold"
+						},
+						{
+							"linkedService": {
+								"referenceName": "ls_adsl",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sourceClientifyLostReasonSilver"
+						},
+						{
+							"linkedService": {
+								"referenceName": "ls_adsl",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sourceSalesGold2"
+						}
+					],
+					"sinks": [
+						{
+							"linkedService": {
+								"referenceName": "ls_adsl",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sinkSalesGold"
+						}
+					],
+					"transformations": [
+						{
+							"name": "MapDriftedSalesGold",
+							"description": "Crea una asignación explícita para cada columna de desfase."
+						},
+						{
+							"name": "joinLostReason"
+						},
+						{
+							"name": "derivedColumn1"
+						},
+						{
+							"name": "select1"
+						},
+						{
+							"name": "alterRow1"
+						},
+						{
+							"name": "MapDriftedClientifyLostReasonSilver",
+							"description": "Crea una asignación explícita para cada columna de desfase."
+						},
+						{
+							"name": "derivedColumnNullValues"
+						},
+						{
+							"name": "filterClientify"
+						},
+						{
+							"name": "MapDriftedSalesGold2",
+							"description": "Crea una asignación explícita para cada columna de desfase."
+						},
+						{
+							"name": "selectID"
+						},
+						{
+							"name": "aggregate1"
+						},
+						{
+							"name": "sort1"
+						},
+						{
+							"name": "filterCount"
+						},
+						{
+							"name": "joinCount"
+						},
+						{
+							"name": "filterClientify2"
+						},
+						{
+							"name": "select2"
+						}
+					],
+					"scriptLines": [
+						"source(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'gold',",
+						"     folderPath: 'lakehousef0/sales') ~> sourceSalesGold",
+						"source(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'silver',",
+						"     folderPath: 'lakehousef0/clientifydealslostreason') ~> sourceClientifyLostReasonSilver",
+						"source(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'gold',",
+						"     folderPath: 'lakehousef0/sales') ~> sourceSalesGold2",
+						"sourceSalesGold derive(amount = toDouble(byName('amount')),",
+						"          created = toTimestamp(byName('created')),",
+						"          id = toString(byName('id')),",
+						"          name = toString(byName('name')),",
+						"          filepath = toString(byName('filepath')),",
+						"          descuento = toDouble(byName('descuento')),",
+						"          descuento_matricula = toDouble(byName('descuento_matricula')),",
+						"          fecha_inscripcion = toTimestamp(byName('fecha_inscripcion')),",
+						"          processdate = toTimestamp(byName('processdate')),",
+						"          sourcesystem = toString(byName('sourcesystem')),",
+						"          modified = toTimestamp(byName('modified')),",
+						"          centro = toString(byName('centro')),",
+						"          source = toString(byName('source')),",
+						"          date_closed = toTimestamp(byName('date_closed')),",
+						"          owner_name = toString(byName('owner_name')),",
+						"          estudio = toString(byName('estudio')),",
+						"          contact_email = toString(byName('contact_email')),",
+						"          contact_phone = toString(byName('contact_phone')),",
+						"          stage_value = toString(byName('stage_value')),",
+						"          status_desc = toString(byName('status_desc')),",
+						"          byratings_rating = toString(byName('byratings_rating')),",
+						"          sede = toString(byName('sede')),",
+						"          modalidad = toString(byName('modalidad')),",
+						"          lost_reason_value = toString(byName('lost_reason_value')),",
+						"          tiempo_de_maduracion = toDouble(byName('tiempo_de_maduracion')),",
+						"          new_enrollent = toInteger(byName('new_enrollent')),",
+						"          lead_neto = toInteger(byName('lead_neto')),",
+						"          status_final = toString(byName('status_final')),",
+						"          created_date = toDate(byName('created_date')),",
+						"     partitionBy('hash', 1)) ~> MapDriftedSalesGold",
+						"select2, derivedColumnNullValues join(select2@id == MapDriftedClientifyLostReasonSilver@id,",
+						"     joinType:'inner',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     partitionBy('hash', 1),",
+						"     broadcast: 'auto')~> joinLostReason",
+						"joinLostReason derive(lost_reason_value = lost_reason,",
+						"          lead_neto = iif((lost_reason=='NV Datos erróneos' || lost_reason=='NV Duplicado' || lost_reason=='NV Busca empleo' || lost_reason=='NV Niño' || lost_reason=='NV Extranjero' || lost_reason=='NV Bot' || lost_reason=='NV Test'), 0, lead_neto),",
+						"     partitionBy('hash', 1)) ~> derivedColumn1",
+						"derivedColumn1 select(mapColumn(",
+						"          amount,",
+						"          created,",
+						"          id = select2@id,",
+						"          name,",
+						"          filepath,",
+						"          descuento,",
+						"          descuento_matricula,",
+						"          fecha_inscripcion,",
+						"          processdate,",
+						"          sourcesystem,",
+						"          modified,",
+						"          centro,",
+						"          source,",
+						"          date_closed,",
+						"          owner_name,",
+						"          estudio,",
+						"          contact_email,",
+						"          contact_phone,",
+						"          stage_value,",
+						"          status_desc,",
+						"          byratings_rating,",
+						"          sede,",
+						"          modalidad,",
+						"          lost_reason_value,",
+						"          tiempo_de_maduracion,",
+						"          new_enrollent,",
+						"          lead_neto,",
+						"          status_final,",
+						"          created_date",
+						"     ),",
+						"     partitionBy('hash', 1),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"select1 alterRow(updateIf(!(lost_reason_value=='NV Bot'||lost_reason_value=='NV Test')),",
+						"     deleteIf((lost_reason_value=='NV Bot'||lost_reason_value=='NV Test')),",
+						"     partitionBy('hash', 1)) ~> alterRow1",
+						"sourceClientifyLostReasonSilver derive(id = toString(byName('id')),",
+						"          lost_reason = toString(byName('lost_reason')),",
+						"     partitionBy('hash', 1)) ~> MapDriftedClientifyLostReasonSilver",
+						"MapDriftedClientifyLostReasonSilver derive(lost_reason = iifNull(lost_reason,'',lost_reason),",
+						"     partitionBy('hash', 1)) ~> derivedColumnNullValues",
+						"MapDriftedSalesGold filter(sourcesystem == \"Clientify\",",
+						"     partitionBy('hash', 1)) ~> filterClientify",
+						"sourceSalesGold2 derive(amount = toDouble(byName('amount')),",
+						"          created = toTimestamp(byName('created')),",
+						"          id = toString(byName('id')),",
+						"          name = toString(byName('name')),",
+						"          filepath = toString(byName('filepath')),",
+						"          descuento = toDouble(byName('descuento')),",
+						"          descuento_matricula = toDouble(byName('descuento_matricula')),",
+						"          fecha_inscripcion = toTimestamp(byName('fecha_inscripcion')),",
+						"          processdate = toTimestamp(byName('processdate')),",
+						"          sourcesystem = toString(byName('sourcesystem')),",
+						"          modified = toTimestamp(byName('modified')),",
+						"          centro = toString(byName('centro')),",
+						"          source = toString(byName('source')),",
+						"          date_closed = toTimestamp(byName('date_closed')),",
+						"          owner_name = toString(byName('owner_name')),",
+						"          estudio = toString(byName('estudio')),",
+						"          contact_email = toString(byName('contact_email')),",
+						"          contact_phone = toString(byName('contact_phone')),",
+						"          stage_value = toString(byName('stage_value')),",
+						"          status_desc = toString(byName('status_desc')),",
+						"          byratings_rating = toString(byName('byratings_rating')),",
+						"          sede = toString(byName('sede')),",
+						"          modalidad = toString(byName('modalidad')),",
+						"          lost_reason_value = toString(byName('lost_reason_value')),",
+						"          tiempo_de_maduracion = toDouble(byName('tiempo_de_maduracion')),",
+						"          new_enrollent = toInteger(byName('new_enrollent')),",
+						"          lead_neto = toInteger(byName('lead_neto')),",
+						"          status_final = toString(byName('status_final')),",
+						"          created_date = toDate(byName('created_date')),",
+						"     partitionBy('hash', 1)) ~> MapDriftedSalesGold2",
+						"filterClientify2 select(mapColumn(",
+						"          id",
+						"     ),",
+						"     partitionBy('hash', 1),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> selectID",
+						"selectID aggregate(groupBy(id),",
+						"     countID = count(id),",
+						"     partitionBy('hash', 1)) ~> aggregate1",
+						"aggregate1 sort(desc(countID, true),",
+						"     partitionBy('hash', 1)) ~> sort1",
+						"sort1 filter(countID==1,",
+						"     partitionBy('hash', 1)) ~> filterCount",
+						"filterClientify, filterCount join(MapDriftedSalesGold@id == aggregate1@id,",
+						"     joinType:'inner',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     partitionBy('hash', 1),",
+						"     broadcast: 'auto')~> joinCount",
+						"MapDriftedSalesGold2 filter(sourcesystem == \"Clientify\",",
+						"     partitionBy('hash', 1)) ~> filterClientify2",
+						"joinCount select(mapColumn(",
+						"          amount,",
+						"          created,",
+						"          id = MapDriftedSalesGold@id,",
+						"          name,",
+						"          filepath,",
+						"          descuento,",
+						"          descuento_matricula,",
+						"          fecha_inscripcion,",
+						"          processdate,",
+						"          sourcesystem,",
+						"          modified,",
+						"          centro,",
+						"          source,",
+						"          date_closed,",
+						"          owner_name,",
+						"          estudio,",
+						"          contact_email,",
+						"          contact_phone,",
+						"          stage_value,",
+						"          status_desc,",
+						"          byratings_rating,",
+						"          sede,",
+						"          modalidad,",
+						"          lost_reason_value,",
+						"          tiempo_de_maduracion,",
+						"          new_enrollent,",
+						"          lead_neto,",
+						"          status_final,",
+						"          created_date",
+						"     ),",
+						"     partitionBy('hash', 1),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select2",
+						"alterRow1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'gold',",
+						"     folderPath: 'lakehousef0/sales',",
+						"     mergeSchema: false,",
+						"     autoCompact: false,",
+						"     optimizedWrite: false,",
+						"     vacuum: 0,",
+						"     deletable: true,",
+						"     insertable: false,",
+						"     updateable: true,",
+						"     upsertable: false,",
+						"     keys:['id','sourcesystem'],",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sinkSalesGold"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_adsl')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/df_ClientifyDealsGoldF0_copy1')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "GoldF0"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"linkedService": {
+								"referenceName": "ls_adsl",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sourceClientifyDealsSilverF0"
+						},
+						{
+							"linkedService": {
+								"referenceName": "ls_adsl",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sourceVentasGoldF0"
+						}
+					],
+					"sinks": [
+						{
+							"linkedService": {
+								"referenceName": "ls_adsl",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sinkVentasGoldF0"
+						}
+					],
+					"transformations": [
+						{
+							"name": "MapDriftedClientifyDealsSilverF0",
+							"description": "Crea una asignación explícita para cada columna de desfase."
+						},
+						{
+							"name": "selectClientifyDealsSilverF0"
+						},
+						{
+							"name": "derivedColumnClientifyDealsSilverF0"
+						},
+						{
+							"name": "alterRow1"
+						},
+						{
+							"name": "filterVentasGoldF0"
+						},
+						{
+							"name": "selectVentasGoldF0"
+						},
+						{
+							"name": "aggregateMaxprocessdate"
+						},
+						{
+							"name": "join1"
+						},
+						{
+							"name": "filterFinal"
+						},
+						{
+							"name": "selectFinal"
+						},
+						{
+							"name": "sort1"
+						},
+						{
+							"name": "MapDriftedVentasGoldF0",
+							"description": "Crea una asignación explícita para cada columna de desfase."
+						}
+					],
+					"scriptLines": [
+						"source(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'silver',",
+						"     folderPath: 'lakehousef0/clientifydeals') ~> sourceClientifyDealsSilverF0",
+						"source(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: true,",
+						"     format: 'delta',",
+						"     fileSystem: 'gold',",
+						"     folderPath: 'lakehousef0/sales') ~> sourceVentasGoldF0",
+						"sourceClientifyDealsSilverF0 derive(actual_closed_date = toDate(byName('actual_closed_date')),",
+						"          amount = toDouble(byName('amount')),",
+						"          amount_user = toString(byName('amount_user')),",
+						"          company = toString(byName('company')),",
+						"          contact = toString(byName('contact')),",
+						"          contact_email = toString(byName('contact_email')),",
+						"          contact_medium = toString(byName('contact_medium')),",
+						"          contact_name = toString(byName('contact_name')),",
+						"          contact_phone = toString(byName('contact_phone')),",
+						"          contact_source = toString(byName('contact_source')),",
+						"          created = toTimestamp(byName('created')),",
+						"          currency = toString(byName('currency')),",
+						"          expected_closed_date = toDate(byName('expected_closed_date')),",
+						"          id = toString(byName('id')),",
+						"          modified = toTimestamp(byName('modified')),",
+						"          name = toString(byName('name')),",
+						"          owner_name = toString(byName('owner_name')),",
+						"          pipeline = toString(byName('pipeline')),",
+						"          pipeline_desc = toString(byName('pipeline_desc')),",
+						"          pipeline_stage = toString(byName('pipeline_stage')),",
+						"          pipeline_stage_desc = toString(byName('pipeline_stage_desc')),",
+						"          probability = toInteger(byName('probability')),",
+						"          probability_desc = toString(byName('probability_desc')),",
+						"          status = toInteger(byName('status')),",
+						"          status_desc = toString(byName('status_desc')),",
+						"          url = toString(byName('url')),",
+						"          filepath = toString(byName('filepath')),",
+						"          custom_fields_ByRatings_Rating = toString(byName('custom_fields_ByRatings_Rating')),",
+						"          custom_fields_ByRatings_Score = toString(byName('custom_fields_ByRatings_Score')),",
+						"          custom_fields_Estudio_Old = toString(byName('custom_fields_Estudio_Old')),",
+						"          custom_fields_ID = toString(byName('custom_fields_ID')),",
+						"          custom_fields_Modalidad_Old = toString(byName('custom_fields_Modalidad_Old')),",
+						"          custom_fields_Sede_Old = toString(byName('custom_fields_Sede_Old')),",
+						"          custom_fields_anio_academico = toString(byName('custom_fields_anio_academico')),",
+						"          custom_fields_campaign_id = toString(byName('custom_fields_campaign_id')),",
+						"          custom_fields_centro = toString(byName('custom_fields_centro')),",
+						"          custom_fields_ciudad = toString(byName('custom_fields_ciudad')),",
+						"          custom_fields_cp = toString(byName('custom_fields_cp')),",
+						"          custom_fields_curso_anio = toString(byName('custom_fields_curso_anio')),",
+						"          custom_fields_descuento = toDouble(byName('custom_fields_descuento')),",
+						"          custom_fields_descuento_matricula = toDouble(byName('custom_fields_descuento_matricula')),",
+						"          custom_fields_estudio = toString(byName('custom_fields_estudio')),",
+						"          custom_fields_fecha_inscripcion = toDate(byName('custom_fields_fecha_inscripcion')),",
+						"          custom_fields_gclid = toString(byName('custom_fields_gclid')),",
+						"          custom_fields_gdpr = toString(byName('custom_fields_gdpr')),",
+						"          custom_fields_google_id = toString(byName('custom_fields_google_id')),",
+						"          custom_fields_linea_negocio = toString(byName('custom_fields_linea_negocio')),",
+						"          custom_fields_matricula = toString(byName('custom_fields_matricula')),",
+						"          custom_fields_mensualidad = toString(byName('custom_fields_mensualidad')),",
+						"          custom_fields_modalidad = toString(byName('custom_fields_modalidad')),",
+						"          custom_fields_pais = toString(byName('custom_fields_pais')),",
+						"          custom_fields_ref = toString(byName('custom_fields_ref')),",
+						"          custom_fields_sede = toString(byName('custom_fields_sede')),",
+						"          custom_fields_tipo_conversion = toString(byName('custom_fields_tipo_conversion')),",
+						"          custom_fields_turno = toString(byName('custom_fields_turno')),",
+						"          custom_fields_ua = toString(byName('custom_fields_ua')),",
+						"          custom_fields_url = toString(byName('custom_fields_url')),",
+						"          custom_fields_utm_ad_id = toString(byName('custom_fields_utm_ad_id')),",
+						"          custom_fields_utm_adset_id = toString(byName('custom_fields_utm_adset_id')),",
+						"          custom_fields_utm_campaign = toString(byName('custom_fields_utm_campaign')),",
+						"          custom_fields_utm_campaign_id = toString(byName('custom_fields_utm_campaign_id')),",
+						"          custom_fields_utm_campaign_name = toString(byName('custom_fields_utm_campaign_name')),",
+						"          custom_fields_utm_channel = toString(byName('custom_fields_utm_channel')),",
+						"          custom_fields_utm_device = toString(byName('custom_fields_utm_device')),",
+						"          custom_fields_utm_estrategia = toString(byName('custom_fields_utm_estrategia')),",
+						"          custom_fields_utm_medium = toString(byName('custom_fields_utm_medium')),",
+						"          custom_fields_utm_network = toString(byName('custom_fields_utm_network')),",
+						"          custom_fields_utm_placement = toString(byName('custom_fields_utm_placement')),",
+						"          custom_fields_utm_site_source_name = toString(byName('custom_fields_utm_site_source_name')),",
+						"          custom_fields_utm_source = toString(byName('custom_fields_utm_source')),",
+						"          custom_fields_utm_term = toString(byName('custom_fields_utm_term')),",
+						"          custom_fields_utm_type = toString(byName('custom_fields_utm_type')),",
+						"          processdate = toTimestamp(byName('processdate')),",
+						"          sourcesystem = toString(byName('sourcesystem')),",
+						"          created_tzh = toString(byName('created_tzh')),",
+						"          modified_tzh = toString(byName('modified_tzh')),",
+						"     partitionBy('hash', 1)) ~> MapDriftedClientifyDealsSilverF0",
+						"MapDriftedClientifyDealsSilverF0 select(mapColumn(",
+						"          amount,",
+						"          created,",
+						"          id,",
+						"          name,",
+						"          filepath,",
+						"          descuento = custom_fields_descuento,",
+						"          descuento_matricula = custom_fields_descuento_matricula,",
+						"          fecha_inscripcion = custom_fields_fecha_inscripcion,",
+						"          processdate,",
+						"          sourcesystem,",
+						"          modified,",
+						"          centro = custom_fields_centro,",
+						"          source = custom_fields_utm_source,",
+						"          date_closed = actual_closed_date,",
+						"          owner_name,",
+						"          estudio = custom_fields_estudio,",
+						"          contact_email,",
+						"          contact_phone,",
+						"          stage_value = pipeline_stage_desc,",
+						"          status_desc,",
+						"          byratings_rating = custom_fields_ByRatings_Rating,",
+						"          sede = custom_fields_sede,",
+						"          modalidad = custom_fields_modalidad",
+						"     ),",
+						"     partitionBy('hash', 1),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> selectClientifyDealsSilverF0",
+						"selectClientifyDealsSilverF0 derive(fecha_inscripcion = toTimestamp(fecha_inscripcion),",
+						"          date_closed = toTimestamp(date_closed),",
+						"          lost_reason_value = '',",
+						"          tiempo_de_maduracion = toDouble(minus(toTimestamp(fecha_inscripcion),created)/(1000*60*60*24)),",
+						"          new_enrollent = iif(isNull(fecha_inscripcion), 0, 1),",
+						"          lead_neto = iif(or(stage_value=='Duplicado',regexMatch(contact_email,'metrodoraeducation.com')), 0, 1),",
+						"          status_final = toString(iif(or(status_desc=='Lost',status_desc=='Expired'),'Perdida',toString(iif(stage_value=='Traslado a ERP','Ganada',toString(iif(and(and(stage_value=='Seguimiento Interesado',or(status_desc=='Won',status_desc=='Open')),!isNull(fecha_inscripcion)),'Pago Reserva',toString(iif(and(and(stage_value=='Seguimiento Interesado',or(status_desc=='Won',status_desc=='Open')),isNull(fecha_inscripcion)),'Interesado',toString(iif(and(or(or(stage_value=='Seguimiento Primer Contacto',stage_value=='No contesta'),stage_value=='Seguimiento Valorando'),or(status_desc=='Won',status_desc=='Open')),'Seguimiento',toString(iif(and(stage_value=='Sin Gestionar',or(status_desc=='Won',status_desc=='Open')),'Sin asignar')))))))))))),",
+						"          created_date = toDate(created),",
+						"          byratings_rating = iifNull(byratings_rating,''),",
+						"          sede = iifNull(sede,''),",
+						"          modalidad = iifNull(modalidad,''),",
+						"     partitionBy('hash', 1)) ~> derivedColumnClientifyDealsSilverF0",
+						"selectFinal alterRow(upsertIf(true()),",
+						"     partitionBy('hash', 1)) ~> alterRow1",
+						"selectVentasGoldF0 filter(sourcesystem=='Clientify',",
+						"     partitionBy('hash', 1)) ~> filterVentasGoldF0",
+						"MapDriftedVentasGoldF0 select(mapColumn(",
+						"          id,",
+						"          processdate,",
+						"          sourcesystem",
+						"     ),",
+						"     partitionBy('hash', 1),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> selectVentasGoldF0",
+						"filterVentasGoldF0 aggregate(maxprocessdate = iifNull(max(processdate),toTimestamp('1900-01-01','yyyy-MM-dd')),",
+						"     partitionBy('hash', 1)) ~> aggregateMaxprocessdate",
+						"sort1, aggregateMaxprocessdate join(1==1,",
+						"     joinType:'cross',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     partitionBy('hash', 1),",
+						"     broadcast: 'auto')~> join1",
+						"join1 filter(processdate>maxprocessdate,",
+						"     partitionBy('hash', 1)) ~> filterFinal",
+						"filterFinal select(mapColumn(",
+						"          amount,",
+						"          created,",
+						"          id,",
+						"          name,",
+						"          filepath,",
+						"          descuento,",
+						"          descuento_matricula,",
+						"          fecha_inscripcion,",
+						"          processdate,",
+						"          sourcesystem,",
+						"          modified,",
+						"          centro,",
+						"          source,",
+						"          date_closed,",
+						"          owner_name,",
+						"          estudio,",
+						"          contact_email,",
+						"          contact_phone,",
+						"          stage_value,",
+						"          status_desc,",
+						"          byratings_rating,",
+						"          sede,",
+						"          modalidad,",
+						"          lost_reason_value,",
+						"          tiempo_de_maduracion,",
+						"          new_enrollent,",
+						"          lead_neto,",
+						"          status_final,",
+						"          created_date",
+						"     ),",
+						"     partitionBy('hash', 1),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> selectFinal",
+						"derivedColumnClientifyDealsSilverF0 sort(desc(processdate, true),",
+						"     partitionBy('hash', 1)) ~> sort1",
+						"sourceVentasGoldF0 derive(amount = toDouble(byName('amount')),",
+						"          created = toTimestamp(byName('created')),",
+						"          id = toString(byName('id')),",
+						"          name = toString(byName('name')),",
+						"          filepath = toString(byName('filepath')),",
+						"          descuento = toDouble(byName('descuento')),",
+						"          descuento_matricula = toDouble(byName('descuento_matricula')),",
+						"          fecha_inscripcion = toTimestamp(byName('fecha_inscripcion')),",
+						"          processdate = toTimestamp(byName('processdate')),",
+						"          sourcesystem = toString(byName('sourcesystem')),",
+						"          modified = toTimestamp(byName('modified')),",
+						"          centro = toString(byName('centro')),",
+						"          source = toString(byName('source')),",
+						"          date_closed = toTimestamp(byName('date_closed')),",
+						"          owner_name = toString(byName('owner_name')),",
+						"          estudio = toString(byName('estudio')),",
+						"          contact_email = toString(byName('contact_email')),",
+						"          contact_phone = toString(byName('contact_phone')),",
+						"          stage_value = toString(byName('stage_value')),",
+						"          status_desc = toString(byName('status_desc')),",
+						"          byratings_rating = toString(byName('byratings_rating')),",
+						"          sede = toString(byName('sede')),",
+						"          modalidad = toString(byName('modalidad')),",
+						"          lost_reason_value = toString(byName('lost_reason_value')),",
+						"          tiempo_de_maduracion = toDouble(byName('tiempo_de_maduracion')),",
+						"          new_enrollent = toInteger(byName('new_enrollent')),",
+						"          lead_neto = toInteger(byName('lead_neto')),",
+						"          status_final = toString(byName('status_final')),",
+						"          created_date = toDate(byName('created_date')),",
+						"     partitionBy('hash', 1)) ~> MapDriftedVentasGoldF0",
+						"alterRow1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'gold',",
+						"     folderPath: 'lakehousef0/sales',",
+						"     mergeSchema: false,",
+						"     autoCompact: false,",
+						"     optimizedWrite: false,",
+						"     vacuum: 0,",
+						"     deletable: false,",
+						"     insertable: false,",
+						"     updateable: false,",
+						"     upsertable: true,",
+						"     keys:['id','sourcesystem'],",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sinkVentasGoldF0"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_adsl')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/df_OdooLeadGoldF0')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "GoldF0"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"linkedService": {
+								"referenceName": "ls_adsl",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sourceOdooLeadSilverF0"
+						},
+						{
+							"linkedService": {
+								"referenceName": "ls_adsl",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sourceVentasGoldF0"
+						}
+					],
+					"sinks": [
+						{
+							"linkedService": {
+								"referenceName": "ls_adsl",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sinkVentasGoldF0"
+						}
+					],
+					"transformations": [
+						{
+							"name": "MapDriftedOdooLeadSilverF0",
+							"description": "Crea una asignación explícita para cada columna de desfase."
+						},
+						{
+							"name": "selectOdooLeadSilverF0"
+						},
+						{
+							"name": "derivedColumnOdooLeadSilverF0"
+						},
+						{
+							"name": "alterRow1"
+						},
+						{
+							"name": "selectVentasGoldF0"
+						},
+						{
+							"name": "filterVentasGoldF0"
+						},
+						{
+							"name": "aggregateMaxprocessdate"
+						},
+						{
+							"name": "sort1"
+						},
+						{
+							"name": "join1"
+						},
+						{
+							"name": "filterFinal"
+						},
+						{
+							"name": "selectFinal"
+						},
+						{
+							"name": "MapDriftedVentasGoldF0",
+							"description": "Crea una asignación explícita para cada columna de desfase."
+						}
+					],
+					"scriptLines": [
+						"source(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'silver',",
+						"     folderPath: 'lakehousef0/odoolead') ~> sourceOdooLeadSilverF0",
+						"source(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: true,",
+						"     format: 'delta',",
+						"     fileSystem: 'gold',",
+						"     folderPath: 'lakehousef0/sales') ~> sourceVentasGoldF0",
+						"sourceOdooLeadSilverF0 derive(campaign_id = toBoolean(byName('campaign_id')),",
+						"          city = toString(byName('city')),",
+						"          company_id = toString(byName('company_id')),",
+						"          contact_name = toString(byName('contact_name')),",
+						"          country_id = toString(byName('country_id')),",
+						"          create_date = toTimestamp(byName('create_date')),",
+						"          date_action_last = toTimestamp(byName('date_action_last')),",
+						"          date_closed = toTimestamp(byName('date_closed')),",
+						"          date_conversion = toTimestamp(byName('date_conversion')),",
+						"          date_last_stage_update = toTimestamp(byName('date_last_stage_update')),",
+						"          email_cc = toBoolean(byName('email_cc')),",
+						"          email_from = toString(byName('email_from')),",
+						"          id = toString(byName('id')),",
+						"          lost_reason_id = toString(byName('lost_reason_id')),",
+						"          lost_reason_value = toString(byName('lost_reason_value')),",
+						"          medium_id = toBoolean(byName('medium_id')),",
+						"          mobile = toString(byName('mobile')),",
+						"          name = toString(byName('name')),",
+						"          partner_name = toBoolean(byName('partner_name')),",
+						"          phone = toLong(byName('phone')),",
+						"          planned_revenue = toDouble(byName('planned_revenue')),",
+						"          probability = toDouble(byName('probability')),",
+						"          sale_amount_total = toDouble(byName('sale_amount_total')),",
+						"          source_id = toBoolean(byName('source_id')),",
+						"          stage_id = toString(byName('stage_id')),",
+						"          state_id = toString(byName('state_id')),",
+						"          street = toString(byName('street')),",
+						"          street2 = toBoolean(byName('street2')),",
+						"          title = toBoolean(byName('title')),",
+						"          user_id = toString(byName('user_id')),",
+						"          write_date = toTimestamp(byName('write_date')),",
+						"          x_codcurso = toString(byName('x_codcurso')),",
+						"          x_codmodalidad = toString(byName('x_codmodalidad')),",
+						"          x_curso = toBoolean(byName('x_curso')),",
+						"          x_curso_id = toString(byName('x_curso_id')),",
+						"          x_ga_campaign = toString(byName('x_ga_campaign')),",
+						"          x_ga_medium = toString(byName('x_ga_medium')),",
+						"          x_ga_source = toString(byName('x_ga_source')),",
+						"          x_ga_utma = toString(byName('x_ga_utma')),",
+						"          x_modalidad_id = toString(byName('x_modalidad_id')),",
+						"          x_sede_id = toString(byName('x_sede_id')),",
+						"          x_studio_field_FM3fX = toBoolean(byName('x_studio_field_FM3fX')),",
+						"          zip = toString(byName('zip')),",
+						"          filepath = toString(byName('filepath')),",
+						"          country_value = toString(byName('country_value')),",
+						"          state_value = toString(byName('state_value')),",
+						"          user_value = toString(byName('user_value')),",
+						"          x_curso_value = toString(byName('x_curso_value')),",
+						"          x_modalidad_value = toString(byName('x_modalidad_value')),",
+						"          x_sede_value = toString(byName('x_sede_value')),",
+						"          company_value = toString(byName('company_value')),",
+						"          stage_value = toString(byName('stage_value')),",
+						"          processdate = toTimestamp(byName('processdate')),",
+						"          sourcesystem = toString(byName('sourcesystem')),",
+						"     partitionBy('hash', 1)) ~> MapDriftedOdooLeadSilverF0",
+						"MapDriftedOdooLeadSilverF0 select(mapColumn(",
+						"          created = create_date,",
+						"          fecha_inscripcion = date_conversion,",
+						"          id,",
+						"          amount = sale_amount_total,",
+						"          processdate,",
+						"          sourcesystem,",
+						"          filepath,",
+						"          name,",
+						"          modified = write_date,",
+						"          source = x_ga_source,",
+						"          date_closed,",
+						"          owner_name = user_value,",
+						"          estudio = x_curso_value,",
+						"          contact_email = email_from,",
+						"          contact_phone = phone,",
+						"          stage_value,",
+						"          lost_reason_value,",
+						"          sede = x_sede_value,",
+						"          modalidad = x_modalidad_value",
+						"     ),",
+						"     partitionBy('hash', 1),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> selectOdooLeadSilverF0",
+						"selectOdooLeadSilverF0 derive(descuento = toDouble('0'),",
+						"          descuento_matricula = toDouble('0'),",
+						"          centro = 'ISEP',",
+						"          status_desc = '',",
+						"          tiempo_de_maduracion = toDouble(minus(date_closed,created)/(1000*60*60*24)),",
+						"          new_enrollent = iif(and(stage_value=='Won',!isNull(date_closed)), 1, 0),",
+						"          lead_neto = iif(stage_value=='Duplicado', 0, 1),",
+						"          status_final = toString(iif(or(!isNull(lost_reason_value),lost_reason_value!=''),'Perdida',toString(iif(stage_value=='Won','Ganada',toString(iif(and(and(or(stage_value=='Negociación',stage_value=='Proposition'),or(isNull(lost_reason_value),lost_reason_value=='')),!isNull(date_closed)),'Pago Reserva',toString(iif(and(and(or(stage_value=='Negociación',stage_value=='Proposition'),or(isNull(lost_reason_value),lost_reason_value=='')),isNull(date_closed)),'Interesado',toString(iif(or(stage_value=='Sin Contacto',stage_value=='Qualified'),'Seguimiento',toString(iif(or(stage_value=='New',stage_value=='Duplicado'),'Sin asignar')))))))))))),",
+						"          created_date = toDate(created),",
+						"          byratings_rating = '',",
+						"          sede = iifNull(sede,'',sede),",
+						"          modalidad = iifNull(modalidad,'',modalidad),",
+						"     partitionBy('hash', 1)) ~> derivedColumnOdooLeadSilverF0",
+						"selectFinal alterRow(upsertIf(true()),",
+						"     partitionBy('hash', 1)) ~> alterRow1",
+						"MapDriftedVentasGoldF0 select(mapColumn(",
+						"          id,",
+						"          processdate,",
+						"          sourcesystem",
+						"     ),",
+						"     partitionBy('hash', 1),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> selectVentasGoldF0",
+						"selectVentasGoldF0 filter(sourcesystem=='Odoo',",
+						"     partitionBy('hash', 1)) ~> filterVentasGoldF0",
+						"filterVentasGoldF0 aggregate(maxprocessdate = iifNull(max(processdate),toTimestamp('1900-01-01','yyyy-MM-dd')),",
+						"     partitionBy('hash', 1)) ~> aggregateMaxprocessdate",
+						"derivedColumnOdooLeadSilverF0 sort(desc(processdate, true),",
+						"     partitionBy('hash', 1)) ~> sort1",
+						"sort1, aggregateMaxprocessdate join(1==1,",
+						"     joinType:'cross',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     partitionBy('hash', 1),",
+						"     broadcast: 'auto')~> join1",
+						"join1 filter(processdate>maxprocessdate,",
+						"     partitionBy('hash', 1)) ~> filterFinal",
+						"filterFinal select(mapColumn(",
+						"          created,",
+						"          fecha_inscripcion,",
+						"          id,",
+						"          amount,",
+						"          processdate,",
+						"          sourcesystem,",
+						"          filepath,",
+						"          name,",
+						"          modified,",
+						"          source,",
+						"          date_closed,",
+						"          owner_name,",
+						"          estudio,",
+						"          contact_email,",
+						"          contact_phone,",
+						"          stage_value,",
+						"          lost_reason_value,",
+						"          sede,",
+						"          modalidad,",
+						"          descuento,",
+						"          descuento_matricula,",
+						"          centro,",
+						"          status_desc,",
+						"          tiempo_de_maduracion,",
+						"          new_enrollent,",
+						"          lead_neto,",
+						"          status_final,",
+						"          created_date,",
+						"          byratings_rating",
+						"     ),",
+						"     partitionBy('hash', 1),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> selectFinal",
+						"sourceVentasGoldF0 derive(amount = toDouble(byName('amount')),",
+						"          created = toTimestamp(byName('created')),",
+						"          id = toString(byName('id')),",
+						"          name = toString(byName('name')),",
+						"          filepath = toString(byName('filepath')),",
+						"          descuento = toDouble(byName('descuento')),",
+						"          descuento_matricula = toDouble(byName('descuento_matricula')),",
+						"          fecha_inscripcion = toTimestamp(byName('fecha_inscripcion')),",
+						"          processdate = toTimestamp(byName('processdate')),",
+						"          sourcesystem = toString(byName('sourcesystem')),",
+						"          modified = toTimestamp(byName('modified')),",
+						"          centro = toString(byName('centro')),",
+						"          source = toString(byName('source')),",
+						"          date_closed = toTimestamp(byName('date_closed')),",
+						"          owner_name = toString(byName('owner_name')),",
+						"          estudio = toString(byName('estudio')),",
+						"          contact_email = toString(byName('contact_email')),",
+						"          contact_phone = toString(byName('contact_phone')),",
+						"          stage_value = toString(byName('stage_value')),",
+						"          status_desc = toString(byName('status_desc')),",
+						"          byratings_rating = toString(byName('byratings_rating')),",
+						"          sede = toString(byName('sede')),",
+						"          modalidad = toString(byName('modalidad')),",
+						"          lost_reason_value = toString(byName('lost_reason_value')),",
+						"          tiempo_de_maduracion = toDouble(byName('tiempo_de_maduracion')),",
+						"          new_enrollent = toInteger(byName('new_enrollent')),",
+						"          lead_neto = toInteger(byName('lead_neto')),",
+						"          status_final = toString(byName('status_final')),",
+						"          created_date = toDate(byName('created_date')),",
+						"     partitionBy('hash', 1)) ~> MapDriftedVentasGoldF0",
+						"alterRow1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'gold',",
+						"     folderPath: 'lakehousef0/sales',",
+						"     mergeSchema: false,",
+						"     autoCompact: false,",
+						"     optimizedWrite: false,",
+						"     vacuum: 0,",
+						"     deletable: false,",
+						"     insertable: false,",
+						"     updateable: false,",
+						"     upsertable: true,",
+						"     keys:['id','sourcesystem'],",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sinkVentasGoldF0"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_adsl')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/df_OdooLeadGoldF0_copy1')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "GoldF0"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"linkedService": {
+								"referenceName": "ls_adsl",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sourceOdooLeadSilverF0"
+						},
+						{
+							"linkedService": {
+								"referenceName": "ls_adsl",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sourceVentasGoldF0"
+						}
+					],
+					"sinks": [
+						{
+							"linkedService": {
+								"referenceName": "ls_adsl",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sinkVentasGoldF0"
+						}
+					],
+					"transformations": [
+						{
+							"name": "MapDriftedOdooLeadSilverF0",
+							"description": "Crea una asignación explícita para cada columna de desfase."
+						},
+						{
+							"name": "selectOdooLeadSilverF0"
+						},
+						{
+							"name": "derivedColumnOdooLeadSilverF0"
+						},
+						{
+							"name": "alterRow1"
+						},
+						{
+							"name": "selectVentasGoldF0"
+						},
+						{
+							"name": "filterVentasGoldF0"
+						},
+						{
+							"name": "aggregateMaxprocessdate"
+						},
+						{
+							"name": "sort1"
+						},
+						{
+							"name": "join1"
+						},
+						{
+							"name": "filterFinal"
+						},
+						{
+							"name": "selectFinal"
+						},
+						{
+							"name": "MapDriftedVentasGoldF0",
+							"description": "Crea una asignación explícita para cada columna de desfase."
+						}
+					],
+					"scriptLines": [
+						"source(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'silver',",
+						"     folderPath: 'lakehousef0/odoolead') ~> sourceOdooLeadSilverF0",
+						"source(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: true,",
+						"     format: 'delta',",
+						"     fileSystem: 'gold',",
+						"     folderPath: 'lakehousef0/sales') ~> sourceVentasGoldF0",
+						"sourceOdooLeadSilverF0 derive(campaign_id = toBoolean(byName('campaign_id')),",
+						"          city = toString(byName('city')),",
+						"          company_id = toString(byName('company_id')),",
+						"          contact_name = toString(byName('contact_name')),",
+						"          country_id = toString(byName('country_id')),",
+						"          create_date = toTimestamp(byName('create_date')),",
+						"          date_action_last = toTimestamp(byName('date_action_last')),",
+						"          date_closed = toTimestamp(byName('date_closed')),",
+						"          date_conversion = toTimestamp(byName('date_conversion')),",
+						"          date_last_stage_update = toTimestamp(byName('date_last_stage_update')),",
+						"          email_cc = toBoolean(byName('email_cc')),",
+						"          email_from = toString(byName('email_from')),",
+						"          id = toString(byName('id')),",
+						"          lost_reason_id = toString(byName('lost_reason_id')),",
+						"          lost_reason_value = toString(byName('lost_reason_value')),",
+						"          medium_id = toBoolean(byName('medium_id')),",
+						"          mobile = toString(byName('mobile')),",
+						"          name = toString(byName('name')),",
+						"          partner_name = toBoolean(byName('partner_name')),",
+						"          phone = toLong(byName('phone')),",
+						"          planned_revenue = toDouble(byName('planned_revenue')),",
+						"          probability = toDouble(byName('probability')),",
+						"          sale_amount_total = toDouble(byName('sale_amount_total')),",
+						"          source_id = toBoolean(byName('source_id')),",
+						"          stage_id = toString(byName('stage_id')),",
+						"          state_id = toString(byName('state_id')),",
+						"          street = toString(byName('street')),",
+						"          street2 = toBoolean(byName('street2')),",
+						"          title = toBoolean(byName('title')),",
+						"          user_id = toString(byName('user_id')),",
+						"          write_date = toTimestamp(byName('write_date')),",
+						"          x_codcurso = toString(byName('x_codcurso')),",
+						"          x_codmodalidad = toString(byName('x_codmodalidad')),",
+						"          x_curso = toBoolean(byName('x_curso')),",
+						"          x_curso_id = toString(byName('x_curso_id')),",
+						"          x_ga_campaign = toString(byName('x_ga_campaign')),",
+						"          x_ga_medium = toString(byName('x_ga_medium')),",
+						"          x_ga_source = toString(byName('x_ga_source')),",
+						"          x_ga_utma = toString(byName('x_ga_utma')),",
+						"          x_modalidad_id = toString(byName('x_modalidad_id')),",
+						"          x_sede_id = toString(byName('x_sede_id')),",
+						"          x_studio_field_FM3fX = toBoolean(byName('x_studio_field_FM3fX')),",
+						"          zip = toString(byName('zip')),",
+						"          filepath = toString(byName('filepath')),",
+						"          country_value = toString(byName('country_value')),",
+						"          state_value = toString(byName('state_value')),",
+						"          user_value = toString(byName('user_value')),",
+						"          x_curso_value = toString(byName('x_curso_value')),",
+						"          x_modalidad_value = toString(byName('x_modalidad_value')),",
+						"          x_sede_value = toString(byName('x_sede_value')),",
+						"          company_value = toString(byName('company_value')),",
+						"          stage_value = toString(byName('stage_value')),",
+						"          processdate = toTimestamp(byName('processdate')),",
+						"          sourcesystem = toString(byName('sourcesystem')),",
+						"     partitionBy('hash', 1)) ~> MapDriftedOdooLeadSilverF0",
+						"MapDriftedOdooLeadSilverF0 select(mapColumn(",
+						"          created = create_date,",
+						"          fecha_inscripcion = date_conversion,",
+						"          id,",
+						"          amount = sale_amount_total,",
+						"          processdate,",
+						"          sourcesystem,",
+						"          filepath,",
+						"          name,",
+						"          modified = write_date,",
+						"          source = x_ga_source,",
+						"          date_closed,",
+						"          owner_name = user_value,",
+						"          estudio = x_curso_value,",
+						"          contact_email = email_from,",
+						"          contact_phone = phone,",
+						"          stage_value,",
+						"          lost_reason_value,",
+						"          sede = x_sede_value,",
+						"          modalidad = x_modalidad_value",
+						"     ),",
+						"     partitionBy('hash', 1),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> selectOdooLeadSilverF0",
+						"selectOdooLeadSilverF0 derive(descuento = toDouble('0'),",
+						"          descuento_matricula = toDouble('0'),",
+						"          centro = 'ISEP',",
+						"          status_desc = '',",
+						"          tiempo_de_maduracion = toDouble(minus(date_closed,created)/(1000*60*60*24)),",
+						"          new_enrollent = iif(and(stage_value=='Won',!isNull(date_closed)), 1, 0),",
+						"          lead_neto = iif(or(stage_value=='Duplicado',regexMatch(contact_email,'metrodoraeducation.com')), 0, 1),",
+						"          status_final = toString(iif(or(!isNull(lost_reason_value),lost_reason_value!=''),'Perdida',toString(iif(stage_value=='Won','Ganada',toString(iif(and(and(or(stage_value=='Negociación',stage_value=='Proposition'),or(isNull(lost_reason_value),lost_reason_value=='')),!isNull(date_closed)),'Pago Reserva',toString(iif(and(and(or(stage_value=='Negociación',stage_value=='Proposition'),or(isNull(lost_reason_value),lost_reason_value=='')),isNull(date_closed)),'Interesado',toString(iif(or(stage_value=='Sin Contacto',stage_value=='Qualified'),'Seguimiento',toString(iif(or(stage_value=='New',stage_value=='Duplicado'),'Sin asignar')))))))))))),",
+						"          created_date = toDate(created),",
+						"          byratings_rating = '',",
+						"          sede = iifNull(sede,'',sede),",
+						"          modalidad = iifNull(modalidad,'',modalidad),",
+						"     partitionBy('hash', 1)) ~> derivedColumnOdooLeadSilverF0",
+						"selectFinal alterRow(upsertIf(true()),",
+						"     partitionBy('hash', 1)) ~> alterRow1",
+						"MapDriftedVentasGoldF0 select(mapColumn(",
+						"          id,",
+						"          processdate,",
+						"          sourcesystem",
+						"     ),",
+						"     partitionBy('hash', 1),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> selectVentasGoldF0",
+						"selectVentasGoldF0 filter(sourcesystem=='Odoo',",
+						"     partitionBy('hash', 1)) ~> filterVentasGoldF0",
+						"filterVentasGoldF0 aggregate(maxprocessdate = iifNull(max(processdate),toTimestamp('1900-01-01','yyyy-MM-dd')),",
+						"     partitionBy('hash', 1)) ~> aggregateMaxprocessdate",
+						"derivedColumnOdooLeadSilverF0 sort(desc(processdate, true),",
+						"     partitionBy('hash', 1)) ~> sort1",
+						"sort1, aggregateMaxprocessdate join(1==1,",
+						"     joinType:'cross',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     partitionBy('hash', 1),",
+						"     broadcast: 'auto')~> join1",
+						"join1 filter(processdate>maxprocessdate,",
+						"     partitionBy('hash', 1)) ~> filterFinal",
+						"filterFinal select(mapColumn(",
+						"          created,",
+						"          fecha_inscripcion,",
+						"          id,",
+						"          amount,",
+						"          processdate,",
+						"          sourcesystem,",
+						"          filepath,",
+						"          name,",
+						"          modified,",
+						"          source,",
+						"          date_closed,",
+						"          owner_name,",
+						"          estudio,",
+						"          contact_email,",
+						"          contact_phone,",
+						"          stage_value,",
+						"          lost_reason_value,",
+						"          sede,",
+						"          modalidad,",
+						"          descuento,",
+						"          descuento_matricula,",
+						"          centro,",
+						"          status_desc,",
+						"          tiempo_de_maduracion,",
+						"          new_enrollent,",
+						"          lead_neto,",
+						"          status_final,",
+						"          created_date,",
+						"          byratings_rating",
+						"     ),",
+						"     partitionBy('hash', 1),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> selectFinal",
+						"sourceVentasGoldF0 derive(amount = toDouble(byName('amount')),",
+						"          created = toTimestamp(byName('created')),",
+						"          id = toString(byName('id')),",
+						"          name = toString(byName('name')),",
+						"          filepath = toString(byName('filepath')),",
+						"          descuento = toDouble(byName('descuento')),",
+						"          descuento_matricula = toDouble(byName('descuento_matricula')),",
+						"          fecha_inscripcion = toTimestamp(byName('fecha_inscripcion')),",
+						"          processdate = toTimestamp(byName('processdate')),",
+						"          sourcesystem = toString(byName('sourcesystem')),",
+						"          modified = toTimestamp(byName('modified')),",
+						"          centro = toString(byName('centro')),",
+						"          source = toString(byName('source')),",
+						"          date_closed = toTimestamp(byName('date_closed')),",
+						"          owner_name = toString(byName('owner_name')),",
+						"          estudio = toString(byName('estudio')),",
+						"          contact_email = toString(byName('contact_email')),",
+						"          contact_phone = toString(byName('contact_phone')),",
+						"          stage_value = toString(byName('stage_value')),",
+						"          status_desc = toString(byName('status_desc')),",
+						"          byratings_rating = toString(byName('byratings_rating')),",
+						"          sede = toString(byName('sede')),",
+						"          modalidad = toString(byName('modalidad')),",
+						"          lost_reason_value = toString(byName('lost_reason_value')),",
+						"          tiempo_de_maduracion = toDouble(byName('tiempo_de_maduracion')),",
+						"          new_enrollent = toInteger(byName('new_enrollent')),",
+						"          lead_neto = toInteger(byName('lead_neto')),",
+						"          status_final = toString(byName('status_final')),",
+						"          created_date = toDate(byName('created_date')),",
+						"     partitionBy('hash', 1)) ~> MapDriftedVentasGoldF0",
+						"alterRow1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'gold',",
+						"     folderPath: 'lakehousef0/sales',",
+						"     mergeSchema: false,",
+						"     autoCompact: false,",
+						"     optimizedWrite: false,",
+						"     vacuum: 0,",
+						"     deletable: false,",
+						"     insertable: false,",
+						"     updateable: false,",
+						"     upsertable: true,",
+						"     keys:['id','sourcesystem'],",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sinkVentasGoldF0"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_adsl')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/df_SalesGoldF0_Full')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "GoldF0"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"linkedService": {
+								"referenceName": "ls_adsl",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sourceClientifyDealsSilverF0"
+						},
+						{
+							"linkedService": {
+								"referenceName": "ls_adsl",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sourceOdooLeadSilverF0"
+						}
+					],
+					"sinks": [
+						{
+							"linkedService": {
+								"referenceName": "ls_adsl",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sinkVentasGoldF0"
+						}
+					],
+					"transformations": [
+						{
+							"name": "MapDriftedClientifyDealsSilverF0",
+							"description": "Crea una asignación explícita para cada columna de desfase."
+						},
+						{
+							"name": "selectOdooLeadSilverF0"
+						},
+						{
+							"name": "selectClientifyDealsSilverF0"
+						},
+						{
+							"name": "derivedColumnOdooLeadSilverF0"
+						},
+						{
+							"name": "union1"
+						},
+						{
+							"name": "derivedColumnClientifyDealsSilverF0"
+						},
+						{
+							"name": "alterRow1"
+						},
+						{
+							"name": "MapDriftedOdooLeadSilverF0",
+							"description": "Crea una asignación explícita para cada columna de desfase."
+						}
+					],
+					"scriptLines": [
+						"source(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'silver',",
+						"     folderPath: 'lakehousef0/clientifydeals') ~> sourceClientifyDealsSilverF0",
+						"source(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'silver',",
+						"     folderPath: 'lakehousef0/odoolead') ~> sourceOdooLeadSilverF0",
+						"sourceClientifyDealsSilverF0 derive(actual_closed_date = toDate(byName('actual_closed_date')),",
+						"          amount = toDouble(byName('amount')),",
+						"          amount_user = toString(byName('amount_user')),",
+						"          company = toString(byName('company')),",
+						"          contact = toString(byName('contact')),",
+						"          contact_email = toString(byName('contact_email')),",
+						"          contact_medium = toString(byName('contact_medium')),",
+						"          contact_name = toString(byName('contact_name')),",
+						"          contact_phone = toString(byName('contact_phone')),",
+						"          contact_source = toString(byName('contact_source')),",
+						"          created = toTimestamp(byName('created')),",
+						"          currency = toString(byName('currency')),",
+						"          expected_closed_date = toDate(byName('expected_closed_date')),",
+						"          id = toString(byName('id')),",
+						"          modified = toTimestamp(byName('modified')),",
+						"          name = toString(byName('name')),",
+						"          owner_name = toString(byName('owner_name')),",
+						"          pipeline = toString(byName('pipeline')),",
+						"          pipeline_desc = toString(byName('pipeline_desc')),",
+						"          pipeline_stage = toString(byName('pipeline_stage')),",
+						"          pipeline_stage_desc = toString(byName('pipeline_stage_desc')),",
+						"          probability = toInteger(byName('probability')),",
+						"          probability_desc = toString(byName('probability_desc')),",
+						"          status = toInteger(byName('status')),",
+						"          status_desc = toString(byName('status_desc')),",
+						"          url = toString(byName('url')),",
+						"          filepath = toString(byName('filepath')),",
+						"          custom_fields_ByRatings_Rating = toString(byName('custom_fields_ByRatings_Rating')),",
+						"          custom_fields_ByRatings_Score = toString(byName('custom_fields_ByRatings_Score')),",
+						"          custom_fields_Estudio_Old = toString(byName('custom_fields_Estudio_Old')),",
+						"          custom_fields_ID = toString(byName('custom_fields_ID')),",
+						"          custom_fields_Modalidad_Old = toString(byName('custom_fields_Modalidad_Old')),",
+						"          custom_fields_Sede_Old = toString(byName('custom_fields_Sede_Old')),",
+						"          custom_fields_anio_academico = toString(byName('custom_fields_anio_academico')),",
+						"          custom_fields_campaign_id = toString(byName('custom_fields_campaign_id')),",
+						"          custom_fields_centro = toString(byName('custom_fields_centro')),",
+						"          custom_fields_ciudad = toString(byName('custom_fields_ciudad')),",
+						"          custom_fields_cp = toString(byName('custom_fields_cp')),",
+						"          custom_fields_curso_anio = toString(byName('custom_fields_curso_anio')),",
+						"          custom_fields_descuento = toDouble(byName('custom_fields_descuento')),",
+						"          custom_fields_descuento_matricula = toDouble(byName('custom_fields_descuento_matricula')),",
+						"          custom_fields_estudio = toString(byName('custom_fields_estudio')),",
+						"          custom_fields_fecha_inscripcion = toDate(byName('custom_fields_fecha_inscripcion')),",
+						"          custom_fields_gclid = toString(byName('custom_fields_gclid')),",
+						"          custom_fields_gdpr = toString(byName('custom_fields_gdpr')),",
+						"          custom_fields_google_id = toString(byName('custom_fields_google_id')),",
+						"          custom_fields_linea_negocio = toString(byName('custom_fields_linea_negocio')),",
+						"          custom_fields_matricula = toString(byName('custom_fields_matricula')),",
+						"          custom_fields_mensualidad = toString(byName('custom_fields_mensualidad')),",
+						"          custom_fields_modalidad = toString(byName('custom_fields_modalidad')),",
+						"          custom_fields_pais = toString(byName('custom_fields_pais')),",
+						"          custom_fields_ref = toString(byName('custom_fields_ref')),",
+						"          custom_fields_sede = toString(byName('custom_fields_sede')),",
+						"          custom_fields_tipo_conversion = toString(byName('custom_fields_tipo_conversion')),",
+						"          custom_fields_turno = toString(byName('custom_fields_turno')),",
+						"          custom_fields_ua = toString(byName('custom_fields_ua')),",
+						"          custom_fields_url = toString(byName('custom_fields_url')),",
+						"          custom_fields_utm_ad_id = toString(byName('custom_fields_utm_ad_id')),",
+						"          custom_fields_utm_adset_id = toString(byName('custom_fields_utm_adset_id')),",
+						"          custom_fields_utm_campaign = toString(byName('custom_fields_utm_campaign')),",
+						"          custom_fields_utm_campaign_id = toString(byName('custom_fields_utm_campaign_id')),",
+						"          custom_fields_utm_campaign_name = toString(byName('custom_fields_utm_campaign_name')),",
+						"          custom_fields_utm_channel = toString(byName('custom_fields_utm_channel')),",
+						"          custom_fields_utm_device = toString(byName('custom_fields_utm_device')),",
+						"          custom_fields_utm_estrategia = toString(byName('custom_fields_utm_estrategia')),",
+						"          custom_fields_utm_medium = toString(byName('custom_fields_utm_medium')),",
+						"          custom_fields_utm_network = toString(byName('custom_fields_utm_network')),",
+						"          custom_fields_utm_placement = toString(byName('custom_fields_utm_placement')),",
+						"          custom_fields_utm_site_source_name = toString(byName('custom_fields_utm_site_source_name')),",
+						"          custom_fields_utm_source = toString(byName('custom_fields_utm_source')),",
+						"          custom_fields_utm_term = toString(byName('custom_fields_utm_term')),",
+						"          custom_fields_utm_type = toString(byName('custom_fields_utm_type')),",
+						"          processdate = toTimestamp(byName('processdate')),",
+						"          sourcesystem = toString(byName('sourcesystem')),",
+						"          created_tzh = toString(byName('created_tzh')),",
+						"          modified_tzh = toString(byName('modified_tzh')),",
+						"     partitionBy('hash', 1)) ~> MapDriftedClientifyDealsSilverF0",
+						"MapDriftedOdooLeadSilverF0 select(mapColumn(",
+						"          created = create_date,",
+						"          fecha_inscripcion = date_conversion,",
+						"          id,",
+						"          amount = sale_amount_total,",
+						"          processdate,",
+						"          sourcesystem,",
+						"          filepath,",
+						"          name,",
+						"          modified = write_date,",
+						"          source = x_ga_source,",
+						"          date_closed,",
+						"          owner_name = user_value,",
+						"          estudio = x_curso_value,",
+						"          contact_email = email_from,",
+						"          contact_phone = phone,",
+						"          stage_value,",
+						"          lost_reason_value,",
+						"          sede = x_sede_value,",
+						"          modalidad = x_modalidad_value",
+						"     ),",
+						"     partitionBy('hash', 1),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> selectOdooLeadSilverF0",
+						"MapDriftedClientifyDealsSilverF0 select(mapColumn(",
+						"          amount,",
+						"          created,",
+						"          id,",
+						"          name,",
+						"          filepath,",
+						"          descuento = custom_fields_descuento,",
+						"          descuento_matricula = custom_fields_descuento_matricula,",
+						"          fecha_inscripcion = custom_fields_fecha_inscripcion,",
+						"          processdate,",
+						"          sourcesystem,",
+						"          modified,",
+						"          centro = custom_fields_centro,",
+						"          source = custom_fields_utm_source,",
+						"          date_closed = actual_closed_date,",
+						"          owner_name,",
+						"          estudio = custom_fields_estudio,",
+						"          contact_email,",
+						"          contact_phone,",
+						"          stage_value = pipeline_stage_desc,",
+						"          status_desc,",
+						"          byratings_rating = custom_fields_ByRatings_Rating,",
+						"          sede = custom_fields_sede,",
+						"          modalidad = custom_fields_modalidad",
+						"     ),",
+						"     partitionBy('hash', 1),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> selectClientifyDealsSilverF0",
+						"selectOdooLeadSilverF0 derive(descuento = toDouble('0'),",
+						"          descuento_matricula = toDouble('0'),",
+						"          centro = 'ISEP',",
+						"          status_desc = '',",
+						"          tiempo_de_maduracion = toDouble(minus(date_closed,created)/(1000*60*60*24)),",
+						"          new_enrollent = iif(and(stage_value=='Won',!isNull(date_closed)), 1, 0),",
+						"          lead_neto = iif(stage_value=='Duplicado', 0, 1),",
+						"          status_final = toString(iif(or(!isNull(lost_reason_value),lost_reason_value!=''),'Perdida',toString(iif(stage_value=='Won','Ganada',toString(iif(and(and(or(stage_value=='Negociación',stage_value=='Proposition'),or(isNull(lost_reason_value),lost_reason_value=='')),!isNull(date_closed)),'Pago Reserva',toString(iif(and(and(or(stage_value=='Negociación',stage_value=='Proposition'),or(isNull(lost_reason_value),lost_reason_value=='')),isNull(date_closed)),'Interesado',toString(iif(or(stage_value=='Sin Contacto',stage_value=='Qualified'),'Seguimiento',toString(iif(or(stage_value=='New',stage_value=='Duplicado'),'Sin asignar')))))))))))),",
+						"          created_date = toDate(created),",
+						"          byratings_rating = '',",
+						"          sede = iifNull(sede,'',sede),",
+						"          modalidad = iifNull(modalidad,'',modalidad),",
+						"     partitionBy('hash', 1)) ~> derivedColumnOdooLeadSilverF0",
+						"derivedColumnClientifyDealsSilverF0, derivedColumnOdooLeadSilverF0 union(byName: true,",
+						"     partitionBy('hash', 1))~> union1",
+						"selectClientifyDealsSilverF0 derive(fecha_inscripcion = toTimestamp(fecha_inscripcion),",
+						"          date_closed = toTimestamp(date_closed),",
+						"          lost_reason_value = '',",
+						"          tiempo_de_maduracion = toDouble(minus(toTimestamp(fecha_inscripcion),created)/(1000*60*60*24)),",
+						"          new_enrollent = iif(isNull(fecha_inscripcion), 0, 1),",
+						"          lead_neto = iif(stage_value=='Duplicado', 0, 1),",
+						"          status_final = toString(iif(or(status_desc=='Lost',status_desc=='Expired'),'Perdida',toString(iif(stage_value=='Traslado a ERP','Ganada',toString(iif(and(and(stage_value=='Seguimiento Interesado',or(status_desc=='Won',status_desc=='Open')),!isNull(fecha_inscripcion)),'Pago Reserva',toString(iif(and(and(stage_value=='Seguimiento Interesado',or(status_desc=='Won',status_desc=='Open')),isNull(fecha_inscripcion)),'Interesado',toString(iif(and(or(or(stage_value=='Seguimiento Primer Contacto',stage_value=='No contesta'),stage_value=='Seguimiento Valorando'),or(status_desc=='Won',status_desc=='Open')),'Seguimiento',toString(iif(and(stage_value=='Sin Gestionar',or(status_desc=='Won',status_desc=='Open')),'Sin asignar')))))))))))),",
+						"          created_date = toDate(created),",
+						"          byratings_rating = iifNull(byratings_rating,''),",
+						"          sede = iifNull(sede,'',sede),",
+						"          modalidad = iifNull(modalidad,'',modalidad),",
+						"          centro = 'CESIF',",
+						"     partitionBy('hash', 1)) ~> derivedColumnClientifyDealsSilverF0",
+						"union1 alterRow(upsertIf(true()),",
+						"     partitionBy('hash', 1)) ~> alterRow1",
+						"sourceOdooLeadSilverF0 derive(campaign_id = toBoolean(byName('campaign_id')),",
+						"          city = toString(byName('city')),",
+						"          company_id = toString(byName('company_id')),",
+						"          contact_name = toString(byName('contact_name')),",
+						"          country_id = toString(byName('country_id')),",
+						"          create_date = toTimestamp(byName('create_date')),",
+						"          date_action_last = toTimestamp(byName('date_action_last')),",
+						"          date_closed = toTimestamp(byName('date_closed')),",
+						"          date_conversion = toTimestamp(byName('date_conversion')),",
+						"          date_last_stage_update = toTimestamp(byName('date_last_stage_update')),",
+						"          email_cc = toBoolean(byName('email_cc')),",
+						"          email_from = toString(byName('email_from')),",
+						"          id = toString(byName('id')),",
+						"          lost_reason_id = toString(byName('lost_reason_id')),",
+						"          lost_reason_value = toString(byName('lost_reason_value')),",
+						"          medium_id = toBoolean(byName('medium_id')),",
+						"          mobile = toString(byName('mobile')),",
+						"          name = toString(byName('name')),",
+						"          partner_name = toString(byName('partner_name')),",
+						"          phone = toString(byName('phone')),",
+						"          planned_revenue = toDouble(byName('planned_revenue')),",
+						"          probability = toDouble(byName('probability')),",
+						"          sale_amount_total = toDouble(byName('sale_amount_total')),",
+						"          source_id = toBoolean(byName('source_id')),",
+						"          stage_id = toString(byName('stage_id')),",
+						"          state_id = toString(byName('state_id')),",
+						"          street = toString(byName('street')),",
+						"          street2 = toBoolean(byName('street2')),",
+						"          title = toBoolean(byName('title')),",
+						"          user_id = toString(byName('user_id')),",
+						"          write_date = toTimestamp(byName('write_date')),",
+						"          x_codcurso = toString(byName('x_codcurso')),",
+						"          x_codmodalidad = toString(byName('x_codmodalidad')),",
+						"          x_curso = toString(byName('x_curso')),",
+						"          x_curso_id = toString(byName('x_curso_id')),",
+						"          x_ga_campaign = toString(byName('x_ga_campaign')),",
+						"          x_ga_medium = toString(byName('x_ga_medium')),",
+						"          x_ga_source = toString(byName('x_ga_source')),",
+						"          x_ga_utma = toString(byName('x_ga_utma')),",
+						"          x_modalidad_id = toString(byName('x_modalidad_id')),",
+						"          x_sede_id = toString(byName('x_sede_id')),",
+						"          x_studio_field_FM3fX = toBoolean(byName('x_studio_field_FM3fX')),",
+						"          zip = toString(byName('zip')),",
+						"          filepath = toString(byName('filepath')),",
+						"          country_value = toString(byName('country_value')),",
+						"          state_value = toString(byName('state_value')),",
+						"          user_value = toString(byName('user_value')),",
+						"          x_curso_value = toString(byName('x_curso_value')),",
+						"          x_modalidad_value = toString(byName('x_modalidad_value')),",
+						"          x_sede_value = toString(byName('x_sede_value')),",
+						"          company_value = toString(byName('company_value')),",
+						"          stage_value = toString(byName('stage_value')),",
+						"          processdate = toTimestamp(byName('processdate')),",
+						"          sourcesystem = toString(byName('sourcesystem')),",
+						"     partitionBy('hash', 1)) ~> MapDriftedOdooLeadSilverF0",
+						"alterRow1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'gold',",
+						"     folderPath: 'lakehousef0/sales',",
+						"     mergeSchema: false,",
+						"     autoCompact: false,",
+						"     optimizedWrite: false,",
+						"     vacuum: 0,",
+						"     deletable: false,",
+						"     insertable: false,",
+						"     updateable: false,",
+						"     upsertable: true,",
+						"     keys:['id','sourcesystem'],",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sinkVentasGoldF0"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_adsl')]"
+			]
+		}
+	]
+}

@@ -1,0 +1,39 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "adf-metrodoralakehouse-pro"
+		},
+		"ls_PostgreSql_connectionString": {
+			"value": "Host=psql-metrodoralakehouse-pro.postgres.database.azure.com;Port=5432;Database=lakehouse;UID=sqladminuser;EncryptionMethod=1;ValidateServerCertificate=0"
+		},
+		"ls_Aircall_properties_typeProperties_url": {
+			"value": "https://api.aircall.io/"
+		},
+		"ls_Aircall_properties_typeProperties_userName": {
+			"value": "c668cd9a3a86775ddb72333278d0b7bb"
+		},
+		"ls_AzureDatabricks_properties_typeProperties_existingClusterId": {
+			"value": "1212-104707-fmkh3hmk"
+		},
+		"ls_Classlife_properties_typeProperties_url": {
+			"value": "https://api.classlife.io/api/v1"
+		},
+		"ls_Clientify_properties_typeProperties_url": {
+			"value": "https://api.clientify.net/"
+		},
+		"ls_KeyVault_properties_typeProperties_baseUrl": {
+			"value": "https://kvmetrodoralakehousepro.vault.azure.net/"
+		},
+		"ls_Odoo_properties_typeProperties_url": {
+			"value": "https://odoo.isep.es/jsonrpc/"
+		},
+		"ls_Zoho_properties_typeProperties_url": {
+			"value": "https://accounts.zoho.eu"
+		},
+		"ls_adsl_properties_typeProperties_url": {
+			"value": "https://stmetrodoralakehousepro.dfs.core.windows.net/"
+		}
+	}
+}

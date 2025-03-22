@@ -1,0 +1,213 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "adf-metrodoralakehouse-pro"
+		},
+		"ls_PostgreSql_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'ls_PostgreSql'",
+			"defaultValue": "Host=psql-metrodoralakehouse-pro.postgres.database.azure.com;Port=5432;Database=lakehouse;UID=sqladminuser;EncryptionMethod=1;ValidateServerCertificate=0"
+		},
+		"ls_Aircall_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://api.aircall.io/"
+		},
+		"ls_Aircall_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "c668cd9a3a86775ddb72333278d0b7bb"
+		},
+		"ls_AzureDatabricks_properties_typeProperties_existingClusterId": {
+			"type": "string",
+			"defaultValue": "1212-104707-fmkh3hmk"
+		},
+		"ls_Classlife_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://api.classlife.io/api/v1"
+		},
+		"ls_Clientify_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://api.clientify.net/"
+		},
+		"ls_KeyVault_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://kvmetrodoralakehousepro.vault.azure.net/"
+		},
+		"ls_Odoo_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://odoo.isep.es/jsonrpc/"
+		},
+		"ls_Zoho_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://accounts.zoho.eu"
+		},
+		"ls_adsl_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://stmetrodoralakehousepro.dfs.core.windows.net/"
+		},
+		"containerUri": {
+			"type": "string",
+			"metadata": "URI to storage account containing linked ARM templates"
+		},
+		"containerSasToken": {
+			"type": "string",
+			"metadata": "Sas token to storage account containing linked ARM templates"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "adf-metrodoralakehouse-pro_ArmTemplate_0",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"ls_AzureDatabricks_properties_typeProperties_existingClusterId": {
+						"value": "[parameters('ls_AzureDatabricks_properties_typeProperties_existingClusterId')]"
+					},
+					"ls_Classlife_properties_typeProperties_url": {
+						"value": "[parameters('ls_Classlife_properties_typeProperties_url')]"
+					},
+					"ls_Clientify_properties_typeProperties_url": {
+						"value": "[parameters('ls_Clientify_properties_typeProperties_url')]"
+					},
+					"ls_KeyVault_properties_typeProperties_baseUrl": {
+						"value": "[parameters('ls_KeyVault_properties_typeProperties_baseUrl')]"
+					},
+					"ls_Odoo_properties_typeProperties_url": {
+						"value": "[parameters('ls_Odoo_properties_typeProperties_url')]"
+					},
+					"ls_Zoho_properties_typeProperties_url": {
+						"value": "[parameters('ls_Zoho_properties_typeProperties_url')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "adf-metrodoralakehouse-pro_ArmTemplate_1",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_1.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"ls_PostgreSql_connectionString": {
+						"value": "[parameters('ls_PostgreSql_connectionString')]"
+					},
+					"ls_Aircall_properties_typeProperties_url": {
+						"value": "[parameters('ls_Aircall_properties_typeProperties_url')]"
+					},
+					"ls_Aircall_properties_typeProperties_userName": {
+						"value": "[parameters('ls_Aircall_properties_typeProperties_userName')]"
+					},
+					"ls_adsl_properties_typeProperties_url": {
+						"value": "[parameters('ls_adsl_properties_typeProperties_url')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'adf-metrodoralakehouse-pro_ArmTemplate_0')]"
+			]
+		},
+		{
+			"name": "adf-metrodoralakehouse-pro_ArmTemplate_2",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_2.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'adf-metrodoralakehouse-pro_ArmTemplate_1')]"
+			]
+		},
+		{
+			"name": "adf-metrodoralakehouse-pro_ArmTemplate_3",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_3.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'adf-metrodoralakehouse-pro_ArmTemplate_2')]"
+			]
+		},
+		{
+			"name": "adf-metrodoralakehouse-pro_ArmTemplate_4",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_4.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'adf-metrodoralakehouse-pro_ArmTemplate_3')]"
+			]
+		},
+		{
+			"name": "adf-metrodoralakehouse-pro_ArmTemplate_5",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_5.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'adf-metrodoralakehouse-pro_ArmTemplate_4')]"
+			]
+		}
+	]
+}

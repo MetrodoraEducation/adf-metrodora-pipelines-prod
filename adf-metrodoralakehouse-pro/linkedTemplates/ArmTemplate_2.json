@@ -1,0 +1,3261 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "adf-metrodoralakehouse-pro"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/df_SalesGoldF0_Full_copy1')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "GoldF0"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"linkedService": {
+								"referenceName": "ls_adsl",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sourceClientifyDealsSilverF0"
+						},
+						{
+							"linkedService": {
+								"referenceName": "ls_adsl",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sourceOdooLeadSilverF0"
+						}
+					],
+					"sinks": [
+						{
+							"linkedService": {
+								"referenceName": "ls_adsl",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sinkVentasGoldF0"
+						}
+					],
+					"transformations": [
+						{
+							"name": "MapDriftedClientifyDealsSilverF0",
+							"description": "Crea una asignación explícita para cada columna de desfase."
+						},
+						{
+							"name": "selectOdooLeadSilverF0"
+						},
+						{
+							"name": "selectClientifyDealsSilverF0"
+						},
+						{
+							"name": "derivedColumnOdooLeadSilverF0"
+						},
+						{
+							"name": "union1"
+						},
+						{
+							"name": "derivedColumnClientifyDealsSilverF0"
+						},
+						{
+							"name": "alterRow1"
+						},
+						{
+							"name": "MapDriftedOdooLeadSilverF0",
+							"description": "Crea una asignación explícita para cada columna de desfase."
+						}
+					],
+					"scriptLines": [
+						"source(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'silver',",
+						"     folderPath: 'lakehousef0/clientifydeals') ~> sourceClientifyDealsSilverF0",
+						"source(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'silver',",
+						"     folderPath: 'lakehousef0/odoolead') ~> sourceOdooLeadSilverF0",
+						"sourceClientifyDealsSilverF0 derive(actual_closed_date = toDate(byName('actual_closed_date')),",
+						"          amount = toDouble(byName('amount')),",
+						"          amount_user = toString(byName('amount_user')),",
+						"          company = toString(byName('company')),",
+						"          contact = toString(byName('contact')),",
+						"          contact_email = toString(byName('contact_email')),",
+						"          contact_medium = toString(byName('contact_medium')),",
+						"          contact_name = toString(byName('contact_name')),",
+						"          contact_phone = toString(byName('contact_phone')),",
+						"          contact_source = toString(byName('contact_source')),",
+						"          created = toTimestamp(byName('created')),",
+						"          currency = toString(byName('currency')),",
+						"          expected_closed_date = toDate(byName('expected_closed_date')),",
+						"          id = toString(byName('id')),",
+						"          modified = toTimestamp(byName('modified')),",
+						"          name = toString(byName('name')),",
+						"          owner_name = toString(byName('owner_name')),",
+						"          pipeline = toString(byName('pipeline')),",
+						"          pipeline_desc = toString(byName('pipeline_desc')),",
+						"          pipeline_stage = toString(byName('pipeline_stage')),",
+						"          pipeline_stage_desc = toString(byName('pipeline_stage_desc')),",
+						"          probability = toInteger(byName('probability')),",
+						"          probability_desc = toString(byName('probability_desc')),",
+						"          status = toInteger(byName('status')),",
+						"          status_desc = toString(byName('status_desc')),",
+						"          url = toString(byName('url')),",
+						"          filepath = toString(byName('filepath')),",
+						"          custom_fields_ByRatings_Rating = toString(byName('custom_fields_ByRatings_Rating')),",
+						"          custom_fields_ByRatings_Score = toString(byName('custom_fields_ByRatings_Score')),",
+						"          custom_fields_Estudio_Old = toString(byName('custom_fields_Estudio_Old')),",
+						"          custom_fields_ID = toString(byName('custom_fields_ID')),",
+						"          custom_fields_Modalidad_Old = toString(byName('custom_fields_Modalidad_Old')),",
+						"          custom_fields_Sede_Old = toString(byName('custom_fields_Sede_Old')),",
+						"          custom_fields_anio_academico = toString(byName('custom_fields_anio_academico')),",
+						"          custom_fields_campaign_id = toString(byName('custom_fields_campaign_id')),",
+						"          custom_fields_centro = toString(byName('custom_fields_centro')),",
+						"          custom_fields_ciudad = toString(byName('custom_fields_ciudad')),",
+						"          custom_fields_cp = toString(byName('custom_fields_cp')),",
+						"          custom_fields_curso_anio = toString(byName('custom_fields_curso_anio')),",
+						"          custom_fields_descuento = toDouble(byName('custom_fields_descuento')),",
+						"          custom_fields_descuento_matricula = toDouble(byName('custom_fields_descuento_matricula')),",
+						"          custom_fields_estudio = toString(byName('custom_fields_estudio')),",
+						"          custom_fields_fecha_inscripcion = toDate(byName('custom_fields_fecha_inscripcion')),",
+						"          custom_fields_gclid = toString(byName('custom_fields_gclid')),",
+						"          custom_fields_gdpr = toString(byName('custom_fields_gdpr')),",
+						"          custom_fields_google_id = toString(byName('custom_fields_google_id')),",
+						"          custom_fields_linea_negocio = toString(byName('custom_fields_linea_negocio')),",
+						"          custom_fields_matricula = toString(byName('custom_fields_matricula')),",
+						"          custom_fields_mensualidad = toString(byName('custom_fields_mensualidad')),",
+						"          custom_fields_modalidad = toString(byName('custom_fields_modalidad')),",
+						"          custom_fields_pais = toString(byName('custom_fields_pais')),",
+						"          custom_fields_ref = toString(byName('custom_fields_ref')),",
+						"          custom_fields_sede = toString(byName('custom_fields_sede')),",
+						"          custom_fields_tipo_conversion = toString(byName('custom_fields_tipo_conversion')),",
+						"          custom_fields_turno = toString(byName('custom_fields_turno')),",
+						"          custom_fields_ua = toString(byName('custom_fields_ua')),",
+						"          custom_fields_url = toString(byName('custom_fields_url')),",
+						"          custom_fields_utm_ad_id = toString(byName('custom_fields_utm_ad_id')),",
+						"          custom_fields_utm_adset_id = toString(byName('custom_fields_utm_adset_id')),",
+						"          custom_fields_utm_campaign = toString(byName('custom_fields_utm_campaign')),",
+						"          custom_fields_utm_campaign_id = toString(byName('custom_fields_utm_campaign_id')),",
+						"          custom_fields_utm_campaign_name = toString(byName('custom_fields_utm_campaign_name')),",
+						"          custom_fields_utm_channel = toString(byName('custom_fields_utm_channel')),",
+						"          custom_fields_utm_device = toString(byName('custom_fields_utm_device')),",
+						"          custom_fields_utm_estrategia = toString(byName('custom_fields_utm_estrategia')),",
+						"          custom_fields_utm_medium = toString(byName('custom_fields_utm_medium')),",
+						"          custom_fields_utm_network = toString(byName('custom_fields_utm_network')),",
+						"          custom_fields_utm_placement = toString(byName('custom_fields_utm_placement')),",
+						"          custom_fields_utm_site_source_name = toString(byName('custom_fields_utm_site_source_name')),",
+						"          custom_fields_utm_source = toString(byName('custom_fields_utm_source')),",
+						"          custom_fields_utm_term = toString(byName('custom_fields_utm_term')),",
+						"          custom_fields_utm_type = toString(byName('custom_fields_utm_type')),",
+						"          processdate = toTimestamp(byName('processdate')),",
+						"          sourcesystem = toString(byName('sourcesystem')),",
+						"          created_tzh = toString(byName('created_tzh')),",
+						"          modified_tzh = toString(byName('modified_tzh')),",
+						"     partitionBy('hash', 1)) ~> MapDriftedClientifyDealsSilverF0",
+						"MapDriftedOdooLeadSilverF0 select(mapColumn(",
+						"          created = create_date,",
+						"          fecha_inscripcion = date_conversion,",
+						"          id,",
+						"          amount = sale_amount_total,",
+						"          processdate,",
+						"          sourcesystem,",
+						"          filepath,",
+						"          name,",
+						"          modified = write_date,",
+						"          source = x_ga_source,",
+						"          date_closed,",
+						"          owner_name = user_value,",
+						"          estudio = x_curso_value,",
+						"          contact_email = email_from,",
+						"          contact_phone = phone,",
+						"          stage_value,",
+						"          lost_reason_value,",
+						"          sede = x_sede_value,",
+						"          modalidad = x_modalidad_value",
+						"     ),",
+						"     partitionBy('hash', 1),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> selectOdooLeadSilverF0",
+						"MapDriftedClientifyDealsSilverF0 select(mapColumn(",
+						"          amount,",
+						"          created,",
+						"          id,",
+						"          name,",
+						"          filepath,",
+						"          descuento = custom_fields_descuento,",
+						"          descuento_matricula = custom_fields_descuento_matricula,",
+						"          fecha_inscripcion = custom_fields_fecha_inscripcion,",
+						"          processdate,",
+						"          sourcesystem,",
+						"          modified,",
+						"          centro = custom_fields_centro,",
+						"          source = custom_fields_utm_source,",
+						"          date_closed = actual_closed_date,",
+						"          owner_name,",
+						"          estudio = custom_fields_estudio,",
+						"          contact_email,",
+						"          contact_phone,",
+						"          stage_value = pipeline_stage_desc,",
+						"          status_desc,",
+						"          byratings_rating = custom_fields_ByRatings_Rating,",
+						"          sede = custom_fields_sede,",
+						"          modalidad = custom_fields_modalidad",
+						"     ),",
+						"     partitionBy('hash', 1),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> selectClientifyDealsSilverF0",
+						"selectOdooLeadSilverF0 derive(descuento = toDouble('0'),",
+						"          descuento_matricula = toDouble('0'),",
+						"          centro = 'ISEP',",
+						"          status_desc = '',",
+						"          tiempo_de_maduracion = toDouble(minus(date_closed,created)/(1000*60*60*24)),",
+						"          new_enrollent = iif(and(stage_value=='Won',!isNull(date_closed)), 1, 0),",
+						"          lead_neto = iif(or(stage_value=='Duplicado',regexMatch(contact_email,'metrodoraeducation.com')), 0, 1),",
+						"          status_final = toString(iif(or(!isNull(lost_reason_value),lost_reason_value!=''),'Perdida',toString(iif(stage_value=='Won','Ganada',toString(iif(and(and(or(stage_value=='Negociación',stage_value=='Proposition'),or(isNull(lost_reason_value),lost_reason_value=='')),!isNull(date_closed)),'Pago Reserva',toString(iif(and(and(or(stage_value=='Negociación',stage_value=='Proposition'),or(isNull(lost_reason_value),lost_reason_value=='')),isNull(date_closed)),'Interesado',toString(iif(or(stage_value=='Sin Contacto',stage_value=='Qualified'),'Seguimiento',toString(iif(or(stage_value=='New',stage_value=='Duplicado'),'Sin asignar')))))))))))),",
+						"          created_date = toDate(created),",
+						"          byratings_rating = '',",
+						"          sede = iifNull(sede,'',sede),",
+						"          modalidad = iifNull(modalidad,'',modalidad),",
+						"     partitionBy('hash', 1)) ~> derivedColumnOdooLeadSilverF0",
+						"derivedColumnClientifyDealsSilverF0, derivedColumnOdooLeadSilverF0 union(byName: true,",
+						"     partitionBy('hash', 1))~> union1",
+						"selectClientifyDealsSilverF0 derive(fecha_inscripcion = toTimestamp(fecha_inscripcion),",
+						"          date_closed = toTimestamp(date_closed),",
+						"          lost_reason_value = '',",
+						"          tiempo_de_maduracion = toDouble(minus(toTimestamp(fecha_inscripcion),created)/(1000*60*60*24)),",
+						"          new_enrollent = iif(isNull(fecha_inscripcion), 0, 1),",
+						"          lead_neto = iif(or(stage_value=='Duplicado',regexMatch(contact_email,'metrodoraeducation.com')), 0, 1),",
+						"          status_final = toString(iif(or(status_desc=='Lost',status_desc=='Expired'),'Perdida',toString(iif(stage_value=='Traslado a ERP','Ganada',toString(iif(and(and(stage_value=='Seguimiento Interesado',or(status_desc=='Won',status_desc=='Open')),!isNull(fecha_inscripcion)),'Pago Reserva',toString(iif(and(and(stage_value=='Seguimiento Interesado',or(status_desc=='Won',status_desc=='Open')),isNull(fecha_inscripcion)),'Interesado',toString(iif(and(or(or(stage_value=='Seguimiento Primer Contacto',stage_value=='No contesta'),stage_value=='Seguimiento Valorando'),or(status_desc=='Won',status_desc=='Open')),'Seguimiento',toString(iif(and(stage_value=='Sin Gestionar',or(status_desc=='Won',status_desc=='Open')),'Sin asignar')))))))))))),",
+						"          created_date = toDate(created),",
+						"          byratings_rating = iifNull(byratings_rating,''),",
+						"          sede = iifNull(sede,'',sede),",
+						"          modalidad = iifNull(modalidad,'',modalidad),",
+						"     partitionBy('hash', 1)) ~> derivedColumnClientifyDealsSilverF0",
+						"union1 alterRow(upsertIf(true()),",
+						"     partitionBy('hash', 1)) ~> alterRow1",
+						"sourceOdooLeadSilverF0 derive(campaign_id = toBoolean(byName('campaign_id')),",
+						"          city = toString(byName('city')),",
+						"          company_id = toString(byName('company_id')),",
+						"          contact_name = toString(byName('contact_name')),",
+						"          country_id = toString(byName('country_id')),",
+						"          create_date = toTimestamp(byName('create_date')),",
+						"          date_action_last = toTimestamp(byName('date_action_last')),",
+						"          date_closed = toTimestamp(byName('date_closed')),",
+						"          date_conversion = toTimestamp(byName('date_conversion')),",
+						"          date_last_stage_update = toTimestamp(byName('date_last_stage_update')),",
+						"          email_cc = toBoolean(byName('email_cc')),",
+						"          email_from = toString(byName('email_from')),",
+						"          id = toString(byName('id')),",
+						"          lost_reason_id = toString(byName('lost_reason_id')),",
+						"          lost_reason_value = toString(byName('lost_reason_value')),",
+						"          medium_id = toBoolean(byName('medium_id')),",
+						"          mobile = toString(byName('mobile')),",
+						"          name = toString(byName('name')),",
+						"          partner_name = toString(byName('partner_name')),",
+						"          phone = toString(byName('phone')),",
+						"          planned_revenue = toDouble(byName('planned_revenue')),",
+						"          probability = toDouble(byName('probability')),",
+						"          sale_amount_total = toDouble(byName('sale_amount_total')),",
+						"          source_id = toBoolean(byName('source_id')),",
+						"          stage_id = toString(byName('stage_id')),",
+						"          state_id = toString(byName('state_id')),",
+						"          street = toString(byName('street')),",
+						"          street2 = toBoolean(byName('street2')),",
+						"          title = toBoolean(byName('title')),",
+						"          user_id = toString(byName('user_id')),",
+						"          write_date = toTimestamp(byName('write_date')),",
+						"          x_codcurso = toString(byName('x_codcurso')),",
+						"          x_codmodalidad = toString(byName('x_codmodalidad')),",
+						"          x_curso = toString(byName('x_curso')),",
+						"          x_curso_id = toString(byName('x_curso_id')),",
+						"          x_ga_campaign = toString(byName('x_ga_campaign')),",
+						"          x_ga_medium = toString(byName('x_ga_medium')),",
+						"          x_ga_source = toString(byName('x_ga_source')),",
+						"          x_ga_utma = toString(byName('x_ga_utma')),",
+						"          x_modalidad_id = toString(byName('x_modalidad_id')),",
+						"          x_sede_id = toString(byName('x_sede_id')),",
+						"          x_studio_field_FM3fX = toBoolean(byName('x_studio_field_FM3fX')),",
+						"          zip = toString(byName('zip')),",
+						"          filepath = toString(byName('filepath')),",
+						"          country_value = toString(byName('country_value')),",
+						"          state_value = toString(byName('state_value')),",
+						"          user_value = toString(byName('user_value')),",
+						"          x_curso_value = toString(byName('x_curso_value')),",
+						"          x_modalidad_value = toString(byName('x_modalidad_value')),",
+						"          x_sede_value = toString(byName('x_sede_value')),",
+						"          company_value = toString(byName('company_value')),",
+						"          stage_value = toString(byName('stage_value')),",
+						"          processdate = toTimestamp(byName('processdate')),",
+						"          sourcesystem = toString(byName('sourcesystem')),",
+						"     partitionBy('hash', 1)) ~> MapDriftedOdooLeadSilverF0",
+						"alterRow1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'gold',",
+						"     folderPath: 'lakehousef0/sales',",
+						"     mergeSchema: false,",
+						"     autoCompact: false,",
+						"     optimizedWrite: false,",
+						"     vacuum: 0,",
+						"     deletable: false,",
+						"     insertable: false,",
+						"     updateable: false,",
+						"     upsertable: true,",
+						"     keys:['id','sourcesystem'],",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sinkVentasGoldF0"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_AircallCallsBronze')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "CopyDataAircallToBronze",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "SetVariableDateToLoad",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RestSource",
+								"httpRequestTimeout": "00:01:50",
+								"requestInterval": "00.00:00:00.010",
+								"requestMethod": "GET",
+								"paginationRules": {
+									"AbsoluteUrl": "$.meta.next_page_link"
+								}
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_Aircall",
+								"type": "DatasetReference",
+								"parameters": {
+									"relativeurl": {
+										"value": "@concat('v1/calls?per_page=50&from=',variables('unix'))",
+										"type": "Expression"
+									}
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_adsl_json",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "bronze",
+									"folder": {
+										"value": "@concat('lakehouse/aircall/calls/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))\n\n\n\n",
+										"type": "Expression"
+									},
+									"filename": "aircallcalls.json"
+								}
+							}
+						]
+					},
+					{
+						"name": "SetVariableDateToLoad",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "unix",
+							"value": {
+								"value": "@{div(sub(ticks(addDays(utcnow(),int(concat('-',string(pipeline().parameters.dayToLoad))))), ticks('1970-01-01')),10000000)}",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"dayToLoad": {
+						"type": "string",
+						"defaultValue": "7"
+					}
+				},
+				"variables": {
+					"unix": {
+						"type": "String"
+					}
+				},
+				"folder": {
+					"name": "Lakehouse/Bronze"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-22T17:50:20Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_AircallCallsBronzeF0')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "CopyDataAircallToBronze",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "SetVariableDateToLoad",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RestSource",
+								"httpRequestTimeout": "00:01:40",
+								"requestInterval": "00.00:00:00.010",
+								"requestMethod": "GET",
+								"paginationRules": {
+									"AbsoluteUrl": "$.meta.next_page_link"
+								}
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_Aircall",
+								"type": "DatasetReference",
+								"parameters": {
+									"relativeurl": {
+										"value": "@concat('v1/calls?per_page=50&from=',variables('unix'))",
+										"type": "Expression"
+									}
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_adsl_json",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "bronze",
+									"folder": {
+										"value": "@concat('lakehousef0/aircall/calls/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))\n\n\n\n",
+										"type": "Expression"
+									},
+									"filename": "aircallcalls.json"
+								}
+							}
+						]
+					},
+					{
+						"name": "SetVariableDateToLoad",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "unix",
+							"value": {
+								"value": "@{div(sub(ticks(addDays(utcnow(),int(concat('-',string(pipeline().parameters.dayToLoad))))), ticks('1970-01-01')),10000000)}",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"dayToLoad": {
+						"type": "string",
+						"defaultValue": "7"
+					}
+				},
+				"variables": {
+					"unix": {
+						"type": "String"
+					}
+				},
+				"folder": {
+					"name": "LakehouseF0/BronzeF0"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-22T17:50:20Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_AircallCallsBronzeF0_Full')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "CopyDataAircallToBronze",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "SetVariableDateToLoad",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RestSource",
+								"httpRequestTimeout": "00:01:40",
+								"requestInterval": "00.00:00:00.010",
+								"requestMethod": "GET",
+								"paginationRules": {
+									"AbsoluteUrl": "$.meta.next_page_link"
+								}
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_Aircall",
+								"type": "DatasetReference",
+								"parameters": {
+									"relativeurl": {
+										"value": "@concat('v1/calls?per_page=50&from=',variables('unix'))",
+										"type": "Expression"
+									}
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_adsl_json",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "bronze",
+									"folder": {
+										"value": "@concat('lakehousef0/aircall/calls/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))\n\n\n\n",
+										"type": "Expression"
+									},
+									"filename": "aircallcalls.json"
+								}
+							}
+						]
+					},
+					{
+						"name": "SetVariableDateToLoad",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "unix",
+							"value": {
+								"value": "@{div(sub(ticks('2024-09-01'), ticks('1970-01-01')),10000000)}\t",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"variables": {
+					"unix": {
+						"type": "String"
+					}
+				},
+				"folder": {
+					"name": "LakehouseF0/BronzeF0"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-22T17:50:20Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_AircallCallsBronzeSilver_Full')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Until1",
+						"type": "Until",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@equals(variables('startdate'),string(formatDateTime(utcnow(),'yyyy-MM-dd')))",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "CopyDataAircallToBronze",
+									"type": "Copy",
+									"dependsOn": [
+										{
+											"activity": "SetVariableDateToLoad",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "RestSource",
+											"httpRequestTimeout": "00:01:40",
+											"requestInterval": "00.00:00:00.010",
+											"requestMethod": "GET",
+											"paginationRules": {
+												"AbsoluteUrl": "$.meta.next_page_link"
+											}
+										},
+										"sink": {
+											"type": "JsonSink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											},
+											"formatSettings": {
+												"type": "JsonWriteSettings"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "ds_Aircall",
+											"type": "DatasetReference",
+											"parameters": {
+												"relativeurl": {
+													"value": "@concat('v1/calls?per_page=50&from=',variables('unix'))",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "ds_adsl_json",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": "bronze",
+												"folder": {
+													"value": "@concat('lakehouse/aircall/calls/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))\n\n\n\n",
+													"type": "Expression"
+												},
+												"filename": "aircallcalls.json"
+											}
+										}
+									]
+								},
+								{
+									"name": "SetVariableDateToLoad",
+									"type": "SetVariable",
+									"dependsOn": [],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "unix",
+										"value": {
+											"value": "@{div(sub(ticks(variables('startdate')), ticks('1970-01-01')),10000000)}\t",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "NotebookAircallCallsSilver",
+									"type": "DatabricksNotebook",
+									"dependsOn": [
+										{
+											"activity": "CopyDataAircallToBronze",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"notebookPath": "/Lakehouse/Silver/AircallCallsSilver"
+									},
+									"linkedServiceName": {
+										"referenceName": "ls_AzureDatabricks",
+										"type": "LinkedServiceReference"
+									}
+								},
+								{
+									"name": "NotebookAircallMaxDate",
+									"type": "DatabricksNotebook",
+									"dependsOn": [
+										{
+											"activity": "NotebookAircallCallsSilver",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"notebookPath": "/Lakehouse/Silver/AircallMaxDate"
+									},
+									"linkedServiceName": {
+										"referenceName": "ls_AzureDatabricks",
+										"type": "LinkedServiceReference"
+									}
+								},
+								{
+									"name": "SetVariableMaxDate",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "NotebookAircallMaxDate",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "startdate",
+										"value": {
+											"value": "@activity('NotebookAircallMaxDate').output.runOutput",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"timeout": "0.12:00:00"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"variables": {
+					"unix": {
+						"type": "String"
+					},
+					"startdate": {
+						"type": "String",
+						"defaultValue": "2024-09-01"
+					}
+				},
+				"folder": {
+					"name": "Lakehouse/Bronze"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-22T17:50:20Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_AircallCallsGoldF0')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "DataFlowAircallCallsGoldF0",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "df_AircallCallsGoldF0",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"sourceAircallCallsSilver": {},
+									"sourceCallsGoldF0": {},
+									"sinkCallsGoldF0": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "LakehouseF0/GoldF0"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-22T17:50:20Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_BudgetBronze')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "CopyDataBudgetBronze",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_adsl_csv",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "master",
+									"folder": "Budget",
+									"filename": "masterbudget.csv"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_adsl_parquet",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "bronze",
+									"folder": {
+										"value": "@concat('lakehouse/budget/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+										"type": "Expression"
+									},
+									"filename": "masterbudget.parquet"
+								}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "Lakehouse/Bronze"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-22T17:50:20Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_BudgetBronzeF0')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "CopyDataBudgetBronzeF0",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_adsl_csv",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "master",
+									"folder": "Budget",
+									"filename": "masterbudget.csv"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_adsl_parquet",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "bronze",
+									"folder": {
+										"value": "@concat('lakehousef0/budget/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+										"type": "Expression"
+									},
+									"filename": "masterbudget.parquet"
+								}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "LakehouseF0/BronzeF0"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-22T17:50:20Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_Classlife')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "WebClasslifeEnroll_groups",
+						"description": "Activity web that calls the endpoint enroll_groups",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "GET",
+							"headers": {
+								"apiKey": {
+									"value": "@pipeline().parameters.API_KEY",
+									"type": "Expression"
+								},
+								"clientId": {
+									"value": "@pipeline().parameters.API_CLIENT",
+									"type": "Expression"
+								}
+							},
+							"url": {
+								"value": "@concat('https://api.classlife.io/api/v1/enroll_groups')",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "ClasslifeProductos",
+						"description": "ClasslifeEnrollGroups",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "WebClasslifeEnroll_groups",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RestSource",
+								"httpRequestTimeout": "00:01:40",
+								"requestInterval": "00.00:00:00.010",
+								"requestMethod": "GET",
+								"additionalHeaders": {
+									"Content-Type": "application/json",
+									"apiKey": {
+										"value": "@pipeline().parameters.API_KEY",
+										"type": "Expression"
+									},
+									"clientId": {
+										"value": "@pipeline().parameters.API_CLIENT",
+										"type": "Expression"
+									}
+								},
+								"paginationRules": {
+									"supportRFC5988": "true"
+								}
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_Classlife",
+								"type": "DatasetReference",
+								"parameters": {
+									"relativeUrl": "enroll_groups?showMetas=1"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_adsl_json",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "bronze",
+									"folder": {
+										"value": "@concat('lakehouse/classlife/enroll_groups/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+										"type": "Expression"
+									},
+									"filename": "JsaClassLifeProductos.json"
+								}
+							}
+						]
+					},
+					{
+						"name": "WebClasslifeStudents",
+						"description": "Activity web that calls the endpoint Students",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "GET",
+							"headers": {
+								"apiKey": {
+									"value": "@pipeline().parameters.API_KEY",
+									"type": "Expression"
+								},
+								"clientId": {
+									"value": "@pipeline().parameters.API_CLIENT",
+									"type": "Expression"
+								}
+							},
+							"url": {
+								"value": "@concat('https://api.classlife.io/api/v1/students')",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "ClasslifeStudents",
+						"description": "ClasslifeStudents",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "WebClasslifeStudents",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RestSource",
+								"httpRequestTimeout": "00:01:40",
+								"requestInterval": "00.00:00:00.010",
+								"requestMethod": "GET",
+								"additionalHeaders": {
+									"Content-Type": "application/json",
+									"apiKey": {
+										"value": "@pipeline().parameters.API_KEY",
+										"type": "Expression"
+									},
+									"clientId": {
+										"value": "@pipeline().parameters.API_CLIENT",
+										"type": "Expression"
+									}
+								},
+								"paginationRules": {
+									"supportRFC5988": "true"
+								}
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_Classlife",
+								"type": "DatasetReference",
+								"parameters": {
+									"relativeUrl": "students?showMetas=1"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_adsl_json",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "bronze",
+									"folder": {
+										"value": "@concat('lakehouse/classlife/students/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+										"type": "Expression"
+									},
+									"filename": "JsaClassLifeStudents.json"
+								}
+							}
+						]
+					},
+					{
+						"name": "WebClasslifeEnrollments",
+						"description": "Activity web that calls the endpoint Enrollments",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "GET",
+							"headers": {
+								"apiKey": {
+									"value": "@pipeline().parameters.API_KEY",
+									"type": "Expression"
+								},
+								"clientId": {
+									"value": "@pipeline().parameters.API_CLIENT",
+									"type": "Expression"
+								}
+							},
+							"url": {
+								"value": "@concat('https://api.classlife.io/api/v1/enrollments')",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Enrollments",
+						"description": "Enrollments",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "WebClasslifeEnrollments",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RestSource",
+								"httpRequestTimeout": "00:01:40",
+								"requestInterval": "00.00:00:00.010",
+								"requestMethod": "GET",
+								"additionalHeaders": {
+									"Content-Type": "application/json",
+									"apiKey": {
+										"value": "@pipeline().parameters.API_KEY",
+										"type": "Expression"
+									},
+									"clientId": {
+										"value": "@pipeline().parameters.API_CLIENT",
+										"type": "Expression"
+									}
+								},
+								"paginationRules": {
+									"supportRFC5988": "true"
+								}
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_Classlife",
+								"type": "DatasetReference",
+								"parameters": {
+									"relativeUrl": "enrollments?showMetas=1"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_adsl_json",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "bronze",
+									"folder": {
+										"value": "@concat('lakehouse/classlife/enrollments/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+										"type": "Expression"
+									},
+									"filename": "JsaClassLifeEnrollments.json"
+								}
+							}
+						]
+					},
+					{
+						"name": "WebClasslifeReceipts",
+						"description": "Activity web that calls the endpoint Receipts",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "GET",
+							"headers": {
+								"apiKey": {
+									"value": "@pipeline().parameters.API_KEY",
+									"type": "Expression"
+								},
+								"clientId": {
+									"value": "@pipeline().parameters.API_CLIENT",
+									"type": "Expression"
+								}
+							},
+							"url": {
+								"value": "@concat('https://api.classlife.io/api/v1/enrollments')",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Receipts",
+						"description": "Receipts",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "WebClasslifeReceipts",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RestSource",
+								"httpRequestTimeout": "00:01:40",
+								"requestInterval": "00.00:00:00.010",
+								"requestMethod": "GET",
+								"additionalHeaders": {
+									"Content-Type": "application/json",
+									"apiKey": {
+										"value": "@pipeline().parameters.API_KEY",
+										"type": "Expression"
+									},
+									"clientId": {
+										"value": "@pipeline().parameters.API_CLIENT",
+										"type": "Expression"
+									}
+								},
+								"paginationRules": {
+									"supportRFC5988": "true"
+								}
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_Classlife",
+								"type": "DatasetReference",
+								"parameters": {
+									"relativeUrl": "receipts?showMetas=1"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_adsl_json",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "bronze",
+									"folder": {
+										"value": "@concat('lakehouse/classlife/receipts/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+										"type": "Expression"
+									},
+									"filename": "JsaClassLifeReceipts.json"
+								}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"API_CLIENT": {
+						"type": "string",
+						"defaultValue": "919"
+					},
+					"API_KEY": {
+						"type": "string",
+						"defaultValue": "C!Fd4e045d16e5544"
+					}
+				},
+				"folder": {
+					"name": "Lakehouse/Bronze"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-22T17:50:20Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_ClientifyDealsBronze')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "CopyDataClientifyBronze",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "WebGetToken",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RestSource",
+								"httpRequestTimeout": "00:01:40",
+								"requestInterval": "00.00:00:00.010",
+								"requestMethod": "GET",
+								"additionalHeaders": {
+									"Content-Type": "application/json",
+									"Authorization": {
+										"value": "@concat('Token ',activity('WebGetToken').output.value)",
+										"type": "Expression"
+									}
+								},
+								"paginationRules": {
+									"AbsoluteUrl": "$.next"
+								}
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_Clientify",
+								"type": "DatasetReference",
+								"parameters": {
+									"relativeurl": {
+										"value": "@concat('v1/mob/deals/?serializer=DealDynamic&page_size=250&fields=id, owner, owner_name, name, amount, amount_user, currency, contact, contact_name, contact_email, contact_phone, contact_medium, contact_source, created, modified, expected_closed_date, actual_closed_date, company, company_name, source, deal_source, status, lost_reason, status_desc, probability, probability_desc, pipeline_stage, pipeline_stage_desc, pipeline, pipeline_desc, custom_fields&modified[gte]=',formatDateTime(addDays(utcnow(),int(concat('-',string(pipeline().parameters.dayToLoad)))),'MM-dd-yyyy'),'&modified[lt]=',formatDateTime(addDays(utcnow(),+1),'MM-dd-yyyy'))",
+										"type": "Expression"
+									}
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_adsl_json",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "bronze",
+									"folder": {
+										"value": "@concat('lakehouse/clientify/deals/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+										"type": "Expression"
+									},
+									"filename": "clientifydeals.json"
+								}
+							}
+						]
+					},
+					{
+						"name": "WebGetToken",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "GET",
+							"headers": {},
+							"url": "https://kvmetrodoralakehousedev.vault.azure.net/secrets/clientifytoken/71f1cbb9aa6a4569ba657a15bcbd0350?api-version=7.0",
+							"authentication": {
+								"type": "MSI",
+								"resource": "https://vault.azure.net"
+							}
+						}
+					},
+					{
+						"name": "WebGetToken CIEP",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "GET",
+							"headers": {},
+							"url": "https://kvmetrodoralakehousedev.vault.azure.net/secrets/clientifyCIEP/2dc5256643a6405392ec37abd7b74d55?api-version=7.0",
+							"authentication": {
+								"type": "MSI",
+								"resource": "https://vault.azure.net"
+							}
+						}
+					},
+					{
+						"name": "CopyDataClientifyBronze_Ciep",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "WebGetToken CIEP",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RestSource",
+								"httpRequestTimeout": "00:01:40",
+								"requestInterval": "00.00:00:00.010",
+								"requestMethod": "GET",
+								"additionalHeaders": {
+									"Content-Type": "application/json",
+									"Authorization": {
+										"value": "@concat('Token ',activity('WebGetToken CIEP').output.value)",
+										"type": "Expression"
+									}
+								},
+								"paginationRules": {
+									"AbsoluteUrl": "$.next"
+								}
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_Clientify_Ciep",
+								"type": "DatasetReference",
+								"parameters": {
+									"relativeurl": {
+										"value": "@concat('v1/mob/deals/?serializer=DealDynamic&page_size=250&fields=id, owner, owner_name, name, amount, amount_user, currency, contact, contact_name, contact_email, contact_phone, contact_medium, contact_source, created, modified, expected_closed_date, actual_closed_date, company, company_name, source, deal_source, status, lost_reason, status_desc, probability, probability_desc, pipeline_stage, pipeline_stage_desc, pipeline, pipeline_desc, custom_fields&modified[gte]=',formatDateTime(addDays(utcnow(),int(concat('-',string(pipeline().parameters.dayToLoad)))),'MM-dd-yyyy'),'&modified[lt]=',formatDateTime(addDays(utcnow(),+1),'MM-dd-yyyy'))",
+										"type": "Expression"
+									}
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_adsl_json",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "bronze",
+									"folder": {
+										"value": "@concat('lakehouse/clientify/deals/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+										"type": "Expression"
+									},
+									"filename": "clientifydealsciep.json"
+								}
+							}
+						]
+					},
+					{
+						"name": "WebGetToken FP",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "GET",
+							"headers": {},
+							"url": "https://kvmetrodoralakehousedev.vault.azure.net/secrets/clientifytokenFP/4498a027b1af41fd8d8fe01dc9f45b46?api-version=7.0",
+							"authentication": {
+								"type": "MSI",
+								"resource": "https://vault.azure.net"
+							}
+						}
+					},
+					{
+						"name": "CopyDataClientifyBronze_Fp",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "WebGetToken FP",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RestSource",
+								"httpRequestTimeout": "00:01:40",
+								"requestInterval": "00.00:00:00.010",
+								"requestMethod": "GET",
+								"additionalHeaders": {
+									"Content-Type": "application/json",
+									"Authorization": {
+										"value": "@concat('Token ',activity('WebGetToken FP').output.value)",
+										"type": "Expression"
+									}
+								},
+								"paginationRules": {
+									"AbsoluteUrl": "$.next"
+								}
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_Clientify_Fp",
+								"type": "DatasetReference",
+								"parameters": {
+									"relativeurl": {
+										"value": "@concat('v1/mob/deals/?serializer=DealDynamic&page_size=250&fields=id, owner, owner_name, name, amount, amount_user, currency, contact, contact_name, contact_email, contact_phone, contact_medium, contact_source, created, modified, expected_closed_date, actual_closed_date, company, company_name, source, deal_source, status, lost_reason, status_desc, probability, probability_desc, pipeline_stage, pipeline_stage_desc, pipeline, pipeline_desc, custom_fields&modified[gte]=',formatDateTime(addDays(utcnow(),int(concat('-',string(pipeline().parameters.dayToLoad)))),'MM-dd-yyyy'),'&modified[lt]=',formatDateTime(addDays(utcnow(),+1),'MM-dd-yyyy'))",
+										"type": "Expression"
+									}
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_adsl_json",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "bronze",
+									"folder": {
+										"value": "@concat('lakehouse/clientify/deals/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+										"type": "Expression"
+									},
+									"filename": "clientifydealsfp.json"
+								}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"dayToLoad": {
+						"type": "string",
+						"defaultValue": "7"
+					}
+				},
+				"folder": {
+					"name": "Lakehouse/Bronze"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-22T17:50:20Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_ClientifyDealsBronzeCIEP_FP')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "CopyDataClientifyBronze",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "WebGetToken",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RestSource",
+								"httpRequestTimeout": "00:01:40",
+								"requestInterval": "00.00:00:00.010",
+								"requestMethod": "GET",
+								"additionalHeaders": {
+									"Content-Type": "application/json",
+									"Authorization": {
+										"value": "@concat('Token ',activity('WebGetToken').output.value)",
+										"type": "Expression"
+									}
+								},
+								"paginationRules": {
+									"AbsoluteUrl": "$.next"
+								}
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_Clientify",
+								"type": "DatasetReference",
+								"parameters": {
+									"relativeurl": {
+										"value": "@concat('v1/mob/deals/?serializer=DealDynamic&page_size=250&fields=id, owner, owner_name, name, amount, amount_user, currency, contact, contact_name, contact_email, contact_phone, contact_medium, contact_source, created, modified, expected_closed_date, actual_closed_date, company, company_name, source, deal_source, status, lost_reason, status_desc, probability, probability_desc, pipeline_stage, pipeline_stage_desc, pipeline, pipeline_desc, custom_fields&modified[gte]=',formatDateTime(addDays(utcnow(),int(concat('-',string(pipeline().parameters.dayToLoad)))),'MM-dd-yyyy'),'&modified[lt]=',formatDateTime(addDays(utcnow(),+1),'MM-dd-yyyy'))",
+										"type": "Expression"
+									}
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_adsl_json",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "bronze",
+									"folder": {
+										"value": "@concat('lakehouse/clientify/deals/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+										"type": "Expression"
+									},
+									"filename": "clientifydeals.json"
+								}
+							}
+						]
+					},
+					{
+						"name": "WebGetToken",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "GET",
+							"headers": {},
+							"url": "https://kvmetrodoralakehousedev.vault.azure.net/secrets/clientifytoken/71f1cbb9aa6a4569ba657a15bcbd0350?api-version=7.0",
+							"authentication": {
+								"type": "MSI",
+								"resource": "https://vault.azure.net"
+							}
+						}
+					},
+					{
+						"name": "WebGetToken CIEP",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "GET",
+							"headers": {},
+							"url": "https://kvmetrodoralakehousedev.vault.azure.net/secrets/clientifyCIEP/2dc5256643a6405392ec37abd7b74d55?api-version=7.0",
+							"authentication": {
+								"type": "MSI",
+								"resource": "https://vault.azure.net"
+							}
+						}
+					},
+					{
+						"name": "CopyDataClientifyBronze_Ciep",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "WebGetToken CIEP",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RestSource",
+								"httpRequestTimeout": "00:01:40",
+								"requestInterval": "00.00:00:00.010",
+								"requestMethod": "GET",
+								"additionalHeaders": {
+									"Content-Type": "application/json",
+									"Authorization": {
+										"value": "@concat('Token ',activity('WebGetToken CIEP').output.value)",
+										"type": "Expression"
+									}
+								},
+								"paginationRules": {
+									"AbsoluteUrl": "$.next"
+								}
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_Clientify_Ciep",
+								"type": "DatasetReference",
+								"parameters": {
+									"relativeurl": {
+										"value": "@concat('v1/mob/deals/?serializer=DealDynamic&page_size=250&fields=id, owner, owner_name, name, amount, amount_user, currency, contact, contact_name, contact_email, contact_phone, contact_medium, contact_source, created, modified, expected_closed_date, actual_closed_date, company, company_name, source, deal_source, status, lost_reason, status_desc, probability, probability_desc, pipeline_stage, pipeline_stage_desc, pipeline, pipeline_desc, custom_fields&modified[gte]=',formatDateTime(addDays(utcnow(),int(concat('-',string(pipeline().parameters.dayToLoad)))),'MM-dd-yyyy'),'&modified[lt]=',formatDateTime(addDays(utcnow(),+1),'MM-dd-yyyy'))",
+										"type": "Expression"
+									}
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_adsl_json",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "bronze",
+									"folder": {
+										"value": "@concat('lakehouse/clientify/deals/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+										"type": "Expression"
+									},
+									"filename": "clientifydealsciep.json"
+								}
+							}
+						]
+					},
+					{
+						"name": "WebGetToken FP",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "GET",
+							"headers": {},
+							"url": "https://kvmetrodoralakehousedev.vault.azure.net/secrets/clientifytokenFP/4498a027b1af41fd8d8fe01dc9f45b46?api-version=7.0",
+							"authentication": {
+								"type": "MSI",
+								"resource": "https://vault.azure.net"
+							}
+						}
+					},
+					{
+						"name": "CopyDataClientifyBronze_Fp",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "WebGetToken FP",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RestSource",
+								"httpRequestTimeout": "00:01:40",
+								"requestInterval": "00.00:00:00.010",
+								"requestMethod": "GET",
+								"additionalHeaders": {
+									"Content-Type": "application/json",
+									"Authorization": {
+										"value": "@concat('Token ',activity('WebGetToken FP').output.value)",
+										"type": "Expression"
+									}
+								},
+								"paginationRules": {
+									"AbsoluteUrl": "$.next"
+								}
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_Clientify_Fp",
+								"type": "DatasetReference",
+								"parameters": {
+									"relativeurl": {
+										"value": "@concat('v1/mob/deals/?serializer=DealDynamic&page_size=250&fields=id, owner, owner_name, name, amount, amount_user, currency, contact, contact_name, contact_email, contact_phone, contact_medium, contact_source, created, modified, expected_closed_date, actual_closed_date, company, company_name, source, deal_source, status, lost_reason, status_desc, probability, probability_desc, pipeline_stage, pipeline_stage_desc, pipeline, pipeline_desc, custom_fields&modified[gte]=',formatDateTime(addDays(utcnow(),int(concat('-',string(pipeline().parameters.dayToLoad)))),'MM-dd-yyyy'),'&modified[lt]=',formatDateTime(addDays(utcnow(),+1),'MM-dd-yyyy'))",
+										"type": "Expression"
+									}
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_adsl_json",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "bronze",
+									"folder": {
+										"value": "@concat('lakehouse/clientify/deals/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+										"type": "Expression"
+									},
+									"filename": "clientifydealsfp.json"
+								}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"dayToLoad": {
+						"type": "string",
+						"defaultValue": "7"
+					}
+				},
+				"folder": {
+					"name": "Lakehouse/Bronze"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-22T17:50:20Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_ClientifyDealsBronzeF0')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "CopyDataClientifyBronze",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "WebGetToken",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RestSource",
+								"httpRequestTimeout": "00:01:40",
+								"requestInterval": "00.00:00:00.010",
+								"requestMethod": "GET",
+								"additionalHeaders": {
+									"Content-Type": "application/json",
+									"Authorization": {
+										"value": "@concat('Token ',activity('WebGetToken').output.value)",
+										"type": "Expression"
+									}
+								},
+								"paginationRules": {
+									"AbsoluteUrl": "$.next"
+								}
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_Clientify",
+								"type": "DatasetReference",
+								"parameters": {
+									"relativeurl": {
+										"value": "@concat('v1/deals/?page_size=250&modified[gte]=',formatDateTime(addDays(utcnow(),int(concat('-',string(pipeline().parameters.dayToLoad)))),'MM-dd-yyyy'),'&modified[lt]=',formatDateTime(addDays(utcnow(),+1),'MM-dd-yyyy'))",
+										"type": "Expression"
+									}
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_adsl_json",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "bronze",
+									"folder": {
+										"value": "@concat('lakehousef0/clientify/deals/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+										"type": "Expression"
+									},
+									"filename": "clientifydeals.json"
+								}
+							}
+						]
+					},
+					{
+						"name": "WebGetToken",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "GET",
+							"headers": {},
+							"url": "https://kvmetrodoralakehousedev.vault.azure.net/secrets/clientifytoken/71f1cbb9aa6a4569ba657a15bcbd0350?api-version=7.0",
+							"authentication": {
+								"type": "MSI",
+								"resource": "https://vault.azure.net"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"dayToLoad": {
+						"type": "string",
+						"defaultValue": "7"
+					}
+				},
+				"folder": {
+					"name": "LakehouseF0/BronzeF0"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-22T17:50:20Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_ClientifyDealsBronzeF0_Full')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "CopyDataClientifyBronze",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "WebGetToken",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RestSource",
+								"httpRequestTimeout": "00:01:40",
+								"requestInterval": "00.00:00:01.500",
+								"requestMethod": "GET",
+								"additionalHeaders": {
+									"Content-Type": "application/json",
+									"Authorization": {
+										"value": "@concat('Token ',activity('WebGetToken').output.value)",
+										"type": "Expression"
+									}
+								},
+								"paginationRules": {
+									"AbsoluteUrl": "$.next"
+								}
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_Clientify",
+								"type": "DatasetReference",
+								"parameters": {
+									"relativeurl": {
+										"value": "@concat('v1/deals/?page_size=250&created[gte]=09-01-2023&created[lt]=',formatDateTime(addDays(utcnow(),+1),'MM-dd-yyyy'))",
+										"type": "Expression"
+									}
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_adsl_json",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "bronze",
+									"folder": {
+										"value": "@concat('lakehousef0/clientify/deals/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+										"type": "Expression"
+									},
+									"filename": "clientifydeals.json"
+								}
+							}
+						]
+					},
+					{
+						"name": "WebGetToken",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "GET",
+							"headers": {},
+							"url": "https://kvmetrodoralakehousedev.vault.azure.net/secrets/clientifytoken/71f1cbb9aa6a4569ba657a15bcbd0350?api-version=7.0",
+							"authentication": {
+								"type": "MSI",
+								"resource": "https://vault.azure.net"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "LakehouseF0/BronzeF0"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-22T17:50:20Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_ClientifyDealsBronzeF0_IdForDelete')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "WebGetToken",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "GET",
+							"headers": {},
+							"url": "https://kvmetrodoralakehousedev.vault.azure.net/secrets/clientifytoken/71f1cbb9aa6a4569ba657a15bcbd0350?api-version=7.0",
+							"authentication": {
+								"type": "MSI",
+								"resource": "https://vault.azure.net"
+							}
+						}
+					},
+					{
+						"name": "CopyDataClientifyIdForDeleteBronze",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "WebGetToken",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RestSource",
+								"httpRequestTimeout": "00:01:40",
+								"requestInterval": "00.00:00:00.010",
+								"requestMethod": "GET",
+								"additionalHeaders": {
+									"Content-Type": "application/json",
+									"Authorization": {
+										"value": "@concat('Token ',activity('WebGetToken').output.value)",
+										"type": "Expression"
+									}
+								},
+								"paginationRules": {
+									"AbsoluteUrl": "$.next"
+								}
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_Clientify",
+								"type": "DatasetReference",
+								"parameters": {
+									"relativeurl": "https://api.clientify.net/v1/mob/deals/?serializer=DealDynamic&page_size=250&fields=id"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_adsl_json",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "bronze",
+									"folder": {
+										"value": "@concat('lakehousef0/clientify/idfordelete/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+										"type": "Expression"
+									},
+									"filename": "clientifydealsidfordelete.json"
+								}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "LakehouseF0/BronzeF0"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-22T17:50:20Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_ClientifyDealsBronzeF0_LostReason')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "WebGetToken",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "GET",
+							"headers": {},
+							"url": "https://kvmetrodoralakehousedev.vault.azure.net/secrets/clientifytoken/71f1cbb9aa6a4569ba657a15bcbd0350?api-version=7.0",
+							"authentication": {
+								"type": "MSI",
+								"resource": "https://vault.azure.net"
+							}
+						}
+					},
+					{
+						"name": "CopyDataClientifyLostReasonBronze",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "WebGetToken",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RestSource",
+								"httpRequestTimeout": "00:01:40",
+								"requestInterval": "00.00:00:00.010",
+								"requestMethod": "GET",
+								"additionalHeaders": {
+									"Content-Type": "application/json",
+									"Authorization": {
+										"value": "@concat('Token ',activity('WebGetToken').output.value)",
+										"type": "Expression"
+									}
+								},
+								"paginationRules": {
+									"AbsoluteUrl": "$.next"
+								}
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_Clientify",
+								"type": "DatasetReference",
+								"parameters": {
+									"relativeurl": {
+										"value": "@concat('v1/mob/deals/?serializer=DealDynamic&page_size=250&fields=id,lost_reason&modified[gte]=',formatDateTime(addDays(utcnow(),int(concat('-',string(pipeline().parameters.dayToLoad)))),'MM-dd-yyyy'),'&modified[lt]=',formatDateTime(addDays(utcnow(),+1),'MM-dd-yyyy'))",
+										"type": "Expression"
+									}
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_adsl_json",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "bronze",
+									"folder": {
+										"value": "@concat('lakehousef0/clientify/lostreason/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+										"type": "Expression"
+									},
+									"filename": "clientifydealslostreason.json"
+								}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"dayToLoad": {
+						"type": "string",
+						"defaultValue": "7"
+					}
+				},
+				"folder": {
+					"name": "LakehouseF0/BronzeF0"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-22T17:50:20Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_ClientifyDealsBronzeF0_LostReason_Full')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "WebGetToken",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "GET",
+							"headers": {},
+							"url": "https://kvmetrodoralakehousedev.vault.azure.net/secrets/clientifytoken/71f1cbb9aa6a4569ba657a15bcbd0350?api-version=7.0",
+							"authentication": {
+								"type": "MSI",
+								"resource": "https://vault.azure.net"
+							}
+						}
+					},
+					{
+						"name": "CopyDataClientifyLostReasonBronze",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "WebGetToken",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RestSource",
+								"httpRequestTimeout": "00:01:40",
+								"requestInterval": "00.00:00:00.010",
+								"requestMethod": "GET",
+								"additionalHeaders": {
+									"Content-Type": "application/json",
+									"Authorization": {
+										"value": "@concat('Token ',activity('WebGetToken').output.value)",
+										"type": "Expression"
+									}
+								},
+								"paginationRules": {
+									"AbsoluteUrl": "$.next"
+								}
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_Clientify",
+								"type": "DatasetReference",
+								"parameters": {
+									"relativeurl": "https://api.clientify.net/v1/mob/deals/?serializer=DealDynamic&page_size=250&fields=id,lost_reason"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_adsl_json",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "bronze",
+									"folder": {
+										"value": "@concat('lakehousef0/clientify/lostreason/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+										"type": "Expression"
+									},
+									"filename": "clientifydealslostreason.json"
+								}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "LakehouseF0/BronzeF0"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-22T17:50:20Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_ClientifyDealsBronze_Full')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "CopyDataClientifyBronze",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "WebGetToken",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RestSource",
+								"httpRequestTimeout": "00:01:40",
+								"requestInterval": "00.00:00:01.500",
+								"requestMethod": "GET",
+								"additionalHeaders": {
+									"Content-Type": "application/json",
+									"Authorization": {
+										"value": "@concat('Token ',activity('WebGetToken').output.value)",
+										"type": "Expression"
+									}
+								},
+								"paginationRules": {
+									"AbsoluteUrl": "$.next"
+								}
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_Clientify",
+								"type": "DatasetReference",
+								"parameters": {
+									"relativeurl": {
+										"value": "@concat('v1/mob/deals/?serializer=DealDynamic&page_size=250&fields=id, owner, owner_name, name, amount, amount_user, currency, contact, contact_name, contact_email, contact_phone, contact_medium, contact_source, created, modified, expected_closed_date, actual_closed_date, company, company_name, source, deal_source, status, lost_reason, status_desc, probability, probability_desc, pipeline_stage, pipeline_stage_desc, pipeline, pipeline_desc, custom_fields&created[gte]=09-01-2023&created[lt]=',formatDateTime(addDays(utcnow(),+1),'MM-dd-yyyy'))",
+										"type": "Expression"
+									}
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_adsl_json",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "bronze",
+									"folder": {
+										"value": "@concat('lakehouse/clientify/deals/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+										"type": "Expression"
+									},
+									"filename": "clientifydeals.json"
+								}
+							}
+						]
+					},
+					{
+						"name": "WebGetToken",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "GET",
+							"headers": {},
+							"url": "https://kvmetrodoralakehousedev.vault.azure.net/secrets/clientifytoken/71f1cbb9aa6a4569ba657a15bcbd0350?api-version=7.0",
+							"authentication": {
+								"type": "MSI",
+								"resource": "https://vault.azure.net"
+							}
+						}
+					},
+					{
+						"name": "WebGetToken CIEP",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "GET",
+							"headers": {},
+							"url": "https://kvmetrodoralakehousedev.vault.azure.net/secrets/clientifyCIEP/2dc5256643a6405392ec37abd7b74d55?api-version=7.0",
+							"authentication": {
+								"type": "MSI",
+								"resource": "https://vault.azure.net"
+							}
+						}
+					},
+					{
+						"name": "CopyDataClientifyBronze_Ciep",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "WebGetToken CIEP",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RestSource",
+								"httpRequestTimeout": "00:01:40",
+								"requestInterval": "00.00:00:00.010",
+								"requestMethod": "GET",
+								"additionalHeaders": {
+									"Content-Type": "application/json",
+									"Authorization": {
+										"value": "@concat('Token ',activity('WebGetToken CIEP').output.value)",
+										"type": "Expression"
+									}
+								},
+								"paginationRules": {
+									"AbsoluteUrl": "$.next"
+								}
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_Clientify_Ciep",
+								"type": "DatasetReference",
+								"parameters": {
+									"relativeurl": {
+										"value": "@concat('v1/mob/deals/?serializer=DealDynamic&page_size=250&fields=id, owner, owner_name, name, amount, amount_user, currency, contact, contact_name, contact_email, contact_phone, contact_medium, contact_source, created, modified, expected_closed_date, actual_closed_date, company, company_name, source, deal_source, status, lost_reason, status_desc, probability, probability_desc, pipeline_stage, pipeline_stage_desc, pipeline, pipeline_desc, custom_fields&created[gte]=09-01-2023&created[lt]=',formatDateTime(addDays(utcnow(),+1),'MM-dd-yyyy'))",
+										"type": "Expression"
+									}
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_adsl_json",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "bronze",
+									"folder": {
+										"value": "@concat('lakehouse/clientify/deals/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+										"type": "Expression"
+									},
+									"filename": "clientifydealsciep.json"
+								}
+							}
+						]
+					},
+					{
+						"name": "WebGetToken FP",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "GET",
+							"headers": {},
+							"url": "https://kvmetrodoralakehousedev.vault.azure.net/secrets/clientifytokenFP/4498a027b1af41fd8d8fe01dc9f45b46?api-version=7.0",
+							"authentication": {
+								"type": "MSI",
+								"resource": "https://vault.azure.net"
+							}
+						}
+					},
+					{
+						"name": "CopyDataClientifyBronze_Fp",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "WebGetToken FP",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RestSource",
+								"httpRequestTimeout": "00:01:40",
+								"requestInterval": "00.00:00:00.010",
+								"requestMethod": "GET",
+								"additionalHeaders": {
+									"Content-Type": "application/json",
+									"Authorization": {
+										"value": "@concat('Token ',activity('WebGetToken FP').output.value)",
+										"type": "Expression"
+									}
+								},
+								"paginationRules": {
+									"AbsoluteUrl": "$.next"
+								}
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_Clientify_Fp",
+								"type": "DatasetReference",
+								"parameters": {
+									"relativeurl": {
+										"value": "@concat('v1/mob/deals/?serializer=DealDynamic&page_size=250&fields=id, owner, owner_name, name, amount, amount_user, currency, contact, contact_name, contact_email, contact_phone, contact_medium, contact_source, created, modified, expected_closed_date, actual_closed_date, company, company_name, source, deal_source, status, lost_reason, status_desc, probability, probability_desc, pipeline_stage, pipeline_stage_desc, pipeline, pipeline_desc, custom_fields&created[gte]=09-01-2023&created[lt]=',formatDateTime(addDays(utcnow(),+1),'MM-dd-yyyy'))",
+										"type": "Expression"
+									}
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_adsl_json",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "bronze",
+									"folder": {
+										"value": "@concat('lakehouse/clientify/deals/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+										"type": "Expression"
+									},
+									"filename": "clientifydealsfp.json"
+								}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "Lakehouse/Bronze"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-22T17:50:20Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_ClientifyDealsBronze_IdForDelete')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "WebGetToken",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "GET",
+							"headers": {},
+							"url": "https://kvmetrodoralakehousedev.vault.azure.net/secrets/clientifytoken/71f1cbb9aa6a4569ba657a15bcbd0350?api-version=7.0",
+							"authentication": {
+								"type": "MSI",
+								"resource": "https://vault.azure.net"
+							}
+						}
+					},
+					{
+						"name": "CopyDataClientifyIdForDeleteBronze",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "WebGetToken",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RestSource",
+								"httpRequestTimeout": "00:01:40",
+								"requestInterval": "00.00:00:00.010",
+								"requestMethod": "GET",
+								"additionalHeaders": {
+									"Content-Type": "application/json",
+									"Authorization": {
+										"value": "@concat('Token ',activity('WebGetToken').output.value)",
+										"type": "Expression"
+									}
+								},
+								"paginationRules": {
+									"AbsoluteUrl": "$.next"
+								}
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_Clientify",
+								"type": "DatasetReference",
+								"parameters": {
+									"relativeurl": "https://api.clientify.net/v1/mob/deals/?serializer=DealDynamic&page_size=250&fields=id"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_adsl_json",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "bronze",
+									"folder": {
+										"value": "@concat('lakehouse/clientify/dealsidfordelete/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+										"type": "Expression"
+									},
+									"filename": "clientifydealsidfordelete.json"
+								}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "Lakehouse/Bronze"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-22T17:50:20Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_ClientifyDealsGoldF0')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "DataFlowClientifyDealsGoldF0",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "df_ClientifyDealsGoldF0",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"sourceClientifyDealsSilverF0": {},
+									"sourceVentasGoldF0": {},
+									"sinkVentasGoldF0": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "LakehouseF0/GoldF0"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-22T17:50:20Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_ClientifyDealsGoldF0_IdForDelete')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "DataflowClientifyDealsGoldF0_IdForDelete",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "df_ClientifyDealsGoldF0_IdForDelete",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"sourceSalesGold": {},
+									"sourceClientifyIdForDeleteSilver": {},
+									"sourceSalesGold2": {},
+									"sinkSalesGold": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "LakehouseF0/GoldF0"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-22T17:50:19Z"
+			},
+			"dependsOn": []
+		}
+	]
+}
