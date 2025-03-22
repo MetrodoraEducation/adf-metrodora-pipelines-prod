@@ -4,12 +4,12 @@
 	"parameters": {
 		"factoryName": {
 			"type": "string",
-			"metadata": "Data Factory name",
+			"metadata": "Nombre de instancia de Data Factory",
 			"defaultValue": "adf-metrodoralakehouse-pro"
 		},
 		"ls_PostgreSql_connectionString": {
 			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'ls_PostgreSql'",
+			"metadata": "Cadena protegida para \"connectionString\"de \"ls_PostgreSql\"",
 			"defaultValue": "Host=psql-metrodoralakehouse-pro.postgres.database.azure.com;Port=5432;Database=lakehouse;UID=sqladminuser;EncryptionMethod=1;ValidateServerCertificate=0"
 		},
 		"ls_Aircall_properties_typeProperties_url": {
@@ -22,7 +22,7 @@
 		},
 		"ls_AzureDatabricks_properties_typeProperties_existingClusterId": {
 			"type": "string",
-			"defaultValue": "1212-104707-fmkh3hmk"
+			"defaultValue": "1216-171311-yqwga0m4"
 		},
 		"ls_Classlife_properties_typeProperties_url": {
 			"type": "string",
@@ -2370,7 +2370,7 @@
 						"typeProperties": {
 							"method": "GET",
 							"headers": {},
-							"url": "https://kvmetrodoralakehousedev.vault.azure.net/secrets/clientifytoken/71f1cbb9aa6a4569ba657a15bcbd0350?api-version=7.0",
+							"url": "https://kvmetrodoralakehousepro.vault.azure.net/secrets/clientifytoken/5aaa9d80ef79468aa26b888ef06f7541?api-version=7.0",
 							"authentication": {
 								"type": "MSI",
 								"resource": "https://vault.azure.net"
@@ -2392,7 +2392,7 @@
 						"typeProperties": {
 							"method": "GET",
 							"headers": {},
-							"url": "https://kvmetrodoralakehousedev.vault.azure.net/secrets/clientifyCIEP/2dc5256643a6405392ec37abd7b74d55?api-version=7.0",
+							"url": "https://kvmetrodoralakehousepro.vault.azure.net/secrets/clientifyCIEP/60c9376c8f074e028c48ac196e2126dd?api-version=7.0",
 							"authentication": {
 								"type": "MSI",
 								"resource": "https://vault.azure.net"
@@ -3832,7 +3832,7 @@
 						"typeProperties": {
 							"method": "GET",
 							"headers": {},
-							"url": "https://kvmetrodoralakehousedev.vault.azure.net/secrets/clientifytoken/71f1cbb9aa6a4569ba657a15bcbd0350?api-version=7.0",
+							"url": "https://kvmetrodoralakehousepro.vault.azure.net/secrets/clientifytoken/5aaa9d80ef79468aa26b888ef06f7541?api-version=7.0",
 							"authentication": {
 								"type": "MSI",
 								"resource": "https://vault.azure.net"
@@ -7133,6 +7133,8 @@
 					{
 						"name": "DimNacionalidadGold",
 						"type": "DatabricksNotebook",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "DimPaisSilver",
@@ -7517,33 +7519,6 @@
 										"value": {
 											"value": "@string(activity('Get_Previous_Count_fct_recibos').output.firstRow.count)",
 											"type": "Expression"
-										}
-									}
-								},
-								{
-									"name": "Lookup1",
-									"type": "Lookup",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"source": {
-											"type": "AzurePostgreSqlSource",
-											"partitionOption": "None"
-										},
-										"dataset": {
-											"referenceName": "ds_PostgreSql",
-											"type": "DatasetReference",
-											"parameters": {
-												"schema": "public",
-												"table": "f0calls"
-											}
 										}
 									}
 								}
@@ -10667,7 +10642,14 @@
 					{
 						"name": "Dim_campania_gold",
 						"type": "DatabricksNotebook",
-						"dependsOn": [],
+						"dependsOn": [
+							{
+								"activity": "Dim_programa_gold",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
 						"policy": {
 							"timeout": "0.12:00:00",
 							"retry": 0,
@@ -10720,7 +10702,14 @@
 					{
 						"name": "Dim_estado_venta_gold",
 						"type": "DatabricksNotebook",
-						"dependsOn": [],
+						"dependsOn": [
+							{
+								"activity": "Dim_vertical_gold",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
 						"policy": {
 							"timeout": "0.12:00:00",
 							"retry": 0,
@@ -10743,7 +10732,14 @@
 					{
 						"name": "Dim_etapa_venta_gold",
 						"type": "DatabricksNotebook",
-						"dependsOn": [],
+						"dependsOn": [
+							{
+								"activity": "Dim_tipo_formacion_gold",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
 						"policy": {
 							"timeout": "0.12:00:00",
 							"retry": 0,
@@ -10766,7 +10762,14 @@
 					{
 						"name": "Dim_institucion_gold",
 						"type": "DatabricksNotebook",
-						"dependsOn": [],
+						"dependsOn": [
+							{
+								"activity": "Dim_estado_venta_gold",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
 						"policy": {
 							"timeout": "0.12:00:00",
 							"retry": 0,
@@ -10789,7 +10792,14 @@
 					{
 						"name": "Dim_localidad_gold",
 						"type": "DatabricksNotebook",
-						"dependsOn": [],
+						"dependsOn": [
+							{
+								"activity": "Dim_etapa_venta_gold",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
 						"policy": {
 							"timeout": "0.12:00:00",
 							"retry": 0,
@@ -10842,7 +10852,14 @@
 					{
 						"name": "Dim_motivo_cierre_gold",
 						"type": "DatabricksNotebook",
-						"dependsOn": [],
+						"dependsOn": [
+							{
+								"activity": "Dim_jerarquia_marketing_gold",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
 						"policy": {
 							"timeout": "0.12:00:00",
 							"retry": 0,
@@ -10865,7 +10882,14 @@
 					{
 						"name": "Dim_motivo_perdida_llamada_gold",
 						"type": "DatabricksNotebook",
-						"dependsOn": [],
+						"dependsOn": [
+							{
+								"activity": "Dim_tipo_negocio_gold",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
 						"policy": {
 							"timeout": "0.12:00:00",
 							"retry": 0,
@@ -10888,7 +10912,14 @@
 					{
 						"name": "Dim_origen_campania_gold",
 						"type": "DatabricksNotebook",
-						"dependsOn": [],
+						"dependsOn": [
+							{
+								"activity": "Dim_estudiante",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
 						"policy": {
 							"timeout": "0.12:00:00",
 							"retry": 0,
@@ -11264,7 +11295,14 @@
 					{
 						"name": "dim_concepto_cobro_gold",
 						"type": "DatabricksNotebook",
-						"dependsOn": [],
+						"dependsOn": [
+							{
+								"activity": "Dim_comercial_gold",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
 						"policy": {
 							"timeout": "0.12:00:00",
 							"retry": 0,
@@ -11857,9 +11895,9 @@
 				"annotations": [],
 				"type": "AzureDatabricks",
 				"typeProperties": {
-					"domain": "https://adb-738676796567959.19.azuredatabricks.net",
+					"domain": "https://adb-22519509287058.18.azuredatabricks.net",
 					"authentication": "MSI",
-					"workspaceResourceId": "/subscriptions/d987d0e4-08ec-4622-b7ef-cdc8669f181b/resourceGroups/rg-lakehouse-dev/providers/Microsoft.Databricks/workspaces/dbw-metrodoralakehouse-dev",
+					"workspaceResourceId": "/subscriptions/736f3166-527e-4261-9240-edec12d189d7/resourceGroups/rg-lakehouse-pro/providers/Microsoft.Databricks/workspaces/dbw-metrodoralakehouse-pro",
 					"existingClusterId": "[parameters('ls_AzureDatabricks_properties_typeProperties_existingClusterId')]"
 				}
 			},

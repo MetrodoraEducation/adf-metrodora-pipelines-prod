@@ -4,7 +4,7 @@
 	"parameters": {
 		"factoryName": {
 			"type": "string",
-			"metadata": "Data Factory name",
+			"metadata": "Nombre de instancia de Data Factory",
 			"defaultValue": "adf-metrodoralakehouse-pro"
 		}
 	},
@@ -1636,7 +1636,7 @@
 						"typeProperties": {
 							"method": "GET",
 							"headers": {},
-							"url": "https://kvmetrodoralakehousedev.vault.azure.net/secrets/clientifytoken/71f1cbb9aa6a4569ba657a15bcbd0350?api-version=7.0",
+							"url": "https://kvmetrodoralakehousepro.vault.azure.net/secrets/clientifytoken/5aaa9d80ef79468aa26b888ef06f7541?api-version=7.0",
 							"authentication": {
 								"type": "MSI",
 								"resource": "https://vault.azure.net"
@@ -1658,7 +1658,7 @@
 						"typeProperties": {
 							"method": "GET",
 							"headers": {},
-							"url": "https://kvmetrodoralakehousedev.vault.azure.net/secrets/clientifyCIEP/2dc5256643a6405392ec37abd7b74d55?api-version=7.0",
+							"url": "https://kvmetrodoralakehousepro.vault.azure.net/secrets/clientifyCIEP/60c9376c8f074e028c48ac196e2126dd?api-version=7.0",
 							"authentication": {
 								"type": "MSI",
 								"resource": "https://vault.azure.net"
@@ -3068,7 +3068,7 @@
 						"typeProperties": {
 							"method": "GET",
 							"headers": {},
-							"url": "https://kvmetrodoralakehousedev.vault.azure.net/secrets/clientifytoken/71f1cbb9aa6a4569ba657a15bcbd0350?api-version=7.0",
+							"url": "https://kvmetrodoralakehousepro.vault.azure.net/secrets/clientifytoken/5aaa9d80ef79468aa26b888ef06f7541?api-version=7.0",
 							"authentication": {
 								"type": "MSI",
 								"resource": "https://vault.azure.net"

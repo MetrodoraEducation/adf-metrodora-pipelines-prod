@@ -4,7 +4,7 @@
 	"parameters": {
 		"factoryName": {
 			"type": "string",
-			"metadata": "Data Factory name",
+			"metadata": "Nombre de instancia de Data Factory",
 			"defaultValue": "adf-metrodoralakehouse-pro"
 		}
 	},
@@ -2579,33 +2579,6 @@
 										"value": {
 											"value": "@string(activity('Get_Previous_Count_fct_recibos').output.firstRow.count)",
 											"type": "Expression"
-										}
-									}
-								},
-								{
-									"name": "Lookup1",
-									"type": "Lookup",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"source": {
-											"type": "AzurePostgreSqlSource",
-											"partitionOption": "None"
-										},
-										"dataset": {
-											"referenceName": "ds_PostgreSql",
-											"type": "DatasetReference",
-											"parameters": {
-												"schema": "public",
-												"table": "f0calls"
-											}
 										}
 									}
 								}
