@@ -3,7 +3,7 @@
 	"properties": {
 		"description": "Execution of trigger master",
 		"annotations": [],
-		"runtimeState": "Stopped",
+		"runtimeState": "Started",
 		"pipelines": [
 			{
 				"pipelineReference": {
