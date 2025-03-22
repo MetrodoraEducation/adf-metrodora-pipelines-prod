@@ -5,14 +5,7 @@
 			{
 				"name": "Dim_campania_gold",
 				"type": "DatabricksNotebook",
-				"dependsOn": [
-					{
-						"activity": "Dim_motivo_cierre_gold",
-						"dependencyConditions": [
-							"Completed"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -660,9 +653,9 @@
 				"type": "DatabricksNotebook",
 				"dependsOn": [
 					{
-						"activity": "Dim_motivo_perdida_llamada_gold",
+						"activity": "Dim_comercial_gold",
 						"dependencyConditions": [
-							"Completed"
+							"Succeeded"
 						]
 					}
 				],
