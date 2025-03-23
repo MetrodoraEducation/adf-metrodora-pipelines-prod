@@ -206,7 +206,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"method": "GET",
-					"url": "https://kvmetrodoralakehousedev.vault.azure.net/secrets/clientifytokenFP/4498a027b1af41fd8d8fe01dc9f45b46?api-version=7.0",
+					"url": "https://kvmetrodoralakehousepro.vault.azure.net/secrets/clientifyFP/ef96be5f9d174ee189c77fc0f81c39bd?api-version=7.0",
 					"authentication": {
 						"type": "MSI",
 						"resource": "https://vault.azure.net"
