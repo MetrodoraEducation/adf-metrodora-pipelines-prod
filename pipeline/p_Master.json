@@ -26,11 +26,11 @@
 					"parameters": {
 						"dayToLoad": "7",
 						"silver_storage_databricks": {
-							"value": "@concat('/Workspaouse/Silver/')",
+							"value": "/Workspace/Repos/production_repository/notebooks-databricks-prod/Lakehouse/Silver/",
 							"type": "Expression"
 						},
 						"gold_storage_databricks": {
-							"value": "@concat('/Workspace/Repos/production_repository/notebooks-databricks-prod/Lakehouse/Gold/')",
+							"value": "/Workspace/Repos/production_repository/notebooks-databricks-prod/Lakehouse/Gold/",
 							"type": "Expression"
 						},
 						"dwh_storage_databricks": {
