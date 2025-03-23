@@ -26,15 +26,15 @@
 					"parameters": {
 						"dayToLoad": "7",
 						"silver_storage_databricks": {
-							"value": "@concat('/Repos/development_repository/notebooks-databricks-dev/Lakehouse/Silver/')",
+							"value": "@concat('/Workspace/Repos/production_repository/notebooks-databricks-prod/Lakehouse/Silver/')",
 							"type": "Expression"
 						},
 						"gold_storage_databricks": {
-							"value": "@concat('/Repos/development_repository/notebooks-databricks-dev/Lakehouse/Gold/')",
+							"value": "@concat('/Workspace/Repos/production_repository/notebooks-databricks-prod/Lakehouse/Gold/')",
 							"type": "Expression"
 						},
 						"dwh_storage_databricks": {
-							"value": "@concat('/Repos/development_repository/notebooks-databricks-dev/Lakehouse/DWH/')",
+							"value": "@concat('/Workspace/Repos/production_repository/notebooks-databricks-prod/Lakehouse/DWH/')",
 							"type": "Expression"
 						}
 					}
