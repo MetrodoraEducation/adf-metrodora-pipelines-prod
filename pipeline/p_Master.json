@@ -43,8 +43,6 @@
 			{
 				"name": "Send Succesfully Email",
 				"type": "WebActivity",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "ForEach_After_Count",
@@ -335,8 +333,6 @@
 			{
 				"name": "ForEach_After_Count",
 				"type": "ForEach",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Execute p_General",
