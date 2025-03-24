@@ -288,7 +288,7 @@
 		"parameters": {
 			"dayToLoad": {
 				"type": "string",
-				"defaultValue": "7"
+				"defaultValue": "30"
 			},
 			"silver_storage_databricks": {
 				"type": "string",
