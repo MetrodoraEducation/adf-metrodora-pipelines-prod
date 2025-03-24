@@ -33,11 +33,11 @@
 							"type": "Expression"
 						},
 						"gold_storage_databricks": {
-							"value": "/Workspace/Repos/production_repository/notebooks-databricks-prod/Lakehouse/Gold/",
+							"value": "@concat('/Workspace/Repos/production_repository/notebooks-databricks-prod/Lakehouse/Gold/')",
 							"type": "Expression"
 						},
 						"dwh_storage_databricks": {
-							"value": "/Workspace/Repos/production_repository/notebooks-databricks-prod/Lakehouse/DWH/",
+							"value": "@concat('/Workspace/Repos/production_repository/notebooks-databricks-prod/Lakehouse/DWH/')",
 							"type": "Expression"
 						}
 					}
