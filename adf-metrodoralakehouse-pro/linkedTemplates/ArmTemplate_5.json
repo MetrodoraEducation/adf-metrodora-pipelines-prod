@@ -2279,15 +2279,15 @@
 							"parameters": {
 								"dayToLoad": "7",
 								"silver_storage_databricks": {
-									"value": "@concat('/Workspace/Repos/production_repository/notebooks-databricks-prod/Lakehouse/Silver/')",
+									"value": "/Workspace/Repos/proatabricks-prod/Lakehouse/Silver/",
 									"type": "Expression"
 								},
 								"gold_storage_databricks": {
-									"value": "@concat('/Workspace/Repos/production_repository/notebooks-databricks-prod/Lakehouse/Gold/')",
+									"value": "/Workspace/Repos/production_repository/notebooks-databricks-prod/Lakehouse/Gold/",
 									"type": "Expression"
 								},
 								"dwh_storage_databricks": {
-									"value": "@concat('/Workspace/Repos/production_repository/notebooks-databricks-prod/Lakehouse/DWH/')",
+									"value": "/Workspace/Repos/production_repository/notebooks-databricks-prod/Lakehouse/DWH/",
 									"type": "Expression"
 								}
 							}
@@ -2346,7 +2346,7 @@
 							"headers": {},
 							"url": "https://prod-40.westeurope.logic.azure.com:443/workflows/2bb0d801093b433a99faf68a321f80fb/triggers/When_a_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_a_HTTP_request_is_received%2Frun&sv=1.0&sig=XkPD-LLEMVO2gpxBWggav7Z1z9XUNdXndtJTos6uWLc",
 							"body": {
-								"value": "{\n  \"title\": \"PIPELINE RUN FAILED\",\n  \"message\": \"@{activity('Execute p_General').error.message}\",\n  \"color\": \"Red\",\n  \"dataFactoryName\": \"@{pipeline().DataFactory}\",\n  \"pipelineName\": \"@{pipeline().Pipeline}\",\n  \"pipelineRunId\": \"@{pipeline().RunId}\",\n  \"time\": \"@{utcNow()}\"\n}",
+								"value": "{\n  \"title\": \"PIPELINE RUN FAILED\",\n  \"message\": \"El pipeline 'p_General' ha fallado. Por favor, revisa los logs de ejecución en Azure Data Factory para más detalles. Es posible que una de las actividades internas haya fallado.\",\n  \"color\": \"Red\",\n  \"dataFactoryName\": \"@{pipeline().DataFactory}\",\n  \"pipelineName\": \"@{pipeline().Pipeline}\",\n  \"pipelineRunId\": \"@{pipeline().RunId}\",\n  \"time\": \"@{utcNow()}\"\n}",
 								"type": "Expression"
 							}
 						}
@@ -2978,52 +2978,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/p_General')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/trigger_master')]",
-			"type": "Microsoft.DataFactory/factories/triggers",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "Execution of trigger master",
-				"annotations": [],
-				"runtimeState": "Stopped",
-				"pipelines": [
-					{
-						"pipelineReference": {
-							"referenceName": "p_Master",
-							"type": "PipelineReference"
-						},
-						"parameters": {}
-					}
-				],
-				"type": "ScheduleTrigger",
-				"typeProperties": {
-					"recurrence": {
-						"frequency": "Week",
-						"interval": 1,
-						"startTime": "2025-03-20T17:34:00",
-						"timeZone": "Romance Standard Time",
-						"schedule": {
-							"minutes": [
-								30
-							],
-							"hours": [
-								4
-							],
-							"weekDays": [
-								"Monday",
-								"Tuesday",
-								"Wednesday",
-								"Thursday",
-								"Friday"
-							]
-						}
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/p_Master')]"
 			]
 		}
 	]
