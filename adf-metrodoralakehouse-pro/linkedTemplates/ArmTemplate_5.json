@@ -4,7 +4,7 @@
 	"parameters": {
 		"factoryName": {
 			"type": "string",
-			"metadata": "Nombre de instancia de Data Factory",
+			"metadata": "Data Factory name",
 			"defaultValue": "adf-metrodoralakehouse-pro"
 		}
 	},
@@ -1536,7 +1536,7 @@
 				"parameters": {
 					"dayToLoad": {
 						"type": "string",
-						"defaultValue": "7"
+						"defaultValue": "30"
 					},
 					"silver_storage_databricks": {
 						"type": "string",
@@ -2277,17 +2277,20 @@
 							},
 							"waitOnCompletion": true,
 							"parameters": {
-								"dayToLoad": "7",
+								"dayToLoad": {
+									"value": "@pipeline().parameters.dayToLoad",
+									"type": "Expression"
+								},
 								"silver_storage_databricks": {
-									"value": "/Workspace/Repos/proatabricks-prod/Lakehouse/Silver/",
+									"value": "@concat('/Workspace/Repos/production_repository/notebooks-databricks-prod/Lakehouse/Silver/')",
 									"type": "Expression"
 								},
 								"gold_storage_databricks": {
-									"value": "/Workspace/Repos/production_repository/notebooks-databricks-prod/Lakehouse/Gold/",
+									"value": "@concat('/Workspace/Repos/production_repository/notebooks-databricks-prod/Lakehouse/Gold/')",
 									"type": "Expression"
 								},
 								"dwh_storage_databricks": {
-									"value": "/Workspace/Repos/production_repository/notebooks-databricks-prod/Lakehouse/DWH/",
+									"value": "@concat('/Workspace/Repos/production_repository/notebooks-databricks-prod/Lakehouse/DWH/')",
 									"type": "Expression"
 								}
 							}
@@ -2925,6 +2928,12 @@
 				],
 				"policy": {
 					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"dayToLoad": {
+						"type": "string",
+						"defaultValue": "7"
+					}
 				},
 				"variables": {
 					"previous_counts_ventas": {
