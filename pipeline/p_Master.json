@@ -29,7 +29,7 @@
 							"type": "Expression"
 						},
 						"silver_storage_databricks": {
-							"value": "/Workspace/Repos/proatabricks-prod/Lakehouse/Silver/",
+							"value": "@concat('/Workspace/Repos/production_repository/notebooks-databricks-prod/Lakehouse/Silver/')",
 							"type": "Expression"
 						},
 						"gold_storage_databricks": {
