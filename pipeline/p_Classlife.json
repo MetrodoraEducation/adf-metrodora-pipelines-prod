@@ -429,6 +429,113 @@
 						}
 					}
 				]
+			},
+			{
+				"name": "WebClasslifeAdmissions",
+				"description": "Activity web that calls the endpoint Admissions",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "GET",
+					"headers": {
+						"apiKey": {
+							"value": "@pipeline().parameters.API_KEY",
+							"type": "Expression"
+						},
+						"clientId": {
+							"value": "@pipeline().parameters.API_CLIENT",
+							"type": "Expression"
+						}
+					},
+					"url": {
+						"value": "@concat('https://api.classlife.io/api/v1/admissions')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Receipts_copy1",
+				"description": "Receipts",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "WebClasslifeAdmissions",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:01:40",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "GET",
+						"additionalHeaders": {
+							"Content-Type": "application/json",
+							"apiKey": {
+								"value": "@pipeline().parameters.API_KEY",
+								"type": "Expression"
+							},
+							"clientId": {
+								"value": "@pipeline().parameters.API_CLIENT",
+								"type": "Expression"
+							}
+						},
+						"paginationRules": {
+							"supportRFC5988": "true"
+						}
+					},
+					"sink": {
+						"type": "JsonSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "JsonWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_Classlife",
+						"type": "DatasetReference",
+						"parameters": {
+							"relativeUrl": "receipts?showMetas=1"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_adsl_json",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "bronze",
+							"folder": {
+								"value": "@concat('lakehouse/classlife/receipts/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+								"type": "Expression"
+							},
+							"filename": "JsaClassLifeReceipts.json"
+						}
+					}
+				]
 			}
 		],
 		"parameters": {
