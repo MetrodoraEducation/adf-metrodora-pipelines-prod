@@ -518,7 +518,7 @@
 						"referenceName": "ds_Classlife",
 						"type": "DatasetReference",
 						"parameters": {
-							"relativeUrl": "receipts?showMetas=1"
+							"relativeUrl": "admissions?showMetas=1"
 						}
 					}
 				],
