@@ -462,8 +462,8 @@
 				}
 			},
 			{
-				"name": "Receipts_copy1",
-				"description": "Receipts",
+				"name": "Admissions",
+				"description": "Admissions",
 				"type": "Copy",
 				"dependsOn": [
 					{
@@ -529,10 +529,10 @@
 						"parameters": {
 							"container": "bronze",
 							"folder": {
-								"value": "@concat('lakehouse/classlife/receipts/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+								"value": "@concat('lakehouse/classlife/admissions/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
 								"type": "Expression"
 							},
-							"filename": "JsaClassLifeReceipts.json"
+							"filename": "JsaClassLifeAdmissions.json"
 						}
 					}
 				]
