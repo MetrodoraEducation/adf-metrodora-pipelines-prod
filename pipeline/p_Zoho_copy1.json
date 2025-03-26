@@ -186,11 +186,9 @@
 						{
 							"name": "next_page_token_copy1",
 							"type": "SetVariable",
-							"state": "Inactive",
-							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [
 								{
-									"activity": "CopydataZohoDeals_copy1",
+									"activity": "CopydataZohoDealsV1",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -210,7 +208,7 @@
 							}
 						},
 						{
-							"name": "CopydataZohoDeals_copy1",
+							"name": "CopydataZohoDealsV1",
 							"type": "Copy",
 							"dependsOn": [],
 							"policy": {
@@ -230,7 +228,7 @@
 									"additionalHeaders": {
 										"Content-Type": "application/json",
 										"Authorization": {
-											"value": "@concat('Bearer ', activity('WebZohoPrueba').output.access_token)",
+											"value": "@concat('Bearer ', activity('GetZohoAccessToken').output.access_token)",
 											"type": "Expression"
 										},
 										"If-Modified-Since": {
