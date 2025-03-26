@@ -168,14 +168,7 @@
 			{
 				"name": "Until1",
 				"type": "Until",
-				"dependsOn": [
-					{
-						"activity": "WebZohoPrueba_copy1",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
@@ -285,7 +278,7 @@
 				}
 			},
 			{
-				"name": "next_page_token_copy2",
+				"name": "next_page_token",
 				"type": "SetVariable",
 				"dependsOn": [],
 				"policy": {
@@ -299,11 +292,11 @@
 				}
 			},
 			{
-				"name": "WebZohoPrueba_copy1",
+				"name": "GetZohoAccessToken",
 				"type": "WebActivity",
 				"dependsOn": [
 					{
-						"activity": "next_page_token_copy2",
+						"activity": "next_page_token",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -331,6 +324,27 @@
 						"type": "MSI",
 						"resource": "https://vault.azure.net"
 					}
+				}
+			},
+			{
+				"name": "access_token",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "GetZohoAccessToken",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "access_token",
+					"value": ""
 				}
 			}
 		],
@@ -363,6 +377,9 @@
 				"type": "String"
 			},
 			"next_page_token": {
+				"type": "String"
+			},
+			"access_token": {
 				"type": "String"
 			}
 		},
