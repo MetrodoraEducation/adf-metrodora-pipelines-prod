@@ -168,11 +168,18 @@
 			{
 				"name": "Until1",
 				"type": "Until",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "access_token",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@or(equals(variables('next_page_token'), ''), equals(variables('next_page_token'), null))\n",
+						"value": "@not(or(equals(variables('next_page_token'), ''), equals(variables('next_page_token'), null)))",
 						"type": "Expression"
 					},
 					"activities": [
@@ -344,7 +351,10 @@
 				"userProperties": [],
 				"typeProperties": {
 					"variableName": "access_token",
-					"value": ""
+					"value": {
+						"value": "@activity('GetZohoAccessToken').output.access_token",
+						"type": "Expression"
+					}
 				}
 			}
 		],
