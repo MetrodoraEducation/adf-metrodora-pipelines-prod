@@ -221,6 +221,20 @@
 									"resource": "https://vault.azure.net"
 								}
 							}
+						},
+						{
+							"name": "next_page_token_copy1",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "next_page_token",
+								"value": "''"
+							}
 						}
 					],
 					"timeout": "0.12:00:00"
