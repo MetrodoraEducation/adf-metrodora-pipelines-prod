@@ -43,7 +43,7 @@
 								"value": "@variables('ifModifiedSinceDate')",
 								"type": "Expression"
 							},
-							"next_page_token": {
+							"page_token": {
 								"value": "@variables('NextPageToken')",
 								"type": "Expression"
 							}
