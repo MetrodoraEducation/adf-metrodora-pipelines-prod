@@ -220,7 +220,7 @@
 							"typeProperties": {
 								"variableName": "PageCounterString",
 								"value": {
-									"value": "@string(variables('PageCounter'))",
+									"value": "@string(variables('page_counter'))",
 									"type": "Expression"
 								}
 							}
