@@ -397,8 +397,6 @@
 			{
 				"name": "GetNextPageToken",
 				"type": "WebActivity",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "WebZohoAPI",
@@ -434,8 +432,6 @@
 				"name": "NextPageToken",
 				"description": "",
 				"type": "SetVariable",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "GetNextPageToken",
