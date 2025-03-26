@@ -5,6 +5,8 @@
 			{
 				"name": "CopydataZohoDeals",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "If Modified Since Date",
@@ -84,6 +86,8 @@
 			{
 				"name": "WebZohoAPI",
 				"type": "WebActivity",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -112,6 +116,8 @@
 			{
 				"name": "Set variable Users",
 				"type": "SetVariable",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "WebZohoAPI",
@@ -136,6 +142,8 @@
 			{
 				"name": "If Modified Since Date",
 				"type": "SetVariable",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Set variable Users",
@@ -163,6 +171,10 @@
 				"dependsOn": [],
 				"userProperties": [],
 				"typeProperties": {
+					"expression": {
+						"value": "@or(equals(variables('next_page_token'), ''), equals(variables('next_page_token'), null))\n",
+						"type": "Expression"
+					},
 					"activities": [
 						{
 							"name": "next_page_token",
