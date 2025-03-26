@@ -165,14 +165,18 @@
 				"typeProperties": {
 					"activities": [
 						{
-							"name": "Set variable1",
+							"name": "next_page_token",
 							"type": "SetVariable",
 							"dependsOn": [],
 							"policy": {
 								"secureOutput": false,
 								"secureInput": false
 							},
-							"userProperties": []
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "next_page_token",
+								"value": ""
+							}
 						}
 					],
 					"timeout": "0.12:00:00"
@@ -205,6 +209,9 @@
 				"type": "String"
 			},
 			"NextPageToken": {
+				"type": "String"
+			},
+			"next_page_token": {
 				"type": "String"
 			}
 		},
