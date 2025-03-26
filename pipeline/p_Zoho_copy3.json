@@ -167,7 +167,10 @@
 											"value": "@concat('lakehouse/zoho/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
 											"type": "Expression"
 										},
-										"filename": "JsaZohoDeals.json"
+										"filename": {
+											"value": "@concat('JsaZohoDeals', variables('PageCounterString'), '.json')",
+											"type": "Expression"
+										}
 									}
 								}
 							]
@@ -198,19 +201,26 @@
 							}
 						},
 						{
-							"name": "NextPageToken_copy1",
+							"name": "PageCounterString",
 							"description": "",
 							"type": "SetVariable",
-							"dependsOn": [],
+							"dependsOn": [
+								{
+									"activity": "NextPageToken",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
 							"policy": {
 								"secureOutput": false,
 								"secureInput": false
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"variableName": "NextPageToken",
+								"variableName": "PageCounterString",
 								"value": {
-									"value": "@activity('CopydataZohoDeals').output.response.info.next_page_token",
+									"value": "@string(variables('PageCounter'))",
 									"type": "Expression"
 								}
 							}
