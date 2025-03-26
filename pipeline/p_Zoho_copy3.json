@@ -7,12 +7,6 @@
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "If Modified Since Date",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
 						"activity": "NextPageToken",
 						"dependencyConditions": [
 							"Succeeded"
@@ -168,53 +162,10 @@
 				}
 			},
 			{
-				"name": "GetNextPageToken",
-				"type": "WebActivity",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
-				"dependsOn": [
-					{
-						"activity": "WebZohoAPI",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"method": "GET",
-					"headers": {
-						"Authorization": {
-							"value": "@concat('Bearer ', activity('WebZohoAPI').output.access_token)",
-							"type": "Expression"
-						},
-						"Content-Type": "application/json"
-					},
-					"url": {
-						"value": "@concat(\n    'https://www.zohoapis.eu/crm/v7/Deals?fields=Modified_Time,Motivo_p_rdida_B2C&per_page=200',\n    if(\n        equals(variables('NextPageToken'), ''), \n        '', \n        concat('&page_token=', variables('NextPageToken'))\n    )\n)",
-						"type": "Expression"
-					}
-				}
-			},
-			{
 				"name": "NextPageToken",
 				"description": "",
 				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "GetNextPageToken",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"secureOutput": false,
 					"secureInput": false
@@ -226,6 +177,22 @@
 						"value": "@activity('GetNextPageToken').output.info.next_page_token",
 						"type": "Expression"
 					}
+				}
+			},
+			{
+				"name": "Until1",
+				"type": "Until",
+				"dependsOn": [
+					{
+						"activity": "If Modified Since Date",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"timeout": "0.12:00:00"
 				}
 			}
 		],
