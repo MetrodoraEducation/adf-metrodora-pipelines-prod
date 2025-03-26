@@ -543,7 +543,7 @@
 			},
 			"reprocessDate": {
 				"type": "string",
-				"defaultValue": "10"
+				"defaultValue": "7"
 			}
 		},
 		"variables": {
