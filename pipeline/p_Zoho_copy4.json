@@ -173,7 +173,7 @@
 			},
 			"reprocessDate": {
 				"type": "string",
-				"defaultValue": "7"
+				"defaultValue": "15"
 			}
 		},
 		"variables": {
