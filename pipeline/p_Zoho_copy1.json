@@ -42,10 +42,6 @@
 							"If-Modified-Since": {
 								"value": "@variables('ifModifiedSinceDate')",
 								"type": "Expression"
-							},
-							"page_token": {
-								"value": "@variables('NextPageToken')",
-								"type": "Expression"
 							}
 						},
 						"paginationRules": {
