@@ -40,7 +40,7 @@
 						},
 						"paginationRules": {
 							"supportRFC5988": "true",
-							"QueryParameters": "next_page_token"
+							"AbsoluteUrl": "$info.page_token"
 						}
 					},
 					"sink": {
