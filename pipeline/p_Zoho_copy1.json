@@ -228,6 +228,8 @@
 						{
 							"name": "next_page_token_copy1",
 							"type": "SetVariable",
+							"state": "Inactive",
+							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [
 								{
 									"activity": "CopydataZohoDeals_copy1",
