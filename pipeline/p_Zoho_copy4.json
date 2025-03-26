@@ -40,7 +40,7 @@
 						},
 						"paginationRules": {
 							"supportRFC5988": "true",
-							"AbsoluteUrl": "$.next_page_token"
+							"AbsoluteUrl": "$.info.next_page_token"
 						}
 					},
 					"sink": {
@@ -185,10 +185,6 @@
 			},
 			"NextPageToken": {
 				"type": "String"
-			},
-			"page_counter": {
-				"type": "Integer",
-				"defaultValue": 1
 			}
 		},
 		"folder": {
