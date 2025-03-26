@@ -214,7 +214,10 @@
 								"headers": {
 									"Content-Type": "application/x-www-form-urlencoded"
 								},
-								"url": "@concat('https://www.zohoapis.eu/crm/v7/Deals?per_page=200', if(equals(variables('next_page_token'), ''), '', concat('&page_token=', variables('next_page_token'))))",
+								"url": {
+									"value": "https://accounts.zoho.eu/oauth/v2/token",
+									"type": "Expression"
+								},
 								"body": "@concat('client_id=', pipeline().parameters.client_id, \n        '&client_secret=', pipeline().parameters.client_secret,\n        '&refresh_token=', pipeline().parameters.refresh_token,\n        '&grant_type=refresh_token')",
 								"authentication": {
 									"type": "MSI",
