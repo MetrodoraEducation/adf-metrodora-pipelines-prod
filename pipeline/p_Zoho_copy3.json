@@ -173,6 +173,31 @@
 							]
 						},
 						{
+							"name": "NextPageToken",
+							"description": "",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "CopydataZohoDeals",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "NextPageToken",
+								"value": {
+									"value": "@activity('CopydataZohoDeals').output.response.info.next_page_token",
+									"type": "Expression"
+								}
+							}
+						},
+						{
 							"name": "NextPageToken_copy1",
 							"description": "",
 							"type": "SetVariable",
@@ -185,7 +210,7 @@
 							"typeProperties": {
 								"variableName": "NextPageToken",
 								"value": {
-									"value": "@activity('GetNextPageToken').output.info.next_page_token",
+									"value": "@activity('CopydataZohoDeals').output.response.info.next_page_token",
 									"type": "Expression"
 								}
 							}
