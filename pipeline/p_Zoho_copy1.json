@@ -168,7 +168,14 @@
 			{
 				"name": "Until1",
 				"type": "Until",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "WebZohoPrueba_copy1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
@@ -176,55 +183,6 @@
 						"type": "Expression"
 					},
 					"activities": [
-						{
-							"name": "next_page_token",
-							"type": "SetVariable",
-							"dependsOn": [],
-							"policy": {
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "next_page_token",
-								"value": "''"
-							}
-						},
-						{
-							"name": "WebZohoPrueba",
-							"type": "WebActivity",
-							"dependsOn": [
-								{
-									"activity": "next_page_token",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"method": "POST",
-								"headers": {
-									"Content-Type": "application/x-www-form-urlencoded"
-								},
-								"url": {
-									"value": "https://accounts.zoho.eu/oauth/v2/token",
-									"type": "Expression"
-								},
-								"body": "@concat('client_id=', pipeline().parameters.client_id, \n        '&client_secret=', pipeline().parameters.client_secret,\n        '&refresh_token=', pipeline().parameters.refresh_token,\n        '&grant_type=refresh_token')",
-								"authentication": {
-									"type": "MSI",
-									"resource": "https://vault.azure.net"
-								}
-							}
-						},
 						{
 							"name": "next_page_token_copy1",
 							"type": "SetVariable",
@@ -254,14 +212,7 @@
 						{
 							"name": "CopydataZohoDeals_copy1",
 							"type": "Copy",
-							"dependsOn": [
-								{
-									"activity": "WebZohoPrueba",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
+							"dependsOn": [],
 							"policy": {
 								"timeout": "0.12:00:00",
 								"retry": 0,
@@ -331,6 +282,55 @@
 						}
 					],
 					"timeout": "0.12:00:00"
+				}
+			},
+			{
+				"name": "next_page_token_copy2",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "next_page_token",
+					"value": "''"
+				}
+			},
+			{
+				"name": "WebZohoPrueba_copy1",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "next_page_token_copy2",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "POST",
+					"headers": {
+						"Content-Type": "application/x-www-form-urlencoded"
+					},
+					"url": {
+						"value": "https://accounts.zoho.eu/oauth/v2/token",
+						"type": "Expression"
+					},
+					"body": "@concat('client_id=', pipeline().parameters.client_id, \n        '&client_secret=', pipeline().parameters.client_secret,\n        '&refresh_token=', pipeline().parameters.refresh_token,\n        '&grant_type=refresh_token')",
+					"authentication": {
+						"type": "MSI",
+						"resource": "https://vault.azure.net"
+					}
 				}
 			}
 		],
