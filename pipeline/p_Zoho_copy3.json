@@ -170,6 +170,8 @@
 			{
 				"name": "GetNextPageToken",
 				"type": "WebActivity",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "WebZohoAPI",
