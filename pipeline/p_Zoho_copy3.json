@@ -226,6 +226,10 @@
 			"page_counter": {
 				"type": "Integer",
 				"defaultValue": 1
+			},
+			"PageCounterString": {
+				"type": "String",
+				"defaultValue": "'1'"
 			}
 		},
 		"folder": {
