@@ -230,7 +230,7 @@
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "WebZohoPrueba",
+									"activity": "CopydataZohoDealsV1",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -254,7 +254,7 @@
 							"type": "Copy",
 							"dependsOn": [
 								{
-									"activity": "next_page_token_copy1",
+									"activity": "WebZohoPrueba",
 									"dependencyConditions": [
 										"Succeeded"
 									]
