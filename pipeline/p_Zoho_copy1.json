@@ -191,7 +191,7 @@
 							}
 						},
 						{
-							"name": "Web1",
+							"name": "WebZohoPrueba",
 							"type": "WebActivity",
 							"dependsOn": [
 								{
@@ -239,11 +239,9 @@
 						{
 							"name": "CopydataZohoDealsV1",
 							"type": "Copy",
-							"state": "Inactive",
-							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [
 								{
-									"activity": "Web1",
+									"activity": "WebZohoPrueba",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -266,7 +264,7 @@
 									"additionalHeaders": {
 										"Content-Type": "application/json",
 										"Authorization": {
-											"value": "@concat('Bearer ', activity('WebZohoAPI').output.access_token)",
+											"value": "@concat('Bearer ', activity('WebZohoPrueba').output.access_token)",
 											"type": "Expression"
 										},
 										"If-Modified-Since": {
@@ -275,8 +273,7 @@
 										}
 									},
 									"paginationRules": {
-										"supportRFC5988": "true",
-										"QueryParameters.next_page_token": "info.page_token"
+										"supportRFC5988": "true"
 									}
 								},
 								"sink": {
