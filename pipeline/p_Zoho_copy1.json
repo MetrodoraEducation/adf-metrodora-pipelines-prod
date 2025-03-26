@@ -3,150 +3,11 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "CopydataZohoDeals",
-				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
-				"dependsOn": [
-					{
-						"activity": "If Modified Since Date",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "RestSource",
-						"httpRequestTimeout": "00:01:40",
-						"requestInterval": "00.00:00:00.010",
-						"requestMethod": "GET",
-						"additionalHeaders": {
-							"Content-Type": "application/json",
-							"Authorization": {
-								"value": "@concat('Bearer ', activity('WebZohoAPI').output.access_token)",
-								"type": "Expression"
-							},
-							"If-Modified-Since": {
-								"value": "@variables('ifModifiedSinceDate')",
-								"type": "Expression"
-							}
-						},
-						"paginationRules": {
-							"supportRFC5988": "true",
-							"QueryParameters.next_page_token": "info.page_token"
-						}
-					},
-					"sink": {
-						"type": "JsonSink",
-						"storeSettings": {
-							"type": "AzureBlobFSWriteSettings"
-						},
-						"formatSettings": {
-							"type": "JsonWriteSettings"
-						}
-					},
-					"enableStaging": false
-				},
-				"inputs": [
-					{
-						"referenceName": "ds_Zoho_API",
-						"type": "DatasetReference",
-						"parameters": {
-							"relativeUrl": {
-								"value": "@concat('https://www.zohoapis.eu/crm/v7/Deals?per_page=200&fields=Motivo_p_rdida_B2C,ID_Producto,Owner,Motivo_p_rdida_B2B,Residencia1,utm_type,utm_medium,utm_campaign_name,Fecha_hora_Documentaci_n_completada,br_rating,Deal_Name,Exchange_Rate,Currency,Stage,id,utm_ad_id,ID_Classlife,utm_campaign_id,Importe_pagado,br_score,utm_perfil,C_digo_descuento,L_nea_de_Negocio,utm_source,Descuento,Closing_Date,network,utm_adset_id,utm_estrategia,tipo_conversion,Amount,Probability,Profesion_Estudiante,Contact_Name.id,Pipeline,Competencia,utm_term,utm_channel,Tipolog_a_de_cliente,Created_Date,Modified_Time,ID_Lead,Fecha_hora_Pagado_NE,Fecha_hora_Anulaci_n,Nacionalidad1,lead_correlation_id,id_unico,Tipolog_a_del_alumno1,Contact_Name,Created_Time')",
-								"type": "Expression"
-							}
-						}
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "ds_adsl_json",
-						"type": "DatasetReference",
-						"parameters": {
-							"container": "bronze",
-							"folder": {
-								"value": "@concat('lakehouse/zoho/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
-								"type": "Expression"
-							},
-							"filename": "JsaZohoDeals.json"
-						}
-					}
-				]
-			},
-			{
-				"name": "WebZohoAPI",
-				"type": "WebActivity",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"method": "POST",
-					"headers": {
-						"Content-Type": "application/x-www-form-urlencoded"
-					},
-					"url": "https://accounts.zoho.eu/oauth/v2/token",
-					"body": {
-						"value": "@concat('client_id=', pipeline().parameters.client_id, \n        '&client_secret=', pipeline().parameters.client_secret,\n        '&refresh_token=', pipeline().parameters.refresh_token,\n        '&grant_type=refresh_token')",
-						"type": "Expression"
-					},
-					"authentication": {
-						"type": "MSI",
-						"resource": "https://vault.azure.net"
-					}
-				}
-			},
-			{
-				"name": "Set variable Users",
-				"type": "SetVariable",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
-				"dependsOn": [
-					{
-						"activity": "WebZohoAPI",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "WebActivityName",
-					"value": {
-						"value": "@activity('WebZohoAPI').output.access_token\n",
-						"type": "Expression"
-					}
-				}
-			},
-			{
 				"name": "If Modified Since Date",
 				"type": "SetVariable",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
-						"activity": "Set variable Users",
+						"activity": "GetZohoAccessToken",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -174,42 +35,26 @@
 						"dependencyConditions": [
 							"Succeeded"
 						]
+					},
+					{
+						"activity": "If Modified Since Date",
+						"dependencyConditions": [
+							"Succeeded"
+						]
 					}
 				],
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@not(or(equals(variables('next_page_token'), ''), equals(variables('next_page_token'), null)))",
+						"value": "@or(\n  equals(variables('next_page_token'), ''),\n  equals(variables('next_page_token'), null)\n)",
 						"type": "Expression"
 					},
 					"activities": [
 						{
-							"name": "next_page_token_copy1",
-							"type": "SetVariable",
-							"dependsOn": [
-								{
-									"activity": "CopydataZohoDealsV1",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"policy": {
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "next_page_token",
-								"value": {
-									"value": "@activity('CopydataZohoDealsV1').output.body.info.next_page_token",
-									"type": "Expression"
-								}
-							}
-						},
-						{
 							"name": "CopydataZohoDealsV1",
 							"type": "Copy",
+							"state": "Inactive",
+							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [],
 							"policy": {
 								"timeout": "0.12:00:00",
@@ -257,7 +102,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"relativeUrl": {
-											"value": "@concat('https://www.zohoapis.eu/crm/v7/Deals?per_page=200&fields=Motivo_p_rdida_B2C,ID_Producto,Owner,Motivo_p_rdida_B2B,Residencia1,utm_type,utm_medium,utm_campaign_name,Fecha_hora_Documentaci_n_completada,br_rating,Deal_Name,Exchange_Rate,Currency,Stage,id,utm_ad_id,ID_Classlife,utm_campaign_id,Importe_pagado,br_score,utm_perfil,C_digo_descuento,L_nea_de_Negocio,utm_source,Descuento,Closing_Date,network,utm_adset_id,utm_estrategia,tipo_conversion,Amount,Probability,Profesion_Estudiante,Contact_Name.id,Pipeline,Competencia,utm_term,utm_channel,Tipolog_a_de_cliente,Created_Date,Modified_Time,ID_Lead,Fecha_hora_Pagado_NE,Fecha_hora_Anulaci_n,Nacionalidad1,lead_correlation_id,id_unico,Tipolog_a_del_alumno1,Contact_Name,Created_Time',if(\n        equals(variables('NextPageToken'), ''), \n        '', \n        concat('&page_token=', variables('NextPageToken'))\n    )\n)",
+											"value": "@concat('https://www.zohoapis.eu/crm/v7/Deals?per_page=200&fields=Motivo_p_rdida_B2C,ID_Producto,Owner,Motivo_p_rdida_B2B,Residencia1,utm_type,utm_medium,utm_campaign_name,Fecha_hora_Documentaci_n_completada,br_rating,Deal_Name,Exchange_Rate,Currency,Stage,id,utm_ad_id,ID_Classlife,utm_campaign_id,Importe_pagado,br_score,utm_perfil,C_digo_descuento,L_nea_de_Negocio,utm_source,Descuento,Closing_Date,network,utm_adset_id,utm_estrategia,tipo_conversion,Amount,Probability,Profesion_Estudiante,Contact_Name.id,Pipeline,Competencia,utm_term,utm_channel,Tipolog_a_de_cliente,Created_Date,Modified_Time,ID_Lead,Fecha_hora_Pagado_NE,Fecha_hora_Anulaci_n,Nacionalidad1,lead_correlation_id,id_unico,Tipolog_a_del_alumno1,Contact_Name,Created_Time')",
 											"type": "Expression"
 										}
 									}
@@ -270,13 +115,130 @@
 									"parameters": {
 										"container": "bronze",
 										"folder": {
-											"value": "@concat('lakehouse/zoho/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+											"value": "@concat(\n  'lakehouse/zoho/',\n  formatDateTime(utcnow(),'yyyy'), '/',\n  formatDateTime(utcnow(),'MM'), '/',\n  formatDateTime(utcnow(),'dd')\n)",
 											"type": "Expression"
 										},
-										"filename": "JsaZohoDeals.json"
+										"filename": {
+											"value": "@concat('JsaZohoDeals', variables('page_counter_string'), '.json')",
+											"type": "Expression"
+										}
 									}
 								}
 							]
+						},
+						{
+							"name": "IncrementPage",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "SetNextPageToken",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "page_counter_string",
+								"value": {
+									"value": "@string(variables('page_counter'))",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "GetZohoDealsPage",
+							"type": "WebActivity",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"method": "GET",
+								"headers": {
+									"Authorization": {
+										"value": "@concat('Bearer ', activity('GetZohoAccessToken').output.access_token)",
+										"type": "Expression"
+									},
+									"Content-Type": "application/json"
+								},
+								"url": {
+									"value": "@concat('https://www.zohoapis.eu/crm/v7/Deals?per_page=200&fields=Motivo_p_rdida_B2C,ID_Producto,Owner,Motivo_p_rdida_B2B,Residencia1,utm_type,utm_medium,utm_campaign_name,Fecha_hora_Documentaci_n_completada,br_rating,Deal_Name,Exchange_Rate,Currency,Stage,id,utm_ad_id,ID_Classlife,utm_campaign_id,Importe_pagado,br_score,utm_perfil,C_digo_descuento,L_nea_de_Negocio,utm_source,Descuento,Closing_Date,network,utm_adset_id,utm_estrategia,tipo_conversion,Amount,Probability,Profesion_Estudiante,Contact_Name.id,Pipeline,Competencia,utm_term,utm_channel,Tipolog_a_de_cliente,Created_Date,Modified_Time,ID_Lead,Fecha_hora_Pagado_NE,Fecha_hora_Anulaci_n,Nacionalidad1,lead_correlation_id,id_unico,Tipolog_a_del_alumno1,Contact_Name,Created_Time',if(\n        equals(variables('next_page_token'), ''), \n        '', \n        concat('&next_page_token=', variables('next_page_token'))\n    )\n)",
+									"type": "Expression"
+								},
+								"body": "@concat('client_id=', pipeline().parameters.client_id, \n        '&client_secret=', pipeline().parameters.client_secret,\n        '&refresh_token=', pipeline().parameters.refresh_token,\n        '&grant_type=refresh_token')"
+							}
+						},
+						{
+							"name": "SetNextPageToken",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "SavePageAsBlob",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "next_page_token",
+								"value": {
+									"value": "@activity('GetZohoDealsPage').output.body.info.next_page_token",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "SavePageAsBlob",
+							"type": "WebActivity",
+							"dependsOn": [
+								{
+									"activity": "GetZohoDealsPage",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"method": "PUT",
+								"headers": {
+									"Authorization": {
+										"value": "@concat('Bearer ', activity('GetZohoAccessToken').output.access_token)",
+										"type": "Expression"
+									},
+									"x-ms-blob-type": "BlockBlob"
+								},
+								"url": {
+									"value": "@concat(\n  'https://stmetrodoralakehousepro.blob.core.windows.net/bronze/lakehouse/zoho/',\n  formatDateTime(utcnow(), 'yyyy/MM/dd'), '/',\n  'JsaZohoDeals', string(variables('page_counter')), '.json'\n)\n",
+									"type": "Expression"
+								},
+								"body": {
+									"value": "@activity('GetZohoDealsPage').output",
+									"type": "Expression"
+								}
+							}
 						}
 					],
 					"timeout": "0.12:00:00"
@@ -354,6 +316,180 @@
 						"type": "Expression"
 					}
 				}
+			},
+			{
+				"name": "Until1_copy1",
+				"type": "Until",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@or(\n  equals(variables('next_page_token'), ''),\n  equals(variables('next_page_token'), null)\n)",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "CopydataZohoDealsV1_copy1",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "next_page_token_1_copy1",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "RestSource",
+									"httpRequestTimeout": "00:01:40",
+									"requestInterval": "00.00:00:00.010",
+									"requestMethod": "GET",
+									"additionalHeaders": {
+										"Content-Type": "application/json",
+										"Authorization": {
+											"value": "@concat('Bearer ', activity('GetZohoAccessToken').output.access_token)",
+											"type": "Expression"
+										},
+										"If-Modified-Since": {
+											"value": "@variables('ifModifiedSinceDate')",
+											"type": "Expression"
+										}
+									},
+									"paginationRules": {
+										"supportRFC5988": "true"
+									}
+								},
+								"sink": {
+									"type": "JsonSink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									},
+									"formatSettings": {
+										"type": "JsonWriteSettings"
+									}
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "ds_Zoho_API",
+									"type": "DatasetReference",
+									"parameters": {
+										"relativeUrl": {
+											"value": "@concat('https://www.zohoapis.eu/crm/v7/Deals?per_page=200&fields=Motivo_p_rdida_B2C,ID_Producto,Owner,Motivo_p_rdida_B2B,Residencia1,utm_type,utm_medium,utm_campaign_name,Fecha_hora_Documentaci_n_completada,br_rating,Deal_Name,Exchange_Rate,Currency,Stage,id,utm_ad_id,ID_Classlife,utm_campaign_id,Importe_pagado,br_score,utm_perfil,C_digo_descuento,L_nea_de_Negocio,utm_source,Descuento,Closing_Date,network,utm_adset_id,utm_estrategia,tipo_conversion,Amount,Probability,Profesion_Estudiante,Contact_Name.id,Pipeline,Competencia,utm_term,utm_channel,Tipolog_a_de_cliente,Created_Date,Modified_Time,ID_Lead,Fecha_hora_Pagado_NE,Fecha_hora_Anulaci_n,Nacionalidad1,lead_correlation_id,id_unico,Tipolog_a_del_alumno1,Contact_Name,Created_Time')",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "ds_adsl_json",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "bronze",
+										"folder": {
+											"value": "@concat(\n  'lakehouse/zoho/',\n  formatDateTime(utcnow(),'yyyy'), '/',\n  formatDateTime(utcnow(),'MM'), '/',\n  formatDateTime(utcnow(),'dd')\n)",
+											"type": "Expression"
+										},
+										"filename": {
+											"value": "@concat('JsaZohoDeals', variables('page_counter_string'), '.json')",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "page_counter_string_copy1",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "CopydataZohoDealsV1_copy1",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "page_counter_string",
+								"value": {
+									"value": "@string(variables('page_counter'))",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "GetZohoDealsPage_copy1",
+							"type": "WebActivity",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"method": "GET",
+								"headers": {
+									"Authorization": {
+										"value": "@concat('Bearer ', activity('GetZohoAccessToken').output.access_token)",
+										"type": "Expression"
+									},
+									"Content-Type": "application/json"
+								},
+								"url": {
+									"value": "@concat('https://www.zohoapis.eu/crm/v7/Deals?per_page=200&fields=Motivo_p_rdida_B2C,ID_Producto,Owner,Motivo_p_rdida_B2B,Residencia1,utm_type,utm_medium,utm_campaign_name,Fecha_hora_Documentaci_n_completada,br_rating,Deal_Name,Exchange_Rate,Currency,Stage,id,utm_ad_id,ID_Classlife,utm_campaign_id,Importe_pagado,br_score,utm_perfil,C_digo_descuento,L_nea_de_Negocio,utm_source,Descuento,Closing_Date,network,utm_adset_id,utm_estrategia,tipo_conversion,Amount,Probability,Profesion_Estudiante,Contact_Name.id,Pipeline,Competencia,utm_term,utm_channel,Tipolog_a_de_cliente,Created_Date,Modified_Time,ID_Lead,Fecha_hora_Pagado_NE,Fecha_hora_Anulaci_n,Nacionalidad1,lead_correlation_id,id_unico,Tipolog_a_del_alumno1,Contact_Name,Created_Time',if(\n        equals(variables('next_page_token'), ''), \n        '', \n        concat('&next_page_token=', variables('next_page_token'))\n    )\n)",
+									"type": "Expression"
+								},
+								"body": "@concat('client_id=', pipeline().parameters.client_id, \n        '&client_secret=', pipeline().parameters.client_secret,\n        '&refresh_token=', pipeline().parameters.refresh_token,\n        '&grant_type=refresh_token')"
+							}
+						},
+						{
+							"name": "next_page_token_1_copy1",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "GetZohoDealsPage_copy1",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "next_page_token",
+								"value": {
+									"value": "@activity('GetZohoDealsPage').output.info.next_page_token",
+									"type": "Expression"
+								}
+							}
+						}
+					],
+					"timeout": "0.12:00:00"
+				}
 			}
 		],
 		"parameters": {
@@ -381,14 +517,19 @@
 			"ifModifiedSinceDate": {
 				"type": "String"
 			},
-			"NextPageToken": {
-				"type": "String"
-			},
 			"next_page_token": {
 				"type": "String"
 			},
 			"access_token": {
 				"type": "String"
+			},
+			"page_counter": {
+				"type": "Integer",
+				"defaultValue": 1
+			},
+			"page_counter_string": {
+				"type": "String",
+				"defaultValue": "1"
 			}
 		},
 		"folder": {
