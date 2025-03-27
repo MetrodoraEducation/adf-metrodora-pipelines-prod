@@ -1066,12 +1066,10 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "ds_adsl_json",
+						"referenceName": "ds_adsl_json_delete",
 						"type": "DatasetReference",
 						"parameters": {
-							"container": "bronze",
-							"folder": "@concat('lakehouse/zoho/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
-							"filename": "''"
+							"container": "bronze"
 						}
 					},
 					"enableLogging": true,
