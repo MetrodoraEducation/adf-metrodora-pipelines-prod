@@ -76,7 +76,7 @@
 								"value": "@concat('lakehouse/zoho/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
 								"type": "Expression"
 							},
-							"filename": "JsaZohoDeals.json"
+							"filename": "JsaZohoDeals2.json"
 						}
 					}
 				]
