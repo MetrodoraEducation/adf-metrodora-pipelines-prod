@@ -81,8 +81,6 @@
 			{
 				"name": "UntilDeals",
 				"type": "Until",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Set variable Users",
@@ -176,7 +174,7 @@
 							]
 						},
 						{
-							"name": "Get NextPageToken",
+							"name": "GetNextPageTokenDeals",
 							"type": "Lookup",
 							"dependsOn": [
 								{
@@ -218,11 +216,11 @@
 							}
 						},
 						{
-							"name": "Set NextPageToken",
+							"name": "Set NextPageTokenDeals",
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "PageCounter",
+									"activity": "PageCounterDeals",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -236,17 +234,17 @@
 							"typeProperties": {
 								"variableName": "NextPageToken",
 								"value": {
-									"value": "@activity('Get NextPageToken').output.firstRow.info.next_page_token",
+									"value": "@activity('GetNextPageTokenDeals').output.firstRow.info.next_page_token",
 									"type": "Expression"
 								}
 							}
 						},
 						{
-							"name": "Log token",
+							"name": "LogtokenDeals",
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "Set NextPageToken",
+									"activity": "Set NextPageTokenDeals",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -266,11 +264,11 @@
 							}
 						},
 						{
-							"name": "TempCounter",
+							"name": "TempCounterDeals",
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "Get NextPageToken",
+									"activity": "GetNextPageTokenDeals",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -290,11 +288,11 @@
 							}
 						},
 						{
-							"name": "PageCounter",
+							"name": "PageCounterDeals",
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "TempCounter",
+									"activity": "TempCounterDeals",
 									"dependencyConditions": [
 										"Succeeded"
 									]
