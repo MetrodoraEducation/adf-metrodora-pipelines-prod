@@ -145,7 +145,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "ifModifiedSinceDate",
+					"variableName": "If-Modified-Since",
 					"value": {
 						"value": "@formatDateTime(addDays(utcnow(), if(equals(pipeline().parameters.reprocessDate, ''), -7, sub(0, int(pipeline().parameters.reprocessDate)))), 'yyyy-MM-ddTHH:mm:ssZ')",
 						"type": "Expression"
@@ -245,7 +245,7 @@
 			"WebActivityName": {
 				"type": "String"
 			},
-			"ifModifiedSinceDate": {
+			"If-Modified-Since": {
 				"type": "String"
 			},
 			"NextPageToken": {
