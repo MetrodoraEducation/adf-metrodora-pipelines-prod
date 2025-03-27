@@ -130,6 +130,9 @@
 											"value": "@variables('If-Modified-Since')",
 											"type": "Expression"
 										}
+									},
+									"paginationRules": {
+										"supportRFC5988": "true"
 									}
 								},
 								"sink": {
