@@ -40,7 +40,7 @@
 						},
 						"paginationRules": {
 							"QueryParameters.{next_page_token}": "$.info.next_page_token",
-							"": ""
+							"EndCondition:{next_page_token}": "Empty"
 						}
 					},
 					"sink": {
