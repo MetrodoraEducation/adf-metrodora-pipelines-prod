@@ -238,6 +238,23 @@
 									"type": "Expression"
 								}
 							}
+						},
+						{
+							"name": "Set NextPageToken_copy1_copy1",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "NextPageToken",
+								"value": {
+									"value": "@activity('Get NextPageToken_copy1').output.firstRow.info.next_page_token",
+									"type": "Expression"
+								}
+							}
 						}
 					],
 					"timeout": "0.12:00:00"
