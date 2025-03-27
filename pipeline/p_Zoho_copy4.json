@@ -32,6 +32,10 @@
 							"Authorization": {
 								"value": "@concat('Bearer ', activity('WebZohoAPI').output.access_token)",
 								"type": "Expression"
+							},
+							"If-Modified-Since": {
+								"value": "@variables('If-Modified-Since')",
+								"type": "Expression"
 							}
 						},
 						"paginationRules": {
