@@ -213,7 +213,7 @@
 							}
 						},
 						{
-							"name": "Set NextPageToken_copy1_copy1",
+							"name": "Set NextPageToken_copy1",
 							"type": "SetVariable",
 							"dependsOn": [
 								{
