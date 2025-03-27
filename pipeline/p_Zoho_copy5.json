@@ -152,7 +152,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"relativeUrl": {
-											"value": "@if(\n  or(equals(variables('NextPageToken'), null), equals(variables('NextPageToken'), '')),'https://www.zohoapis.eu/crm/v7/Deals?per_page=200&fields=Motivo_p_rdida_B2C,ID_Producto,Owner,Motivo_p_rdida_B2B,Residencia1,utm_type,utm_medium,utm_campaign_name,Fecha_hora_Documentaci_n_completada,Created_Time&page_token=',variables('NextPageToken'))",
+											"value": "@concat('https://www.zohoapis.eu/crm/v7/Deals?per_page=200&page_token=', variables('NextPageToken'), '&fields=Motivo_p_rdida_B2C,ID_Producto,Owner,Motivo_p_rdida_B2B,Residencia1,utm_type,utm_medium,utm_campaign_name,Fecha_hora_Documentaci_n_completada,Created_Time')\n",
 											"type": "Expression"
 										}
 									}
