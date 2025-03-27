@@ -33,7 +33,7 @@
 								"value": "@concat('Bearer ', activity('WebZohoAPI').output.access_token)",
 								"type": "Expression"
 							},
-							"If-Modified-Since": {
+							"Modified_Time": {
 								"value": "@variables('If-Modified-Since')",
 								"type": "Expression"
 							}
