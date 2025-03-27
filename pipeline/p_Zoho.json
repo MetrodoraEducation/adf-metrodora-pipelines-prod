@@ -1,5 +1,5 @@
 {
-	"name": "p_Zoho_final_copy1",
+	"name": "p_Zoho",
 	"properties": {
 		"activities": [
 			{
@@ -81,6 +81,8 @@
 			{
 				"name": "UntilDeals",
 				"type": "Until",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Set variable Users",
@@ -318,6 +320,8 @@
 			{
 				"name": "UntilLeads",
 				"type": "Until",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Wait1",
@@ -555,6 +559,8 @@
 			{
 				"name": "Wait1",
 				"type": "Wait",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "UntilDeals",
@@ -569,7 +575,7 @@
 				}
 			},
 			{
-				"name": "UntilContacts",
+				"name": "UntilContactos",
 				"type": "Until",
 				"dependsOn": [
 					{
