@@ -35,7 +35,7 @@
 							}
 						},
 						"paginationRules": {
-							"": ""
+							"AbsoluteUrl": "$info.next_page_token"
 						}
 					},
 					"sink": {
