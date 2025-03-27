@@ -83,13 +83,7 @@
 				"type": "Until",
 				"dependsOn": [
 					{
-						"activity": "Set variable Users",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "If Modified Since Date",
+						"activity": "Delete1",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1044,6 +1038,47 @@
 						}
 					}
 				]
+			},
+			{
+				"name": "Delete1",
+				"type": "Delete",
+				"dependsOn": [
+					{
+						"activity": "Set variable Users",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "If Modified Since Date",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "ds_adsl_json",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "bronze"
+						}
+					},
+					"enableLogging": true,
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
+						"enablePartitionDiscovery": false
+					}
+				}
 			}
 		],
 		"parameters": {
