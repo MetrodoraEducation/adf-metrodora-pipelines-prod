@@ -81,11 +81,9 @@
 			{
 				"name": "UntilDeals",
 				"type": "Until",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
-						"activity": "If Condition1",
+						"activity": "If Condition Delete",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -314,8 +312,6 @@
 			{
 				"name": "UntilLeads",
 				"type": "Until",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Wait1",
@@ -553,8 +549,6 @@
 			{
 				"name": "Wait1",
 				"type": "Wait",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "UntilDeals",
@@ -810,8 +804,6 @@
 			{
 				"name": "Wait2",
 				"type": "Wait",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "UntilLeads",
@@ -828,8 +820,6 @@
 			{
 				"name": "CopydataZohoContactos_copy1",
 				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Wait2",
@@ -904,8 +894,6 @@
 			{
 				"name": "CopydataZohoUsers",
 				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "CopydataZohoContactos_copy1",
@@ -980,8 +968,6 @@
 			{
 				"name": "CopydataZohoCampaigns",
 				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "CopydataZohoUsers",
@@ -1054,7 +1040,7 @@
 				]
 			},
 			{
-				"name": "Get Metadata",
+				"name": "CheckFolderExists",
 				"type": "GetMetadata",
 				"dependsOn": [
 					{
@@ -1084,12 +1070,11 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"container": "bronze",
-							"folder": "@concat('lakehouse/zoho/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
-							"filename": "''"
+							"folder": "@concat('lakehouse/zoho/', formatDateTime(utcnow(),'yyyy'), '/', formatDateTime(utcnow(),'MM'), '/', formatDateTime(utcnow(),'dd'))"
 						}
 					},
 					"fieldList": [
-						"childItems"
+						"exists"
 					],
 					"storeSettings": {
 						"type": "AzureBlobFSReadSettings",
@@ -1101,11 +1086,11 @@
 				}
 			},
 			{
-				"name": "If Condition1",
+				"name": "If Condition Delete",
 				"type": "IfCondition",
 				"dependsOn": [
 					{
-						"activity": "Get Metadata",
+						"activity": "CheckFolderExists",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1114,12 +1099,12 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@greater(length(activity('CheckFolderExists').output.childItems), 0)\n",
+						"value": "@activity('CheckFolderExists').output.exists",
 						"type": "Expression"
 					},
 					"ifTrueActivities": [
 						{
-							"name": "Delete1",
+							"name": "Delete Files in folder",
 							"type": "Delete",
 							"dependsOn": [],
 							"policy": {
@@ -1136,18 +1121,10 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"container": "bronze",
-										"folder": "@concat('lakehouse/zoho/', formatDateTime(utcnow(),'yyyy'), '/', formatDateTime(utcnow(),'MM'), '/', formatDateTime(utcnow(),'dd'))",
-										"filename": "''"
+										"folder": "@concat('lakehouse/zoho/', formatDateTime(utcnow(),'yyyy'), '/', formatDateTime(utcnow(),'MM'), '/', formatDateTime(utcnow(),'dd'))"
 									}
 								},
-								"logStorageSettings": {
-									"linkedServiceName": {
-										"referenceName": "ls_adsl",
-										"type": "LinkedServiceReference"
-									},
-									"path": "lakehouse/zoho/"
-								},
-								"enableLogging": true,
+								"enableLogging": false,
 								"storeSettings": {
 									"type": "AzureBlobFSReadSettings",
 									"enablePartitionDiscovery": false
