@@ -271,6 +271,9 @@
 			},
 			"NextPageToken": {
 				"type": "String"
+			},
+			"Log_Token": {
+				"type": "String"
 			}
 		},
 		"folder": {
