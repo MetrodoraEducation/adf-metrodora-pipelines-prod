@@ -37,9 +37,6 @@
 								"value": "@variables('ifModifiedSinceDate')",
 								"type": "Expression"
 							}
-						},
-						"paginationRules": {
-							"QueryParameters": "info.next_page_token"
 						}
 					},
 					"sink": {
