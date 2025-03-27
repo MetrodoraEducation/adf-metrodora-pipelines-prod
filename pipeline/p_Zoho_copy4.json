@@ -364,7 +364,7 @@
 				"typeProperties": {
 					"variableName": "NextPageToken",
 					"value": {
-						"value": "@activity('Get NextPageToken_copy1').output.next_page_token",
+						"value": "@activity('Get NextPageToken_copy1').output.firstRow",
 						"type": "Expression"
 					}
 				}
