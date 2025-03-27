@@ -39,8 +39,8 @@
 							}
 						},
 						"paginationRules": {
-							"QueryParameters.next_page_token": "info.next_page_token",
-							"EndCondition:$.info.next_page_token": "Const:null"
+							"QueryParameters.next_page_token": "$.info.next_page_token",
+							"EndCondition:$.info.next_page_token": "Empty.null"
 						}
 					},
 					"sink": {
