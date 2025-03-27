@@ -79,7 +79,7 @@
 				}
 			},
 			{
-				"name": "Until",
+				"name": "UntilDeals",
 				"type": "Until",
 				"dependsOn": [
 					{
@@ -331,7 +331,7 @@
 			},
 			"reprocessDate": {
 				"type": "string",
-				"defaultValue": "4"
+				"defaultValue": "10"
 			}
 		},
 		"variables": {
