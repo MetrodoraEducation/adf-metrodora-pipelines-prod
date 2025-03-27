@@ -39,7 +39,6 @@
 							}
 						},
 						"paginationRules": {
-							"supportRFC5988": "true",
 							"AbsoluteUrl": "$info.page_token"
 						}
 					},
