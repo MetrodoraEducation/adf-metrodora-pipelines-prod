@@ -320,13 +320,7 @@
 				"type": "Until",
 				"dependsOn": [
 					{
-						"activity": "Set variable Users",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "If Modified Since Date",
+						"activity": "UntilDeals",
 						"dependencyConditions": [
 							"Succeeded"
 						]
