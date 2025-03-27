@@ -320,7 +320,7 @@
 				"type": "Until",
 				"dependsOn": [
 					{
-						"activity": "UntilDeals",
+						"activity": "Wait1",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -551,6 +551,275 @@
 					],
 					"timeout": "0.12:00:00"
 				}
+			},
+			{
+				"name": "Wait1",
+				"type": "Wait",
+				"dependsOn": [
+					{
+						"activity": "UntilDeals",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 30
+				}
+			},
+			{
+				"name": "UntilContacts",
+				"type": "Until",
+				"dependsOn": [
+					{
+						"activity": "Wait2",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@or(\n  equals(trim(variables('NextPageToken')), ''),\n  equals(variables('NextPageToken'), null)\n)",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "GetNextPageTokenContactos",
+							"type": "Lookup",
+							"dependsOn": [
+								{
+									"activity": "CopydataZohoContactos",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "JsonSource",
+									"storeSettings": {
+										"type": "AzureBlobFSReadSettings",
+										"recursive": true,
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "JsonReadSettings"
+									}
+								},
+								"dataset": {
+									"referenceName": "ds_adsl_json",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "bronze",
+										"folder": "@concat('lakehouse/zoho/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+										"filename": {
+											"value": "@concat('JsaZohoContacts_', string(variables('PageCounter')), '.json')",
+											"type": "Expression"
+										}
+									}
+								}
+							}
+						},
+						{
+							"name": "SetNextPageTokenContactos",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "PageCounterContactos",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "NextPageToken",
+								"value": {
+									"value": "@activity('GetNextPageTokenContactos').output.firstRow.info.next_page_token\n",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "LogtokenContactos",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "SetNextPageTokenContactos",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "Log_Token",
+								"value": {
+									"value": "@string(variables('NextPageToken'))",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "TempCounterContactos",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "GetNextPageTokenContactos",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "TempCounter",
+								"value": {
+									"value": "@add(variables('PageCounter'), 1)",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "PageCounterContactos",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "TempCounterContactos",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "PageCounter",
+								"value": {
+									"value": "@variables('TempCounter')",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "CopydataZohoContactos",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "RestSource",
+									"httpRequestTimeout": "00:01:40",
+									"requestInterval": "00.00:00:00.010",
+									"requestMethod": "GET",
+									"additionalHeaders": {
+										"Content-Type": "application/json",
+										"Authorization": {
+											"value": "@concat('Bearer ', activity('WebZohoAPI').output.access_token)",
+											"type": "Expression"
+										},
+										"If-Modified-Since": {
+											"value": "@variables('If-Modified-Since')",
+											"type": "Expression"
+										}
+									},
+									"paginationRules": {
+										"supportRFC5988": "true"
+									}
+								},
+								"sink": {
+									"type": "JsonSink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									},
+									"formatSettings": {
+										"type": "JsonWriteSettings"
+									}
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "ds_Zoho_API",
+									"type": "DatasetReference",
+									"parameters": {
+										"relativeUrl": {
+											"value": "@if(\n    or(equals(variables('NextPageToken'), null), equals(variables('NextPageToken'), '')),\n    'https://www.zohoapis.eu/crm/v7/Contacts?on_demand_properties=\"$client_portal_permission\"&fields=Email,Mailing_Zip,Other_Zip,Mailing_Street,Other_State,woztellplatformintegration__WhatsApp_Opt_Out,Other_Country,Sexo,Profesion,First_Name,Phone,Estudios,Mailing_Country,recibir_comunicacion,id,Apellidos_2,Provincia,ID_Classlife,Date_of_Birth,Tipo_de_contacto,Mailing_City,Other_City,Home_Phone1,Other_Street,Mobile,Residencia,Nacionalidad,Secondary_Email,Tipo_de_cliente,DNI,ltima_L_nea_de_negocio',\n    concat('https://www.zohoapis.eu/crm/v7/Contacts?on_demand_properties=\"$client_portal_permission\"&fields=Email,Mailing_Zip,Other_Zip,Mailing_Street,Other_State,woztellplatformintegration__WhatsApp_Opt_Out,Other_Country,Sexo,Profesion,First_Name,Phone,Estudios,Mailing_Country,recibir_comunicacion,id,Apellidos_2,Provincia,ID_Classlife,Date_of_Birth,Tipo_de_contacto,Mailing_City,Other_City,Home_Phone1,Other_Street,Mobile,Residencia,Nacionalidad,Secondary_Email,Tipo_de_cliente,DNI,ltima_L_nea_de_negocio&page_token=', variables('NextPageToken'))\n)",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "ds_adsl_json",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "bronze",
+										"folder": {
+											"value": "@concat('lakehouse/zoho/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+											"type": "Expression"
+										},
+										"filename": {
+											"value": "@concat('JsaZohoContacts_', string(variables('PageCounter')), '.json')",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					],
+					"timeout": "0.12:00:00"
+				}
+			},
+			{
+				"name": "Wait2",
+				"type": "Wait",
+				"dependsOn": [
+					{
+						"activity": "UntilLeads",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 30
+				}
 			}
 		],
 		"parameters": {
@@ -568,7 +837,7 @@
 			},
 			"reprocessDate": {
 				"type": "string",
-				"defaultValue": "10"
+				"defaultValue": "15"
 			}
 		},
 		"variables": {
