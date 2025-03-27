@@ -39,7 +39,10 @@
 							}
 						},
 						"paginationRules": {
-							"AbsoluteUrl.{next_page_token}": ""
+							"AbsoluteUrl.{next_page_token}": {
+								"value": "@concat('',$.info)",
+								"type": "Expression"
+							}
 						}
 					},
 					"sink": {
