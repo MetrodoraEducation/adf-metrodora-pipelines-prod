@@ -97,6 +97,10 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
+					"expression": {
+						"value": "@equals(variables('NextPageToken'),'-1')",
+						"type": "Expression"
+					},
 					"activities": [
 						{
 							"name": "CopydataZohoDeals_copy1",
@@ -185,7 +189,14 @@
 								"secureOutput": false,
 								"secureInput": false
 							},
-							"userProperties": []
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "NextPageToken",
+								"value": {
+									"value": "@activity('CopydataZohoDeals_copy1').output",
+									"type": "Expression"
+								}
+							}
 						}
 					],
 					"timeout": "0.12:00:00"
