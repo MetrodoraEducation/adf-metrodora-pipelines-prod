@@ -175,7 +175,7 @@
 							]
 						},
 						{
-							"name": "Get NextPageToken",
+							"name": "Set NextPageToken",
 							"type": "SetVariable",
 							"dependsOn": [],
 							"policy": {
@@ -192,9 +192,16 @@
 							}
 						},
 						{
-							"name": "Lookup1",
+							"name": "Get NextPageToken",
 							"type": "Lookup",
-							"dependsOn": [],
+							"dependsOn": [
+								{
+									"activity": "CopydataZohoDeals_copy1",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
 							"policy": {
 								"timeout": "0.12:00:00",
 								"retry": 0,
@@ -202,7 +209,29 @@
 								"secureOutput": false,
 								"secureInput": false
 							},
-							"userProperties": []
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "ParquetSource",
+									"storeSettings": {
+										"type": "AzureBlobFSReadSettings",
+										"recursive": true,
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "ParquetReadSettings"
+									}
+								},
+								"dataset": {
+									"referenceName": "ds_adsl_parquet",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "bronze",
+										"folder": "budget",
+										"filename": "masterbudget.parquet"
+									}
+								}
+							}
 						}
 					],
 					"timeout": "0.12:00:00"
