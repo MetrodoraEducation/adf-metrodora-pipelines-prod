@@ -98,7 +98,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@or(equals(variables('NextPageToken'), null), equals(variables('NextPageToken'), ''))",
+						"value": "@or(\n  equals(trim(variables('NextPageToken')), ''),\n  equals(variables('NextPageToken'), null)\n)",
 						"type": "Expression"
 					},
 					"activities": [
@@ -235,6 +235,30 @@
 								"variableName": "NextPageToken",
 								"value": {
 									"value": "@activity('Get NextPageToken_copy1').output.firstRow.info.next_page_token",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Log token",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set NextPageToken_copy1",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "Log_Token",
+								"value": {
+									"value": "@string(variables('NextPageToken'))",
 									"type": "Expression"
 								}
 							}
