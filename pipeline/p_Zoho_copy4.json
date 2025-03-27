@@ -98,7 +98,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@equals(variables('NextPageToken'),'-1')",
+						"value": "@or(equals(variables('NextPageToken'), null), equals(variables('NextPageToken'), ''))",
 						"type": "Expression"
 					},
 					"activities": [
