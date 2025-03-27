@@ -216,7 +216,7 @@
 							}
 						},
 						{
-							"name": "Set NextPageToken_copy1",
+							"name": "Set NextPageToken",
 							"type": "SetVariable",
 							"dependsOn": [
 								{
@@ -244,7 +244,7 @@
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "Set NextPageToken_copy1",
+									"activity": "Set NextPageToken",
 									"dependencyConditions": [
 										"Succeeded"
 									]
