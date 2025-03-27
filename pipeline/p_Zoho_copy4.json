@@ -130,10 +130,6 @@
 											"value": "@variables('If-Modified-Since')",
 											"type": "Expression"
 										}
-									},
-									"paginationRules": {
-										"QueryParameters.next_page_token": "$.info.next_page_token",
-										"EndCondition:$.info.next_page_token": "Empty.null"
 									}
 								},
 								"sink": {
@@ -212,23 +208,22 @@
 							"userProperties": [],
 							"typeProperties": {
 								"source": {
-									"type": "ParquetSource",
+									"type": "JsonSource",
 									"storeSettings": {
 										"type": "AzureBlobFSReadSettings",
 										"recursive": true,
 										"enablePartitionDiscovery": false
 									},
 									"formatSettings": {
-										"type": "ParquetReadSettings"
+										"type": "JsonReadSettings"
 									}
 								},
 								"dataset": {
-									"referenceName": "ds_adsl_parquet",
+									"referenceName": "ds_adsl_json",
 									"type": "DatasetReference",
 									"parameters": {
 										"container": "bronze",
-										"folder": "budget",
-										"filename": "masterbudget.parquet"
+										"folder": "@concat('lakehouse/zoho/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))"
 									}
 								}
 							}
