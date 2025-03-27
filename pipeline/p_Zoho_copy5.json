@@ -105,7 +105,14 @@
 						{
 							"name": "CopydataZohoDeals_copy1",
 							"type": "Copy",
-							"dependsOn": [],
+							"dependsOn": [
+								{
+									"activity": "Set NextPageToken_copy1_copy1",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
 							"policy": {
 								"timeout": "0.12:00:00",
 								"retry": 0,
@@ -250,10 +257,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"variableName": "NextPageToken",
-								"value": {
-									"value": "@activity('Get NextPageToken_copy1').output.firstRow.info.next_page_token",
-									"type": "Expression"
-								}
+								"value": "''"
 							}
 						}
 					],
