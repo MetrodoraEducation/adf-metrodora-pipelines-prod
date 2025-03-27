@@ -1069,7 +1069,8 @@
 						"referenceName": "ds_adsl_json_delete",
 						"type": "DatasetReference",
 						"parameters": {
-							"container": "bronze"
+							"container": "bronze",
+							"folder": "@concat('lakehouse/zoho/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))"
 						}
 					},
 					"enableLogging": true,
@@ -1079,6 +1080,19 @@
 						"enablePartitionDiscovery": false
 					}
 				}
+			},
+			{
+				"name": "Get Metadata1",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": []
 			}
 		],
 		"parameters": {
