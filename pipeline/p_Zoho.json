@@ -1069,7 +1069,9 @@
 						"referenceName": "ds_adsl_json",
 						"type": "DatasetReference",
 						"parameters": {
-							"container": "bronze"
+							"container": "bronze",
+							"folder": "@concat('lakehouse/zoho/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+							"filename": "''"
 						}
 					},
 					"enableLogging": true,
