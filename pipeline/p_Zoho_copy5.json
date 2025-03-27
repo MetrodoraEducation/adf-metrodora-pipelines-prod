@@ -168,7 +168,7 @@
 											"value": "@concat('lakehouse/zoho/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
 											"type": "Expression"
 										},
-										"filename": "JsaZohoDeals.json"
+										"filename": "@concat('JsaZohoDeals_', string(variables('PageCounter')), '.json')"
 									}
 								}
 							]
@@ -210,7 +210,7 @@
 									"parameters": {
 										"container": "bronze",
 										"folder": "@concat('lakehouse/zoho/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
-										"filename": "JsaZohoDeals.json"
+										"filename": "@concat('JsaZohoDeals_', string(variables('PageCounter')), '.json')"
 									}
 								}
 							}
@@ -220,7 +220,7 @@
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "Get NextPageToken_copy1",
+									"activity": "PageCounter",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -262,6 +262,54 @@
 									"type": "Expression"
 								}
 							}
+						},
+						{
+							"name": "TempCounter",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Get NextPageToken_copy1",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "TempCounter",
+								"value": {
+									"value": "@add(variables('PageCounter'), 1)",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "PageCounter",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "TempCounter",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "PageCounter",
+								"value": {
+									"value": "@variables('TempCounter')",
+									"type": "Expression"
+								}
+							}
 						}
 					],
 					"timeout": "0.12:00:00"
@@ -298,6 +346,14 @@
 			},
 			"Log_Token": {
 				"type": "String"
+			},
+			"PageCounter": {
+				"type": "Integer",
+				"defaultValue": 1
+			},
+			"TempCounter": {
+				"type": "Integer",
+				"defaultValue": 0
 			}
 		},
 		"folder": {
