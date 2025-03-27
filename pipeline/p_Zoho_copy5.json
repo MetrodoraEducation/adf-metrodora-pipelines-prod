@@ -105,14 +105,7 @@
 						{
 							"name": "CopydataZohoDeals_copy1",
 							"type": "Copy",
-							"dependsOn": [
-								{
-									"activity": "Set NextPageToken_copy1_copy1",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
+							"dependsOn": [],
 							"policy": {
 								"timeout": "0.12:00:00",
 								"retry": 0,
@@ -159,7 +152,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"relativeUrl": {
-											"value": "@concat('https://www.zohoapis.eu/crm/v7/Deals?per_page=200&page_token=', variables('NextPageToken'), '&fields=Motivo_p_rdida_B2C,ID_Producto,Owner,Motivo_p_rdida_B2B,Residencia1,utm_type,utm_medium,utm_campaign_name,Fecha_hora_Documentaci_n_completada,Created_Time')\n",
+											"value": "@if(\n    or(equals(variables('NextPageToken'), null), equals(variables('NextPageToken'), '')),\n    'https://www.zohoapis.eu/crm/v7/Deals?per_page=200&fields=Motivo_p_rdida_B2C,ID_Producto,Owner,Motivo_p_rdida_B2B,Residencia1,utm_type,utm_medium,utm_campaign_name,Fecha_hora_Documentaci_n_completada,Created_Time',\n    concat('https://www.zohoapis.eu/crm/v7/Deals?per_page=200&page_token=', variables('NextPageToken'), '&fields=Motivo_p_rdida_B2C,ID_Producto,Owner,Motivo_p_rdida_B2B,Residencia1,utm_type,utm_medium,utm_campaign_name,Fecha_hora_Documentaci_n_completada,Created_Time')\n)",
 											"type": "Expression"
 										}
 									}
@@ -244,20 +237,6 @@
 									"value": "@activity('Get NextPageToken_copy1').output.firstRow.info.next_page_token",
 									"type": "Expression"
 								}
-							}
-						},
-						{
-							"name": "Set NextPageToken_copy1_copy1",
-							"type": "SetVariable",
-							"dependsOn": [],
-							"policy": {
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "NextPageToken",
-								"value": "''"
 							}
 						}
 					],
