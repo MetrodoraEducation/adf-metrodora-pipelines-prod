@@ -201,7 +201,8 @@
 				"type": "String"
 			},
 			"NextPageToken": {
-				"type": "String"
+				"type": "String",
+				"defaultValue": "-1"
 			}
 		},
 		"folder": {
