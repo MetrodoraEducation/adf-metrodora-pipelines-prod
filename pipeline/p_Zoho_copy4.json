@@ -39,7 +39,7 @@
 							}
 						},
 						"paginationRules": {
-							"AbsoluteUrl": "$.info.next_page_token"
+							"AbsoluteUrl": "$.info.page_token"
 						}
 					},
 					"sink": {
