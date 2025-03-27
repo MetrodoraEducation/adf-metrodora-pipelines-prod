@@ -103,7 +103,7 @@
 					},
 					"activities": [
 						{
-							"name": "CopydataZohoDeals_copy1",
+							"name": "CopydataZohoDeals",
 							"type": "Copy",
 							"dependsOn": [],
 							"policy": {
@@ -174,11 +174,11 @@
 							]
 						},
 						{
-							"name": "Get NextPageToken_copy1",
+							"name": "Get NextPageToken",
 							"type": "Lookup",
 							"dependsOn": [
 								{
-									"activity": "CopydataZohoDeals_copy1",
+									"activity": "CopydataZohoDeals",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -234,7 +234,7 @@
 							"typeProperties": {
 								"variableName": "NextPageToken",
 								"value": {
-									"value": "@activity('Get NextPageToken_copy1').output.firstRow.info.next_page_token",
+									"value": "@activity('Get NextPageToken').output.firstRow.info.next_page_token",
 									"type": "Expression"
 								}
 							}
@@ -268,7 +268,7 @@
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "Get NextPageToken_copy1",
+									"activity": "Get NextPageToken",
 									"dependencyConditions": [
 										"Succeeded"
 									]
