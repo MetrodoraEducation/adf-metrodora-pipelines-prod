@@ -344,6 +344,30 @@
 						}
 					}
 				}
+			},
+			{
+				"name": "Set NextPageToken_copy1",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Get NextPageToken_copy1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "NextPageToken",
+					"value": {
+						"value": "@activity('CopydataZohoDeals_copy1').output",
+						"type": "Expression"
+					}
+				}
 			}
 		],
 		"parameters": {
