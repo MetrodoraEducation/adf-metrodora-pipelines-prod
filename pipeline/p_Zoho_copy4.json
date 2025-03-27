@@ -34,7 +34,7 @@
 								"type": "Expression"
 							},
 							"If-Modified-Since": {
-								"value": "@variables('If-Modified-Since')",
+								"value": "@concat('2019-07-25T15:26:49+05:30')",
 								"type": "Expression"
 							}
 						},
