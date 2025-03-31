@@ -895,7 +895,7 @@
 				"type": "Until",
 				"dependsOn": [
 					{
-						"activity": "CopydataZohoCampaigns",
+						"activity": "Wait3",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1125,6 +1125,22 @@
 						}
 					],
 					"timeout": "0.12:00:00"
+				}
+			},
+			{
+				"name": "Wait3",
+				"type": "Wait",
+				"dependsOn": [
+					{
+						"activity": "CopydataZohoCampaigns",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 30
 				}
 			}
 		],
