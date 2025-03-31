@@ -1157,7 +1157,7 @@
 			},
 			"reprocessDate": {
 				"type": "string",
-				"defaultValue": "15"
+				"defaultValue": "5"
 			}
 		},
 		"variables": {
