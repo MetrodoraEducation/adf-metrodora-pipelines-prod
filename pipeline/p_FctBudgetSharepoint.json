@@ -1,5 +1,5 @@
 {
-	"name": "p_Classlife_copy1",
+	"name": "p_FctBudgetSharepoint",
 	"properties": {
 		"activities": [
 			{
@@ -26,10 +26,6 @@
 							"value": "@pipeline().parameters.API_CLIENT",
 							"type": "Expression"
 						}
-					},
-					"url": {
-						"value": "@concat('https://api.classlife.io/api/v1/enroll_groups')",
-						"type": "Expression"
 					}
 				}
 			},
