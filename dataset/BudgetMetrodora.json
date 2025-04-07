@@ -1,0 +1,22 @@
+{
+	"name": "BudgetMetrodora",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_adsl",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"container": {
+				"type": "string",
+				"defaultValue": "bronze"
+			}
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation"
+			}
+		}
+	}
+}
