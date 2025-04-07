@@ -9,13 +9,33 @@
 			"container": {
 				"type": "string",
 				"defaultValue": "bronze"
+			},
+			"folder": {
+				"type": "string",
+				"defaultValue": "budget"
+			},
+			"filename": {
+				"type": "string",
+				"defaultValue": "FctBudget"
 			}
 		},
 		"annotations": [],
 		"type": "Binary",
 		"typeProperties": {
 			"location": {
-				"type": "AzureBlobFSLocation"
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@dataset().filename",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().folder",
+					"type": "Expression"
+				},
+				"fileSystem": {
+					"value": "@dataset().container",
+					"type": "Expression"
+				}
 			}
 		}
 	}
