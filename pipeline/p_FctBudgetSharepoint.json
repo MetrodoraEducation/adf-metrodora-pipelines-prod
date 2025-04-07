@@ -26,6 +26,9 @@
 							"value": "@pipeline().parameters.API_CLIENT",
 							"type": "Expression"
 						}
+					},
+					"authentication": {
+						"type": "Basic"
 					}
 				}
 			},
