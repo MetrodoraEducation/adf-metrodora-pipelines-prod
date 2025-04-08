@@ -1,0 +1,55 @@
+{
+	"name": "ds_adsl_xlsx",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_adsl",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": "FctBudget",
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "FctBudget.xlsx",
+				"folderPath": "budgetobjetivos",
+				"fileSystem": "master"
+			}
+		},
+		"schema": [
+			{
+				"type": "String"
+			},
+			{
+				"type": "String"
+			},
+			{
+				"type": "String"
+			},
+			{
+				"type": "String"
+			},
+			{
+				"type": "String"
+			},
+			{
+				"type": "String"
+			},
+			{
+				"type": "String"
+			},
+			{
+				"type": "String"
+			},
+			{
+				"type": "String"
+			},
+			{
+				"type": "String"
+			},
+			{
+				"type": "String"
+			}
+		]
+	}
+}
