@@ -17,12 +17,18 @@
 			"filename": {
 				"type": "string",
 				"defaultValue": "masterbudget.csv"
+			},
+			"sheetname": {
+				"type": "string"
 			}
 		},
 		"annotations": [],
 		"type": "Excel",
 		"typeProperties": {
-			"sheetName": "FctBudget",
+			"sheetName": {
+				"value": "@dataset().sheetname",
+				"type": "Expression"
+			},
 			"location": {
 				"type": "AzureBlobFSLocation",
 				"fileName": {
