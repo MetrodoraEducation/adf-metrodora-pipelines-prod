@@ -51,8 +51,8 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"container": "master",
-							"folder": "dim_pais",
-							"filename": "dim_pais.csv"
+							"folder": "budgetobjetivos",
+							"filename": "FctBudget.xlsx"
 						}
 					}
 				],
