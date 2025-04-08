@@ -49,7 +49,8 @@
 						"parameters": {
 							"container": "master",
 							"folder": "budgetobjetivos",
-							"filename": "FctBudget.xlsx"
+							"filename": "FctBudget.xlsx",
+							"sheetname": "FctBudget"
 						}
 					}
 				],
@@ -249,7 +250,8 @@
 						"parameters": {
 							"container": "master",
 							"folder": "budgetobjetivos",
-							"filename": "FctBudget.xlsx"
+							"filename": "FctBudget.xlsx",
+							"sheetname": "DimEscenarioPresupuesto"
 						}
 					}
 				],
@@ -263,7 +265,7 @@
 								"value": "@concat('lakehouse/budgetobjetivos/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
 								"type": "Expression"
 							},
-							"filename": "Fct_Budget.parquet"
+							"filename": "Dim_Escenario_Presupuesto.parquet"
 						}
 					}
 				]
