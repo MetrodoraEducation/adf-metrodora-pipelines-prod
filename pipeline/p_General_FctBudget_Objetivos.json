@@ -45,7 +45,12 @@
 				"inputs": [
 					{
 						"referenceName": "ds_adsl_xlsx",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "master",
+							"folder": "budgetobjetivos",
+							"filename": "masterbudget.csv"
+						}
 					}
 				],
 				"outputs": [
