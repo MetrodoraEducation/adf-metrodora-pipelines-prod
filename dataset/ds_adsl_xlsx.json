@@ -5,6 +5,16 @@
 			"referenceName": "ls_adsl",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"container": {
+				"type": "string",
+				"defaultValue": "master"
+			},
+			"folder": {
+				"type": "string",
+				"defaultValue": "Budget"
+			}
+		},
 		"annotations": [],
 		"type": "Excel",
 		"typeProperties": {
