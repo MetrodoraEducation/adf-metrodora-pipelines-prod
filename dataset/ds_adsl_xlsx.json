@@ -12,18 +12,30 @@
 			},
 			"folder": {
 				"type": "string",
-				"defaultValue": "Budget"
+				"defaultValue": "budgetobjetivos"
+			},
+			"filename": {
+				"type": "string",
+				"defaultValue": "masterbudget.csv"
 			}
 		},
 		"annotations": [],
 		"type": "Excel",
 		"typeProperties": {
-			"sheetName": "FctBudget",
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": "FctBudget.xlsx",
-				"folderPath": "budgetobjetivos",
-				"fileSystem": "master"
+				"fileName": {
+					"value": "@dataset().filename",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().folder",
+					"type": "Expression"
+				},
+				"fileSystem": {
+					"value": "@dataset().container",
+					"type": "Expression"
+				}
 			}
 		},
 		"schema": [
