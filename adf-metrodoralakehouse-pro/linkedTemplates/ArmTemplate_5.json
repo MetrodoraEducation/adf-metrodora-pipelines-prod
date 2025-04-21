@@ -13,6 +13,170 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/p_General_Budget')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "ExecutePipelineBudgetBronze",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "p_BudgetBronze",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "BudgetSilver",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "ExecutePipelineBudgetBronze",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": {
+								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'BudgetSilver')",
+								"type": "Expression"
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "ExecutePipelineBudgetGold_dim",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "BudgetSilver",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "p_BudgetGold_dim",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"gold_storage_databricks": {
+									"value": "@pipeline().parameters.gold_storage_databricks",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "BudgetGold_fct",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "ExecutePipelineBudgetGold_dim",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": {
+								"value": "@concat(pipeline().parameters.gold_storage_databricks, 'fct_budget_gold')",
+								"type": "Expression"
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "ExecutePipelineBudgetDWH",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "BudgetGold_fct",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "p_BudgetDWH",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"dwh_storage_databricks": {
+									"value": "@pipeline().parameters.dwh_storage_databricks",
+									"type": "Expression"
+								}
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"silver_storage_databricks": {
+						"type": "string"
+					},
+					"gold_storage_databricks": {
+						"type": "string"
+					},
+					"dwh_storage_databricks": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "Lakehouse/General"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-22T17:50:21Z"
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/p_General_Classlife')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -165,7 +329,8 @@
 						"defaultValue": "7"
 					},
 					"silver_storage_databricks": {
-						"type": "string"
+						"type": "string",
+						"defaultValue": "/Workspace/Repos/production_repository/notebooks-databricks-prod/Lakehouse/Silver/"
 					}
 				},
 				"folder": {
@@ -2284,292 +2449,11 @@
 				"lastPublishTime": "2025-03-22T17:50:23Z"
 			},
 			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/p_General_Budget')]",
 				"[concat(variables('factoryId'), '/pipelines/p_CallsSalesBronzeSilver')]",
 				"[concat(variables('factoryId'), '/pipelines/p_General_Zoho')]",
 				"[concat(variables('factoryId'), '/pipelines/p_General_Classlife')]",
 				"[concat(variables('factoryId'), '/pipelines/p_General_dimFijas_Mapeo')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/p_GeneralF0')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "ExecutePipelineAircallCallsBronzeF0",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "p_AircallCallsBronzeF0",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"dayToLoad": {
-									"value": "@pipeline().parameters.dayToLoad",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "ExecutePipelineAircallCallsSilverF0",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "ExecutePipelineAircallCallsBronzeF0",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "p_AircallCallsSilverF0",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "ExecutePipelineSalesBronzeF0",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "p_SalesBronzeF0",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"dayToLoad": {
-									"value": "@pipeline().parameters.dayToLoad",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "ExecutePipelineSalesSilverF0",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "ExecutePipelineSalesBronzeF0",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "p_SalesSilverF0",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "ExecutePipelineSalesGoldF0",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "ExecutePipelineSalesSilverF0",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "p_SalesGoldF0",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "ExecutePipelineSalesDWHF0",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "ExecutePipelineSalesGoldF0",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "p_SalesDWHF0",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "ExecutePipelineAircallCallsGoldF0",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "ExecutePipelineAircallCallsSilverF0",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "p_AircallCallsGoldF0",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "ExecutePipelineCallsDWHF0",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "ExecutePipelineAircallCallsGoldF0",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "p_CallsDWHF0",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "ExecutePipelineBudgetBronzeF0",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "p_BudgetBronzeF0",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "ExecutePipelineBudgetGoldF0",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "ExecutePipelineBudgetBronzeF0",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "p_BudgetGoldF0",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "ExecutePipelineBudgetDWHF0",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "ExecutePipelineBudgetGoldF0",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "p_BudgetDWHF0",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"parameters": {
-					"dayToLoad": {
-						"type": "string",
-						"defaultValue": "7"
-					}
-				},
-				"folder": {
-					"name": "LakehouseF0/GeneralF0"
-				},
-				"annotations": [],
-				"lastPublishTime": "2025-03-22T17:50:23Z"
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/p_SalesBronzeF0')]",
-				"[concat(variables('factoryId'), '/pipelines/p_SalesSilverF0')]",
-				"[concat(variables('factoryId'), '/pipelines/p_SalesGoldF0')]",
-				"[concat(variables('factoryId'), '/pipelines/p_SalesDWHF0')]"
 			]
 		}
 	]

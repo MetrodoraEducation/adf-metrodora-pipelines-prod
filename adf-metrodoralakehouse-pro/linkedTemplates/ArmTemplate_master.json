@@ -7,10 +7,22 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "adf-metrodoralakehouse-pro"
 		},
+		"HttpSharepointMetrodora_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'HttpSharepointMetrodora'"
+		},
 		"ls_PostgreSql_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'ls_PostgreSql'",
 			"defaultValue": "Host=psql-metrodoralakehouse-pro.postgres.database.azure.com;Port=5432;Database=lakehouse;UID=sqladminuser;EncryptionMethod=1;ValidateServerCertificate=0"
+		},
+		"HttpSharepointMetrodora_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://metrodorasl.sharepoint.com/"
+		},
+		"HttpSharepointMetrodora_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "sergio.correal@es.logicalis.com"
 		},
 		"ls_Aircall_properties_typeProperties_url": {
 			"type": "string",
@@ -74,6 +86,15 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"HttpSharepointMetrodora_password": {
+						"value": "[parameters('HttpSharepointMetrodora_password')]"
+					},
+					"HttpSharepointMetrodora_properties_typeProperties_url": {
+						"value": "[parameters('HttpSharepointMetrodora_properties_typeProperties_url')]"
+					},
+					"HttpSharepointMetrodora_properties_typeProperties_userName": {
+						"value": "[parameters('HttpSharepointMetrodora_properties_typeProperties_userName')]"
 					},
 					"ls_AzureDatabricks_properties_typeProperties_existingClusterId": {
 						"value": "[parameters('ls_AzureDatabricks_properties_typeProperties_existingClusterId')]"
