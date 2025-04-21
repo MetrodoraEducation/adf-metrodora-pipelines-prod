@@ -120,7 +120,8 @@
 		],
 		"parameters": {
 			"gold_storage_databricks": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "/Workspace/Repos/production_repository/notebooks-databricks-prod/Lakehouse/Gold/"
 			}
 		},
 		"folder": {
