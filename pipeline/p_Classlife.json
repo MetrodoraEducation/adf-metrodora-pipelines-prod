@@ -540,7 +540,8 @@
 		],
 		"parameters": {
 			"API_CLIENT": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "919"
 			},
 			"API_KEY": {
 				"type": "string",
