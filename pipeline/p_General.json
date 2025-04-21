@@ -5,6 +5,8 @@
 			{
 				"name": "Budget General",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Dim Fijas",
@@ -230,6 +232,8 @@
 			{
 				"name": "Dim Fijas",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "ZohoBronzeSilver_Full",
