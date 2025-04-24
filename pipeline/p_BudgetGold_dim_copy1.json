@@ -46,7 +46,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"notebookPath": {
-						"value": "@concat(pipeline().parameters.gold_storage_databricks, 'auxiliar_periodificacion')",
+						"value": "@concat(pipeline().parameters.dwh_storage_databricks, 'auxiliar_periodificacion')",
 						"type": "Expression"
 					}
 				},
