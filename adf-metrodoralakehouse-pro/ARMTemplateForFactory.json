@@ -724,6 +724,125 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/p_Auxiliar_periodificacion')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "aux periodificacion gold",
+						"type": "DatabricksNotebook",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": {
+								"value": "@concat(pipeline().parameters.gold_storage_databricks, 'aux_periodificacion_gold')",
+								"type": "Expression"
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "aux periodificacion DWH",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "DELETE FROM auxiliar_periodificacion",
+								"dependencyConditions": [
+									"Completed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": {
+								"value": "@concat(pipeline().parameters.dwh_storage_databricks, 'auxiliar_periodificacion')",
+								"type": "Expression"
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "DELETE FROM auxiliar_periodificacion",
+						"type": "Lookup",
+						"dependsOn": [
+							{
+								"activity": "aux periodificacion gold",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzurePostgreSqlSource",
+								"query": "DELETE FROM public.auxiliar_periodificacion;",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "ds_PostgreSql",
+								"type": "DatasetReference",
+								"parameters": {
+									"schema": "public",
+									"table": "auxiliar_periodificacion"
+								}
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"gold_storage_databricks": {
+						"type": "string",
+						"defaultValue": "/Workspace/Repos/production_repository/notebooks-databricks-prod/Lakehouse/Gold/"
+					},
+					"dwh_storage_databricks": {
+						"type": "string",
+						"defaultValue": "/Workspace/Repos/production_repository/notebooks-databricks-prod/Lakehouse/DWH/"
+					}
+				},
+				"folder": {
+					"name": "Lakehouse/Gold"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-22T17:50:18Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_AzureDatabricks')]",
+				"[concat(variables('factoryId'), '/datasets/ds_PostgreSql')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/p_BudgetBronze')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -4759,6 +4878,45 @@
 						"typeProperties": {
 							"waitTimeInSeconds": 30
 						}
+					},
+					{
+						"name": "Auxiliar Periodificacion",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Notebook_DWH",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Budget General",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "p_Auxiliar_periodificacion",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"gold_storage_databricks": {
+									"value": "@pipeline().parameters.gold_storage_databricks",
+									"type": "Expression"
+								},
+								"dwh_storage_databricks": {
+									"value": "@pipeline().parameters.dwh_storage_databricks",
+									"type": "Expression"
+								}
+							}
+						}
 					}
 				],
 				"policy": {
@@ -4807,7 +4965,8 @@
 				"[concat(variables('factoryId'), '/linkedServices/ls_AzureDatabricks')]",
 				"[concat(variables('factoryId'), '/pipelines/p_General_Zoho')]",
 				"[concat(variables('factoryId'), '/pipelines/p_General_Classlife')]",
-				"[concat(variables('factoryId'), '/pipelines/p_General_dimFijas_Mapeo')]"
+				"[concat(variables('factoryId'), '/pipelines/p_General_dimFijas_Mapeo')]",
+				"[concat(variables('factoryId'), '/pipelines/p_Auxiliar_periodificacion')]"
 			]
 		},
 		{
