@@ -32,7 +32,7 @@
 					{
 						"activity": "DELETE FROM auxiliar_periodificacion",
 						"dependencyConditions": [
-							"Succeeded"
+							"Completed"
 						]
 					}
 				],
