@@ -77,7 +77,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzurePostgreSqlSource",
-						"query": "DELETE FROM public.auxiliar_periodificacion",
+						"query": "DELETE FROM public.auxiliar_periodificacion;",
 						"partitionOption": "None"
 					},
 					"dataset": {
