@@ -24,11 +24,46 @@
 					"referenceName": "ls_AzureDatabricks",
 					"type": "LinkedServiceReference"
 				}
+			},
+			{
+				"name": "aux periodificacion DWH",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "aux periodificacion gold",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": {
+						"value": "@concat(pipeline().parameters.gold_storage_databricks, 'auxiliar_periodificacion')",
+						"type": "Expression"
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_AzureDatabricks",
+					"type": "LinkedServiceReference"
+				}
 			}
 		],
 		"parameters": {
 			"gold_storage_databricks": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "/Workspace/Repos/production_repository/notebooks-databricks-prod/Lakehouse/Gold/"
+			},
+			"dwh_storage_databricks": {
+				"type": "string",
+				"defaultValue": "/Workspace/Repos/production_repository/notebooks-databricks-prod/Lakehouse/DWH/"
 			}
 		},
 		"folder": {
