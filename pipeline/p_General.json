@@ -285,6 +285,31 @@
 				"typeProperties": {
 					"waitTimeInSeconds": 30
 				}
+			},
+			{
+				"name": "Auxiliar Periodificacion",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Notebook_DWH",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Budget General",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"waitOnCompletion": true
+				}
 			}
 		],
 		"parameters": {

@@ -669,18 +669,6 @@
 						}
 					]
 				}
-			},
-			{
-				"name": "Auxiliar P",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"policy": {
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"waitOnCompletion": true
-				}
 			}
 		],
 		"parameters": {
