@@ -60,12 +60,9 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"container": "bronze",
-							"folder": {
-								"value": "@concat('lakehouse/budget_ff/',formatDateTime(utcnow(),'yyyy'))",
-								"type": "Expression"
-							},
+							"folder": "lakehouse/budget_ff/",
 							"filename": {
-								"value": "@concat('Budget_FF',formatDateTime(utcnow(),'yyyy'),'.parquet')",
+								"value": "Budget_FF",
 								"type": "Expression"
 							}
 						}
