@@ -50,10 +50,7 @@
 							"container": "master",
 							"folder": "budget_ff",
 							"filename": "budget_FF.xlsx",
-							"sheetname": {
-								"value": "@concat('Budget_FF',formatDateTime(utcnow(),'yyyy'))",
-								"type": "Expression"
-							}
+							"sheetname": "Budget_FF"
 						}
 					}
 				],
