@@ -70,7 +70,7 @@
 				]
 			},
 			{
-				"name": "Budget_FF",
+				"name": "Budget_FF_silver",
 				"type": "DatabricksNotebook",
 				"dependsOn": [
 					{
@@ -100,13 +100,11 @@
 				}
 			},
 			{
-				"name": "DimPaisGold",
+				"name": "Budget_FF_gold",
 				"type": "DatabricksNotebook",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
-						"activity": "Budget_FF",
+						"activity": "Budget_FF_silver",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -138,13 +136,7 @@
 				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
-						"activity": "DimPaisGold",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "DimNacionalidadGold",
+						"activity": "Budget_FF_gold",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -161,38 +153,6 @@
 				"typeProperties": {
 					"notebookPath": {
 						"value": "@concat(pipeline().parameters.dwh_storage_databricks, 'dim_pais')",
-						"type": "Expression"
-					}
-				},
-				"linkedServiceName": {
-					"referenceName": "ls_AzureDatabricks",
-					"type": "LinkedServiceReference"
-				}
-			},
-			{
-				"name": "DimNacionalidadGold",
-				"type": "DatabricksNotebook",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
-				"dependsOn": [
-					{
-						"activity": "Budget_FF",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"notebookPath": {
-						"value": "@concat(pipeline().parameters.gold_storage_databricks, 'dim_nacionalidad_gold')",
 						"type": "Expression"
 					}
 				},
