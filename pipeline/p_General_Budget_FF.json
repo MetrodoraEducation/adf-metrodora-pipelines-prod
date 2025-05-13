@@ -49,8 +49,11 @@
 						"parameters": {
 							"container": "master",
 							"folder": "budget_ff",
-							"filename": "budget_FF24.xlsx",
-							"sheetname": "Budget_FF24"
+							"filename": "budget_FF.xlsx",
+							"sheetname": {
+								"value": "@concat('Budget_FF',formatDateTime(utcnow(),'yyyy'))",
+								"type": "Expression"
+							}
 						}
 					}
 				],
