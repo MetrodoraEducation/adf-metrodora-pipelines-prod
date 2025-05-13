@@ -70,10 +70,8 @@
 				]
 			},
 			{
-				"name": "DimPaisSilver",
+				"name": "Budget_FF",
 				"type": "DatabricksNotebook",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "CopyDataBudget",
@@ -92,7 +90,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"notebookPath": {
-						"value": "@concat(pipeline().parameters.silver_storage_databricks, 'dim_pais_silver')",
+						"value": "@concat(pipeline().parameters.silver_storage_databricks, 'budget_ff_silver')",
 						"type": "Expression"
 					}
 				},
@@ -108,7 +106,7 @@
 				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
-						"activity": "DimPaisSilver",
+						"activity": "Budget_FF",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -178,7 +176,7 @@
 				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
-						"activity": "DimPaisSilver",
+						"activity": "Budget_FF",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -206,7 +204,8 @@
 		],
 		"parameters": {
 			"silver_storage_databricks": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "/Workspace/Repos/production_repository/notebooks-databricks-prod/Lakehouse/Silver/"
 			},
 			"gold_storage_databricks": {
 				"type": "string"
