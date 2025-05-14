@@ -104,7 +104,7 @@
 				"type": "DatabricksNotebook",
 				"dependsOn": [
 					{
-						"activity": "Budget_FF_silver",
+						"activity": "Dim_escenario_presupuesto_gold",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -153,6 +153,36 @@
 				"typeProperties": {
 					"notebookPath": {
 						"value": "@concat(pipeline().parameters.dwh_storage_databricks, 'dim_pais')",
+						"type": "Expression"
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_AzureDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Dim_escenario_presupuesto_gold",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Budget_FF_silver",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": {
+						"value": "@concat(pipeline().parameters.gold_storage_databricks, 'fct_budget_ff_gold')",
 						"type": "Expression"
 					}
 				},
