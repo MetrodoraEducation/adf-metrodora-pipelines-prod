@@ -5,6 +5,8 @@
 			{
 				"name": "Budget General",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Dim Fijas",
