@@ -130,7 +130,7 @@
 				}
 			},
 			{
-				"name": "dim_escenario_presupuestoDWH",
+				"name": "DimEscenarioPresupuestoDWH",
 				"type": "DatabricksNotebook",
 				"dependsOn": [
 					{
@@ -150,7 +150,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"notebookPath": {
-						"value": "@concat(pipeline().parameters.dwh_storage_databricks, 'dim_pais')",
+						"value": "@concat(pipeline().parameters.dwh_storage_databricks, 'dim_escenario_presupuesto')",
 						"type": "Expression"
 					}
 				},
