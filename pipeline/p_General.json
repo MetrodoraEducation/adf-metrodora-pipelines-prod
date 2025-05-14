@@ -9,7 +9,7 @@
 				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
-						"activity": "Dim Fijas",
+						"activity": "Budget General_FF",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -316,6 +316,43 @@
 					},
 					"waitOnCompletion": true,
 					"parameters": {
+						"gold_storage_databricks": {
+							"value": "@pipeline().parameters.gold_storage_databricks",
+							"type": "Expression"
+						},
+						"dwh_storage_databricks": {
+							"value": "@pipeline().parameters.dwh_storage_databricks",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "Budget General_FF",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Dim Fijas",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "p_General_Budget_FF",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"silver_storage_databricks": {
+							"value": "@pipeline().parameters.silver_storage_databricks",
+							"type": "Expression"
+						},
 						"gold_storage_databricks": {
 							"value": "@pipeline().parameters.gold_storage_databricks",
 							"type": "Expression"
