@@ -4,7 +4,7 @@
 	"parameters": {
 		"factoryName": {
 			"type": "string",
-			"metadata": "Data Factory name",
+			"metadata": "Nombre de instancia de Data Factory",
 			"defaultValue": "adf-metrodoralakehouse-pro"
 		}
 	},
@@ -12,6 +12,61 @@
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/p_ClientifyDealsSilverF0_IdForDelete')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "DataflowClientifyDealsSilverF0_IdForDelete",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "df_ClientifyDealsSilverF0_IdForDelete",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"sourceClientifyIdForDeleteBronze": {
+										"container": "bronze",
+										"folder": {
+											"value": "@concat('lakehousef0/clientify/idfordelete/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+											"type": "Expression"
+										},
+										"filename": "clientifydealsidfordelete.json"
+									},
+									"sinkClientifyLostReasonSilver": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "LakehouseF0/SilverF0"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-22T17:50:21Z"
+			},
+			"dependsOn": []
+		},
 		{
 			"name": "[concat(parameters('factoryName'), '/p_ClientifyDealsSilverF0_LostReason')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
@@ -68,7 +123,7 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/p_General_Budget')]",
+			"name": "[concat(parameters('factoryName'), '/p_General_Budget_old')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -137,7 +192,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"pipeline": {
-								"referenceName": "p_BudgetGold_dim",
+								"referenceName": "p_BudgetGold_dim_old",
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
@@ -196,7 +251,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"pipeline": {
-								"referenceName": "p_BudgetDWH",
+								"referenceName": "p_BudgetDWH_old",
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
@@ -2118,61 +2173,8 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/p_OdooLeadSilverF0')]",
-				"[concat(variables('factoryId'), '/pipelines/p_ClientifyDealsSilverF0_LostReason')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/p_SalesSilverF0_copy1')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "ExecutePipelineClientifyDealsSilverF0",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "p_ClientifyDealsSilverF0",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "ExecutePipelineOdooLeadSilverF0",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "p_OdooLeadSilverF0",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"folder": {
-					"name": "LakehouseF0/SilverF0"
-				},
-				"annotations": [],
-				"lastPublishTime": "2024-11-25T09:24:51Z"
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/p_OdooLeadSilverF0')]"
+				"[concat(variables('factoryId'), '/pipelines/p_ClientifyDealsSilverF0_LostReason')]",
+				"[concat(variables('factoryId'), '/pipelines/p_ClientifyDealsSilverF0_IdForDelete')]"
 			]
 		}
 	]

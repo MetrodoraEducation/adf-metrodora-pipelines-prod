@@ -4,12 +4,12 @@
 	"parameters": {
 		"factoryName": {
 			"type": "string",
-			"metadata": "Data Factory name",
+			"metadata": "Nombre de instancia de Data Factory",
 			"defaultValue": "adf-metrodoralakehouse-pro"
 		},
 		"HttpSharepointMetrodora_password": {
 			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'HttpSharepointMetrodora'"
+			"metadata": "Cadena protegida para \"password\"de \"HttpSharepointMetrodora\""
 		},
 		"HttpSharepointMetrodora_properties_typeProperties_url": {
 			"type": "string",
@@ -164,7 +164,7 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/p_BudgetDWH')]",
+			"name": "[concat(parameters('factoryName'), '/p_BudgetDWH_old')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -258,7 +258,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/p_BudgetGold_dim')]",
+			"name": "[concat(parameters('factoryName'), '/p_BudgetGold_dim_old')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -277,7 +277,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"notebookPath": {
-								"value": "@concat(pipeline().parameters.gold_storage_databricks, 'dim_escenario_budget_gold')",
+								"value": "@concat(pipeline().parameters.gold_storage_databricks, 'fct_budget_ff_gold')",
 								"type": "Expression"
 							}
 						},

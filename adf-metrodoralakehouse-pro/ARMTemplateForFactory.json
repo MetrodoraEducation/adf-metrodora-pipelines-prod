@@ -4,16 +4,16 @@
 	"parameters": {
 		"factoryName": {
 			"type": "string",
-			"metadata": "Data Factory name",
+			"metadata": "Nombre de instancia de Data Factory",
 			"defaultValue": "adf-metrodoralakehouse-pro"
 		},
 		"HttpSharepointMetrodora_password": {
 			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'HttpSharepointMetrodora'"
+			"metadata": "Cadena protegida para \"password\"de \"HttpSharepointMetrodora\""
 		},
 		"ls_PostgreSql_connectionString": {
 			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'ls_PostgreSql'",
+			"metadata": "Cadena protegida para \"connectionString\"de \"ls_PostgreSql\"",
 			"defaultValue": "Host=psql-metrodoralakehouse-pro.postgres.database.azure.com;Port=5432;Database=lakehouse;UID=sqladminuser;EncryptionMethod=1;ValidateServerCertificate=0"
 		},
 		"HttpSharepointMetrodora_properties_typeProperties_url": {
@@ -1023,7 +1023,60 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/p_BudgetDWH')]",
+			"name": "[concat(parameters('factoryName'), '/p_BudgetDWHF0')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "DataFlowBudgetDWHF0",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "df_BudgetDWHF0",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"sourceBudgetGoldF0": {},
+									"sink1": {
+										"schema": "public",
+										"table": "f0budget"
+									}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "LakehouseF0/DWHF0"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-22T17:50:20Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/df_BudgetDWHF0')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_BudgetDWH_old')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -1117,59 +1170,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/p_BudgetDWHF0')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "DataFlowBudgetDWHF0",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "df_BudgetDWHF0",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"sourceBudgetGoldF0": {},
-									"sink1": {
-										"schema": "public",
-										"table": "f0budget"
-									}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"folder": {
-					"name": "LakehouseF0/DWHF0"
-				},
-				"annotations": [],
-				"lastPublishTime": "2025-03-22T17:50:20Z"
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/df_BudgetDWHF0')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/p_BudgetGoldF0')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -1227,7 +1227,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/p_BudgetGold_dim')]",
+			"name": "[concat(parameters('factoryName'), '/p_BudgetGold_dim_old')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -1246,7 +1246,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"notebookPath": {
-								"value": "@concat(pipeline().parameters.gold_storage_databricks, 'dim_escenario_budget_gold')",
+								"value": "@concat(pipeline().parameters.gold_storage_databricks, 'fct_budget_ff_gold')",
 								"type": "Expression"
 							}
 						},
@@ -4598,9 +4598,11 @@
 					{
 						"name": "Budget General",
 						"type": "ExecutePipeline",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
-								"activity": "Dim Fijas",
+								"activity": "Budget General_FF",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -4612,7 +4614,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"pipeline": {
-								"referenceName": "p_General_Budget",
+								"referenceName": "p_General_Budget_old",
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
@@ -4917,6 +4919,43 @@
 								}
 							}
 						}
+					},
+					{
+						"name": "Budget General_FF",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Dim Fijas",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "p_General_Budget_FF",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"silver_storage_databricks": {
+									"value": "@pipeline().parameters.silver_storage_databricks",
+									"type": "Expression"
+								},
+								"gold_storage_databricks": {
+									"value": "@pipeline().parameters.gold_storage_databricks",
+									"type": "Expression"
+								},
+								"dwh_storage_databricks": {
+									"value": "@pipeline().parameters.dwh_storage_databricks",
+									"type": "Expression"
+								}
+							}
+						}
 					}
 				],
 				"policy": {
@@ -4958,7 +4997,7 @@
 				"lastPublishTime": "2025-03-22T17:50:23Z"
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/p_General_Budget')]",
+				"[concat(variables('factoryId'), '/pipelines/p_General_Budget_old')]",
 				"[concat(variables('factoryId'), '/pipelines/p_CallsSalesBronzeSilver')]",
 				"[concat(variables('factoryId'), '/pipelines/p_dim_gold')]",
 				"[concat(variables('factoryId'), '/pipelines/p_fct_gold')]",
@@ -4966,7 +5005,8 @@
 				"[concat(variables('factoryId'), '/pipelines/p_General_Zoho')]",
 				"[concat(variables('factoryId'), '/pipelines/p_General_Classlife')]",
 				"[concat(variables('factoryId'), '/pipelines/p_General_dimFijas_Mapeo')]",
-				"[concat(variables('factoryId'), '/pipelines/p_Auxiliar_periodificacion')]"
+				"[concat(variables('factoryId'), '/pipelines/p_Auxiliar_periodificacion')]",
+				"[concat(variables('factoryId'), '/pipelines/p_General_Budget_FF')]"
 			]
 		},
 		{
@@ -5532,7 +5572,260 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/p_General_Budget')]",
+			"name": "[concat(parameters('factoryName'), '/p_General_Budget_FF')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "CopyDataBudget",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "ExcelSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_adsl_xlsx",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "master",
+									"folder": "budget_ff",
+									"filename": "budget_FF.xlsx",
+									"sheetname": "Budget_FF"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_adsl_parquet",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "bronze",
+									"folder": "lakehouse/budget_ff/",
+									"filename": {
+										"value": "Budget_FF",
+										"type": "Expression"
+									}
+								}
+							}
+						]
+					},
+					{
+						"name": "Budget_FF_silver",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "CopyDataBudget",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": {
+								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'budget_ff_silver')",
+								"type": "Expression"
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "Budget_FF_gold",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "Dim_escenario_presupuesto_gold",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": {
+								"value": "@concat(pipeline().parameters.gold_storage_databricks, 'fct_budget_ff_gold')",
+								"type": "Expression"
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "DimEscenarioPresupuestoDWH",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "Budget_FF_gold",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": {
+								"value": "@concat(pipeline().parameters.dwh_storage_databricks, 'dim_escenario_presupuesto')",
+								"type": "Expression"
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "Dim_escenario_presupuesto_gold",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "Budget_FF_silver",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": {
+								"value": "@concat(pipeline().parameters.gold_storage_databricks, 'dim_escenario_presupuesto_gold')",
+								"type": "Expression"
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "fct_budget",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "Budget_FF_gold",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": {
+								"value": "@concat(pipeline().parameters.dwh_storage_databricks, 'fct_budget')",
+								"type": "Expression"
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"silver_storage_databricks": {
+						"type": "string",
+						"defaultValue": "/Workspace/Repos/production_repository/notebooks-databricks-prod/Lakehouse/Silver/"
+					},
+					"gold_storage_databricks": {
+						"type": "string",
+						"defaultValue": "/Workspace/Repos/production_repository/notebooks-databricks-prod/Lakehouse/Gold/"
+					},
+					"dwh_storage_databricks": {
+						"type": "string",
+						"defaultValue": "/Workspace/Repos/production_repository/notebooks-databricks-prod/Lakehouse/DWH/"
+					}
+				},
+				"folder": {
+					"name": "Lakehouse/General"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-22T17:50:20Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/ds_adsl_xlsx')]",
+				"[concat(variables('factoryId'), '/datasets/ds_adsl_parquet')]",
+				"[concat(variables('factoryId'), '/linkedServices/ls_AzureDatabricks')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_General_Budget_old')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -5601,7 +5894,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"pipeline": {
-								"referenceName": "p_BudgetGold_dim",
+								"referenceName": "p_BudgetGold_dim_old",
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
@@ -5660,7 +5953,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"pipeline": {
-								"referenceName": "p_BudgetDWH",
+								"referenceName": "p_BudgetDWH_old",
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
@@ -5696,8 +5989,8 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/p_BudgetBronze')]",
 				"[concat(variables('factoryId'), '/linkedServices/ls_AzureDatabricks')]",
-				"[concat(variables('factoryId'), '/pipelines/p_BudgetGold_dim')]",
-				"[concat(variables('factoryId'), '/pipelines/p_BudgetDWH')]"
+				"[concat(variables('factoryId'), '/pipelines/p_BudgetGold_dim_old')]",
+				"[concat(variables('factoryId'), '/pipelines/p_BudgetDWH_old')]"
 			]
 		},
 		{
@@ -6413,7 +6706,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"pipeline": {
-								"referenceName": "p_General_Budget",
+								"referenceName": "p_General_Budget_old",
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
@@ -6523,7 +6816,7 @@
 				"lastPublishTime": "2025-03-22T17:50:23Z"
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/p_General_Budget')]",
+				"[concat(variables('factoryId'), '/pipelines/p_General_Budget_old')]",
 				"[concat(variables('factoryId'), '/pipelines/p_CallsSalesBronzeSilver_Full')]",
 				"[concat(variables('factoryId'), '/pipelines/p_dim_gold')]",
 				"[concat(variables('factoryId'), '/pipelines/p_fct_gold')]",
