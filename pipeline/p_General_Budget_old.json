@@ -65,7 +65,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "p_BudgetGold_dim",
+						"referenceName": "p_BudgetGold_dim_old",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
@@ -124,7 +124,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "p_BudgetDWH",
+						"referenceName": "p_BudgetDWH_old",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
