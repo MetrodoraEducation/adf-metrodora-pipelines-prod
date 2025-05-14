@@ -12,7 +12,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "p_General_Budget",
+						"referenceName": "p_General_Budget_old",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
