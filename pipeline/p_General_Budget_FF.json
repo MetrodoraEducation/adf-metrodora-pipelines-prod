@@ -182,7 +182,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"notebookPath": {
-						"value": "@concat(pipeline().parameters.gold_storage_databricks, 'fct_budget_ff_gold')",
+						"value": "@concat(pipeline().parameters.gold_storage_databricks, 'dim_escenario_presupuesto_gold')",
 						"type": "Expression"
 					}
 				},
