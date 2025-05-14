@@ -190,7 +190,7 @@
 				}
 			},
 			{
-				"name": "DimPaisDWH_copy1",
+				"name": "fct_budget",
 				"type": "DatabricksNotebook",
 				"dependsOn": [
 					{
@@ -210,7 +210,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"notebookPath": {
-						"value": "@concat(pipeline().parameters.dwh_storage_databricks, 'dim_pais')",
+						"value": "@concat(pipeline().parameters.dwh_storage_databricks, 'fct_budget')",
 						"type": "Expression"
 					}
 				},
