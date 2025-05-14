@@ -132,8 +132,6 @@
 			{
 				"name": "DimPaisDWH",
 				"type": "DatabricksNotebook",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Budget_FF_gold",
