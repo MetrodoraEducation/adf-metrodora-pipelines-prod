@@ -102,8 +102,6 @@
 			{
 				"name": "Budget_FF_gold",
 				"type": "DatabricksNotebook",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Budget_FF_silver",
@@ -122,7 +120,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"notebookPath": {
-						"value": "@concat(pipeline().parameters.gold_storage_databricks, 'dim_pais_gold')",
+						"value": "@concat(pipeline().parameters.gold_storage_databricks, 'fct_budget_ff_gold')",
 						"type": "Expression"
 					}
 				},
@@ -170,7 +168,8 @@
 				"defaultValue": "/Workspace/Repos/production_repository/notebooks-databricks-prod/Lakehouse/Silver/"
 			},
 			"gold_storage_databricks": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "/Workspace/Repos/production_repository/notebooks-databricks-prod/Lakehouse/Gold/"
 			},
 			"dwh_storage_databricks": {
 				"type": "string"
