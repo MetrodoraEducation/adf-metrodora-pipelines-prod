@@ -194,7 +194,7 @@
 				"type": "DatabricksNotebook",
 				"dependsOn": [
 					{
-						"activity": "Budget_FF_gold",
+						"activity": "DimEscenarioPresupuestoDWH",
 						"dependencyConditions": [
 							"Succeeded"
 						]
