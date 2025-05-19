@@ -1,5 +1,5 @@
 {
-	"name": "p_General_Zoho_copy1",
+	"name": "p_General_Zoho_38b",
 	"properties": {
 		"activities": [
 			{
@@ -12,7 +12,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "p_Zoho_copy1",
+						"referenceName": "p_Zoho_38b",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
@@ -41,7 +41,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "p_ZohoSilver_copy1",
+						"referenceName": "p_ZohoSilver_38b",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
