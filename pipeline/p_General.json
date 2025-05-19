@@ -393,20 +393,10 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "p_General919_Classlife",
+						"referenceName": "p_General931_Classlife",
 						"type": "PipelineReference"
 					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"reprocessDate": {
-							"value": "@pipeline().parameters.dayToLoad",
-							"type": "Expression"
-						},
-						"silver_storage_databricks": {
-							"value": "@pipeline().parameters.silver_storage_databricks",
-							"type": "Expression"
-						}
-					}
+					"waitOnCompletion": true
 				}
 			}
 		],
