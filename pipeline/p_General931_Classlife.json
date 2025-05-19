@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "ExecuteClasslife919",
+				"name": "ExecuteClasslife931",
 				"type": "ExecutePipeline",
 				"dependsOn": [],
 				"policy": {
@@ -23,7 +23,7 @@
 				"type": "DatabricksNotebook",
 				"dependsOn": [
 					{
-						"activity": "ExecuteClasslife919",
+						"activity": "ExecuteClasslife931",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -53,7 +53,7 @@
 				"type": "DatabricksNotebook",
 				"dependsOn": [
 					{
-						"activity": "ExecuteClasslife919",
+						"activity": "ExecuteClasslife931",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -83,7 +83,7 @@
 				"type": "DatabricksNotebook",
 				"dependsOn": [
 					{
-						"activity": "ExecuteClasslife919",
+						"activity": "ExecuteClasslife931",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -113,7 +113,7 @@
 				"type": "DatabricksNotebook",
 				"dependsOn": [
 					{
-						"activity": "ExecuteClasslife919",
+						"activity": "ExecuteClasslife931",
 						"dependencyConditions": [
 							"Succeeded"
 						]
