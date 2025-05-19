@@ -159,7 +159,7 @@
 									"parameters": {
 										"container": "bronze",
 										"folder": {
-											"value": "@concat('lakehouse/zoho/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+											"value": "@concat('lakehouse/zoho_38b/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
 											"type": "Expression"
 										},
 										"filename": "@concat('JsaZohoDeals_', string(variables('PageCounter')), '.json')"
@@ -531,7 +531,7 @@
 									"parameters": {
 										"container": "bronze",
 										"folder": {
-											"value": "@concat('lakehouse/zoho/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+											"value": "@concat('lakehouse/zoho_38b/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
 											"type": "Expression"
 										},
 										"filename": {
@@ -644,7 +644,7 @@
 						"parameters": {
 							"container": "bronze",
 							"folder": {
-								"value": "@concat('lakehouse/zoho/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+								"value": "@concat('lakehouse/zoho_38b/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
 								"type": "Expression"
 							},
 							"filename": "JsaZohoUsers.json"
@@ -718,7 +718,7 @@
 						"parameters": {
 							"container": "bronze",
 							"folder": {
-								"value": "@concat('lakehouse/zoho/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+								"value": "@concat('lakehouse/zoho_38b/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
 								"type": "Expression"
 							},
 							"filename": "JsaZohoCampaigns.json"
@@ -1048,7 +1048,7 @@
 									"parameters": {
 										"container": "bronze",
 										"folder": {
-											"value": "@concat('lakehouse/zoho/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+											"value": "@concat('lakehouse/zoho_38b/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
 											"type": "Expression"
 										},
 										"filename": {
