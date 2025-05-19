@@ -1088,7 +1088,7 @@
 			},
 			"refresh_token": {
 				"type": "string",
-				"defaultValue": "1000.256013fabf162c6a30e7260b66598da2.d706caedd894d618249377cda8b5cf15"
+				"defaultValue": "1000.38b38aaaa19f9e17d7228903a78f2220.44022c9409dbc53987bcc273e18eb666"
 			},
 			"reprocessDate": {
 				"type": "string",
