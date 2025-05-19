@@ -101,7 +101,7 @@
 						"parameters": {
 							"container": "bronze",
 							"folder": {
-								"value": "@concat('lakehouse/classlife/enroll_groups/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+								"value": "@concat('lakehouse/classlife_931/enroll_groups/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
 								"type": "Expression"
 							},
 							"filename": "JsaClassLifeProductos.json"
@@ -208,7 +208,7 @@
 						"parameters": {
 							"container": "bronze",
 							"folder": {
-								"value": "@concat('lakehouse/classlife/students/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+								"value": "@concat('lakehouse/classlife_931/students/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
 								"type": "Expression"
 							},
 							"filename": "JsaClassLifeStudents.json"
@@ -315,7 +315,7 @@
 						"parameters": {
 							"container": "bronze",
 							"folder": {
-								"value": "@concat('lakehouse/classlife/enrollments/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+								"value": "@concat('lakehouse/classlife_931/enrollments/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
 								"type": "Expression"
 							},
 							"filename": "JsaClassLifeEnrollments.json"
@@ -422,7 +422,7 @@
 						"parameters": {
 							"container": "bronze",
 							"folder": {
-								"value": "@concat('lakehouse/classlife/receipts/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+								"value": "@concat('lakehouse/classlife_931/receipts/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
 								"type": "Expression"
 							},
 							"filename": "JsaClassLifeReceipts.json"
@@ -529,7 +529,7 @@
 						"parameters": {
 							"container": "bronze",
 							"folder": {
-								"value": "@concat('lakehouse/classlife/admissions/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+								"value": "@concat('lakehouse/classlife_931/admissions/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
 								"type": "Expression"
 							},
 							"filename": "JsaClassLifeAdmissions.json"
