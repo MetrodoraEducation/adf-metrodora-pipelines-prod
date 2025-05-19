@@ -12,7 +12,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "p_Classlife",
+						"referenceName": "p_Classlife919",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
