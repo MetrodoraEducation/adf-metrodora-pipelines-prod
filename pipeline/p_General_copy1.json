@@ -213,7 +213,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "p_General_Classlife",
+						"referenceName": "p_General919_Classlife",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
