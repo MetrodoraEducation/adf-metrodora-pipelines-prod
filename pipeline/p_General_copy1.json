@@ -1,5 +1,5 @@
 {
-	"name": "p_General",
+	"name": "p_General_copy1",
 	"properties": {
 		"activities": [
 			{
@@ -74,7 +74,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Classlife919Bronze_Full",
+						"activity": "ClasslifeBronzeSilver_Full",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -197,7 +197,7 @@
 				}
 			},
 			{
-				"name": "Classlife919Bronze_Full",
+				"name": "ClasslifeBronzeSilver_Full",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
@@ -240,7 +240,7 @@
 						]
 					},
 					{
-						"activity": "Classlife919Bronze_Full",
+						"activity": "ClasslifeBronzeSilver_Full",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -359,32 +359,6 @@
 						},
 						"dwh_storage_databricks": {
 							"value": "@pipeline().parameters.dwh_storage_databricks",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "ClasslifeBronzeSilver_Full_copy1",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"policy": {
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "p_General_Classlife",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"reprocessDate": {
-							"value": "@pipeline().parameters.dayToLoad",
-							"type": "Expression"
-						},
-						"silver_storage_databricks": {
-							"value": "@pipeline().parameters.silver_storage_databricks",
 							"type": "Expression"
 						}
 					}
