@@ -1,5 +1,5 @@
 {
-	"name": "p_Zoho_copy1",
+	"name": "p_Zoho_38b",
 	"properties": {
 		"activities": [
 			{
@@ -757,7 +757,10 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"container": "bronze",
-							"folder": "@concat('lakehouse/zoho/', formatDateTime(utcnow(),'yyyy'), '/', formatDateTime(utcnow(),'MM'), '/', formatDateTime(utcnow(),'dd'))"
+							"folder": {
+								"value": "@concat('lakehouse/zoho_38b/', formatDateTime(utcnow(),'yyyy'), '/', formatDateTime(utcnow(),'MM'), '/', formatDateTime(utcnow(),'dd'))",
+								"type": "Expression"
+							}
 						}
 					},
 					"fieldList": [
