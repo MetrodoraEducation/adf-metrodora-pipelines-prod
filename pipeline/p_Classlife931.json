@@ -34,7 +34,7 @@
 				}
 			},
 			{
-				"name": "ClasslifeProductos",
+				"name": "ClasslifeProductos_931",
 				"description": "ClasslifeEnrollGroups",
 				"type": "Copy",
 				"dependsOn": [
@@ -141,7 +141,7 @@
 				}
 			},
 			{
-				"name": "ClasslifeStudents",
+				"name": "ClasslifeStudents_931",
 				"description": "ClasslifeStudents",
 				"type": "Copy",
 				"dependsOn": [
@@ -248,7 +248,7 @@
 				}
 			},
 			{
-				"name": "Enrollments",
+				"name": "Enrollments_931",
 				"description": "Enrollments",
 				"type": "Copy",
 				"dependsOn": [
@@ -355,7 +355,7 @@
 				}
 			},
 			{
-				"name": "Receipts",
+				"name": "Receipts_931",
 				"description": "Receipts",
 				"type": "Copy",
 				"dependsOn": [
@@ -462,7 +462,7 @@
 				}
 			},
 			{
-				"name": "Admissions",
+				"name": "Admissions_931",
 				"description": "Admissions",
 				"type": "Copy",
 				"dependsOn": [
