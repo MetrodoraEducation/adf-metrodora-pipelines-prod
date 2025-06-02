@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "ExecuteZohoBronze",
+				"name": "ExecuteZohoBronze_38b",
 				"type": "ExecutePipeline",
 				"dependsOn": [],
 				"policy": {
@@ -25,11 +25,11 @@
 				}
 			},
 			{
-				"name": "ExecuteZohoBronzetoSilver",
+				"name": "ExecuteZohoBronzetoSilver_38b",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "ExecuteZohoBronze",
+						"activity": "ExecuteZohoBronze_38b",
 						"dependencyConditions": [
 							"Succeeded"
 						]
