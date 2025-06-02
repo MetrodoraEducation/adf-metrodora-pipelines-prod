@@ -99,7 +99,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"notebookPath": {
-						"value": "@concat(pipeline().parameters.silver_storage_databricks, 'ClasslifeEnrollments')",
+						"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_931/ClasslifeEnrollments_931')",
 						"type": "Expression"
 					}
 				},
@@ -129,7 +129,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"notebookPath": {
-						"value": "@concat(pipeline().parameters.silver_storage_databricks, 'ClasslifeReceipts')",
+						"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_931/ClasslifeReceipts_931')",
 						"type": "Expression"
 					}
 				},
