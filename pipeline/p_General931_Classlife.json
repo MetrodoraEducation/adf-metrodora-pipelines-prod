@@ -19,7 +19,7 @@
 				}
 			},
 			{
-				"name": "ClasslifeProductos",
+				"name": "ClasslifeProductos_931",
 				"type": "DatabricksNotebook",
 				"dependsOn": [
 					{
@@ -39,7 +39,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"notebookPath": {
-						"value": "@concat(pipeline().parameters.silver_storage_databricks, 'ClasslifeProductos')",
+						"value": "@concat(pipeline().parameters.silver_storage_databricks, 'ClasslifeProductos_931')",
 						"type": "Expression"
 					}
 				},
@@ -49,7 +49,7 @@
 				}
 			},
 			{
-				"name": "ClasslifeStudents",
+				"name": "ClasslifeStudents_931",
 				"type": "DatabricksNotebook",
 				"dependsOn": [
 					{
