@@ -3,11 +3,11 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "ZohoContactsSilver",
+				"name": "ZohoContactsSilver_38b",
 				"type": "DatabricksNotebook",
 				"dependsOn": [
 					{
-						"activity": "ZohoDealsSilver",
+						"activity": "ZohoDealsSilver_38b",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -33,7 +33,7 @@
 				}
 			},
 			{
-				"name": "ZohoDealsSilver",
+				"name": "ZohoDealsSilver_38b",
 				"type": "DatabricksNotebook",
 				"dependsOn": [],
 				"policy": {
@@ -56,7 +56,7 @@
 				}
 			},
 			{
-				"name": "ZohoLeadsSilver",
+				"name": "ZohoLeadsSilver_38b",
 				"type": "DatabricksNotebook",
 				"dependsOn": [],
 				"policy": {
@@ -79,11 +79,11 @@
 				}
 			},
 			{
-				"name": "ZohoUsersSilver",
+				"name": "ZohoUsersSilver_38b",
 				"type": "DatabricksNotebook",
 				"dependsOn": [
 					{
-						"activity": "ZohoLeadsSilver",
+						"activity": "ZohoLeadsSilver_38b",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -111,9 +111,11 @@
 			{
 				"name": "ZohoCampaignsSilver",
 				"type": "DatabricksNotebook",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
-						"activity": "ZohoContactsSilver",
+						"activity": "ZohoContactsSilver_38b",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -139,8 +141,10 @@
 				}
 			},
 			{
-				"name": "Tablon_Leads_and_DealsSilver",
+				"name": "Tablon_Leads_and_DealsSilver_38b",
 				"type": "DatabricksNotebook",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "ZohoCampaignsSilver",
@@ -149,7 +153,7 @@
 						]
 					},
 					{
-						"activity": "ZohoUsersSilver",
+						"activity": "ZohoUsersSilver_38b",
 						"dependencyConditions": [
 							"Succeeded"
 						]
