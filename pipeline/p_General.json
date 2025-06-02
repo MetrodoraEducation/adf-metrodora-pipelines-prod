@@ -391,8 +391,6 @@
 			{
 				"name": "Classlife931Bronze_Full",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "CallsSalesBronzeSilver_Full",
@@ -440,7 +438,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "p_General_Zoho",
+						"referenceName": "p_General_Zoho_38b",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
