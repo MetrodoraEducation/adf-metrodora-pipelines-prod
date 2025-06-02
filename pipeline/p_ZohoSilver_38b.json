@@ -23,7 +23,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"notebookPath": {
-						"value": "@concat(pipeline().parameters.silver_storage_databricks, 'ZohoContacts_38b')",
+						"value": "@concat(pipeline().parameters.silver_storage_databricks, 'zoho_38b/ZohoContacts_38b')",
 						"type": "Expression"
 					}
 				},
@@ -46,7 +46,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"notebookPath": {
-						"value": "@concat(pipeline().parameters.silver_storage_databricks, 'ZohoDeals_38b')",
+						"value": "@concat(pipeline().parameters.silver_storage_databricks, 'zoho_38b/ZohoDeals_38b')",
 						"type": "Expression"
 					}
 				},
@@ -69,7 +69,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"notebookPath": {
-						"value": "@concat(pipeline().parameters.silver_storage_databricks, 'ZohoLeads_38b')",
+						"value": "@concat(pipeline().parameters.silver_storage_databricks, 'zoho_38b/ZohoLeads_38b')",
 						"type": "Expression"
 					}
 				},
@@ -99,7 +99,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"notebookPath": {
-						"value": "@concat(pipeline().parameters.silver_storage_databricks, 'ZohoUsers_38b')",
+						"value": "@concat(pipeline().parameters.silver_storage_databricks, 'zoho_38b/ZohoUsers_38b')",
 						"type": "Expression"
 					}
 				},
