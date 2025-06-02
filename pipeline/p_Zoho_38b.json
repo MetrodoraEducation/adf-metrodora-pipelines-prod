@@ -366,7 +366,10 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"container": "bronze",
-										"folder": "@concat('lakehouse/zoho/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+										"folder": {
+											"value": "@concat('lakehouse/zoho_38b/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+											"type": "Expression"
+										},
 										"filename": {
 											"value": "@concat('JsaZohoLeads_', string(variables('PageCounter')), '.json')",
 											"type": "Expression"
@@ -886,7 +889,10 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"container": "bronze",
-										"folder": "@concat('lakehouse/zoho/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+										"folder": {
+											"value": "@concat('lakehouse/zoho_38b/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+											"type": "Expression"
+										},
 										"filename": {
 											"value": "@concat('JsaZohoContacts_', string(variables('PageCounter')), '.json')",
 											"type": "Expression"
