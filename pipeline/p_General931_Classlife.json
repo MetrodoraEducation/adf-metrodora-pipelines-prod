@@ -21,8 +21,6 @@
 			{
 				"name": "ClasslifeProductos",
 				"type": "DatabricksNotebook",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "ExecuteClasslife931",
@@ -53,8 +51,6 @@
 			{
 				"name": "ClasslifeStudents",
 				"type": "DatabricksNotebook",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "ExecuteClasslife931",
@@ -83,10 +79,8 @@
 				}
 			},
 			{
-				"name": "ClasslifeEnrollments",
+				"name": "ClasslifeEnrollments_931",
 				"type": "DatabricksNotebook",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "ExecuteClasslife931",
@@ -115,10 +109,8 @@
 				}
 			},
 			{
-				"name": "ClasslifeReceipts",
+				"name": "ClasslifeReceipts_931",
 				"type": "DatabricksNotebook",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "ExecuteClasslife931",
@@ -147,10 +139,8 @@
 				}
 			},
 			{
-				"name": "ClasslifeAdmissions",
+				"name": "ClasslifeAdmissions_931",
 				"type": "DatabricksNotebook",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "ExecuteClasslife931",
