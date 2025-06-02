@@ -90,6 +90,12 @@
 						"dependencyConditions": [
 							"Succeeded"
 						]
+					},
+					{
+						"activity": "ZohoBronzeSilver_38b_Full",
+						"dependencyConditions": [
+							"Succeeded"
+						]
 					}
 				],
 				"policy": {
@@ -256,6 +262,12 @@
 						"dependencyConditions": [
 							"Succeeded"
 						]
+					},
+					{
+						"activity": "ZohoBronzeSilver_38b_Full",
+						"dependencyConditions": [
+							"Succeeded"
+						]
 					}
 				],
 				"policy": {
@@ -396,6 +408,39 @@
 				"typeProperties": {
 					"pipeline": {
 						"referenceName": "p_General931_Classlife",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"reprocessDate": {
+							"value": "@pipeline().parameters.dayToLoad",
+							"type": "Expression"
+						},
+						"silver_storage_databricks": {
+							"value": "@pipeline().parameters.silver_storage_databricks",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "ZohoBronzeSilver_38b_Full",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "CallsSalesBronzeSilver_Full",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "p_General_Zoho",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
