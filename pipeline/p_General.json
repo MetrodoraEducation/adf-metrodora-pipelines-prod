@@ -80,7 +80,7 @@
 						]
 					},
 					{
-						"activity": "ZohoBronzeSilver_Full",
+						"activity": "Zoho_38b_Full",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -92,7 +92,7 @@
 						]
 					},
 					{
-						"activity": "ZohoBronzeSilver_38b_Full",
+						"activity": "Zoho_38bSilver_Full",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -176,7 +176,7 @@
 				}
 			},
 			{
-				"name": "ZohoBronzeSilver_Full",
+				"name": "Zoho_38b_Full",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
@@ -246,7 +246,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "ZohoBronzeSilver_Full",
+						"activity": "Zoho_38b_Full",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -264,7 +264,7 @@
 						]
 					},
 					{
-						"activity": "ZohoBronzeSilver_38b_Full",
+						"activity": "Zoho_38bSilver_Full",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -391,6 +391,8 @@
 			{
 				"name": "Classlife931Bronze_Full",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "CallsSalesBronzeSilver_Full",
@@ -422,8 +424,10 @@
 				}
 			},
 			{
-				"name": "ZohoBronzeSilver_38b_Full",
+				"name": "Zoho_38bSilver_Full",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "CallsSalesBronzeSilver_Full",
