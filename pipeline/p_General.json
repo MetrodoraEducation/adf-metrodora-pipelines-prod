@@ -7,14 +7,7 @@
 				"type": "ExecutePipeline",
 				"state": "Inactive",
 				"onInactiveMarkAs": "Succeeded",
-				"dependsOn": [
-					{
-						"activity": "Budget General_FF",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"secureInput": false
 				},
@@ -74,25 +67,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Classlife919Bronze_Full",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "Zoho_38b_Full",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "Classlife931Bronze_Full",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "Zoho_38bSilver_Full",
+						"activity": "Tablon_Leads_and_DealsSilver",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -246,25 +221,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Zoho_38b_Full",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "Classlife919Bronze_Full",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "Classlife931Bronze_Full",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "Zoho_38bSilver_Full",
+						"activity": "Tablon_Leads_and_DealsSilver",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -453,7 +410,32 @@
 			{
 				"name": "Tablon_Leads_and_DealsSilver",
 				"type": "DatabricksNotebook",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Zoho_38b_Full",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Classlife919Bronze_Full",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Classlife931Bronze_Full",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Zoho_38bSilver_Full",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
