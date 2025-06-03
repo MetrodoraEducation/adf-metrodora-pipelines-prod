@@ -151,7 +151,7 @@
 				}
 			},
 			{
-				"name": "Zoho_38b_Full",
+				"name": "Zoho_Full",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
@@ -412,7 +412,7 @@
 				"type": "DatabricksNotebook",
 				"dependsOn": [
 					{
-						"activity": "Zoho_38b_Full",
+						"activity": "Zoho_Full",
 						"dependencyConditions": [
 							"Succeeded"
 						]
