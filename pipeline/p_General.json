@@ -262,6 +262,12 @@
 						"dependencyConditions": [
 							"Succeeded"
 						]
+					},
+					{
+						"activity": "Budget General_FF",
+						"dependencyConditions": [
+							"Succeeded"
+						]
 					}
 				],
 				"userProperties": [],
@@ -275,12 +281,6 @@
 				"dependsOn": [
 					{
 						"activity": "Notebook_DWH",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "Budget General",
 						"dependencyConditions": [
 							"Succeeded"
 						]
