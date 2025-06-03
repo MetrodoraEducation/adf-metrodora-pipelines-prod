@@ -141,6 +141,8 @@
 			{
 				"name": "Tablon_Leads_and_DealsSilver",
 				"type": "DatabricksNotebook",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "ZohoCampaignsSilver",
