@@ -15,7 +15,11 @@
 						"referenceName": "p_Classlife931",
 						"type": "PipelineReference"
 					},
-					"waitOnCompletion": true
+					"waitOnCompletion": true,
+					"parameters": {
+						"API_CLIENT": "931",
+						"API_KEY": "C!F5ec7888d40c7e8"
+					}
 				}
 			},
 			{
@@ -170,10 +174,6 @@
 			}
 		],
 		"parameters": {
-			"reprocessDate": {
-				"type": "string",
-				"defaultValue": "7"
-			},
 			"silver_storage_databricks": {
 				"type": "string",
 				"defaultValue": "/Workspace/Repos/production_repository/notebooks-databricks-prod/Lakehouse/Silver/"
