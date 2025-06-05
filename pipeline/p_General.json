@@ -65,8 +65,6 @@
 			{
 				"name": "Dim gold",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Tablon_Leads_and_DealsSilver",
@@ -96,8 +94,6 @@
 			{
 				"name": "Fct gold",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Dim gold",
@@ -127,8 +123,6 @@
 			{
 				"name": "Notebook_DWH",
 				"type": "DatabricksNotebook",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Wait",
@@ -159,8 +153,6 @@
 			{
 				"name": "Zoho_Full",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "CallsSalesBronzeSilver_Full",
@@ -194,8 +186,6 @@
 			{
 				"name": "Classlife919Bronze_Full",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "CallsSalesBronzeSilver_Full",
@@ -229,8 +219,6 @@
 			{
 				"name": "Dim Fijas",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Tablon_Leads_and_DealsSilver",
@@ -268,8 +256,6 @@
 			{
 				"name": "Wait",
 				"type": "Wait",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Fct gold",
@@ -325,8 +311,6 @@
 			{
 				"name": "Budget General_FF",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Dim Fijas",
@@ -364,8 +348,6 @@
 			{
 				"name": "Classlife931Bronze_Full",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "CallsSalesBronzeSilver_Full",
@@ -395,8 +377,6 @@
 			{
 				"name": "Zoho_38bSilver_Full",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "CallsSalesBronzeSilver_Full",
@@ -430,8 +410,6 @@
 			{
 				"name": "Tablon_Leads_and_DealsSilver",
 				"type": "DatabricksNotebook",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Zoho_Full",
