@@ -65,6 +65,8 @@
 			{
 				"name": "Dim gold",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Tablon_Leads_and_DealsSilver",
@@ -94,6 +96,8 @@
 			{
 				"name": "Fct gold",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Dim gold",
@@ -123,6 +127,8 @@
 			{
 				"name": "Notebook_DWH",
 				"type": "DatabricksNotebook",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Wait",
@@ -223,6 +229,8 @@
 			{
 				"name": "Dim Fijas",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Tablon_Leads_and_DealsSilver",
@@ -260,6 +268,8 @@
 			{
 				"name": "Wait",
 				"type": "Wait",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Fct gold",
@@ -315,6 +325,8 @@
 			{
 				"name": "Budget General_FF",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Dim Fijas",
