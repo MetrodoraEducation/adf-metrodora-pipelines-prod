@@ -188,6 +188,8 @@
 			{
 				"name": "Classlife919Bronze_Full",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "CallsSalesBronzeSilver_Full",
@@ -350,6 +352,8 @@
 			{
 				"name": "Classlife931Bronze_Full",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "CallsSalesBronzeSilver_Full",
@@ -379,6 +383,8 @@
 			{
 				"name": "Zoho_38bSilver_Full",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "CallsSalesBronzeSilver_Full",
@@ -412,6 +418,8 @@
 			{
 				"name": "Tablon_Leads_and_DealsSilver",
 				"type": "DatabricksNotebook",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Zoho_Full",
