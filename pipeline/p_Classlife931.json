@@ -559,7 +559,12 @@
 				"typeProperties": {
 					"dataflow": {
 						"referenceName": "dataflow1",
-						"type": "DataFlowReference"
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"source1": {
+								"container": "bronze"
+							}
+						}
 					},
 					"compute": {
 						"coreCount": 8,
