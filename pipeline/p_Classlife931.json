@@ -148,6 +148,8 @@
 				"name": "ClasslifeStudents_931",
 				"description": "ClasslifeStudents",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "WebClasslifeStudents",
@@ -600,54 +602,94 @@
 						"mappings": [
 							{
 								"source": {
-									"path": "$['status']"
-								},
-								"sink": {
-									"path": "status"
-								}
-							},
-							{
-								"source": {
-									"path": "$['data']['total']"
-								},
-								"sink": {
-									"path": "total"
-								}
-							},
-							{
-								"source": {
-									"path": "$['data']['page']"
-								},
-								"sink": {
-									"path": "page"
-								}
-							},
-							{
-								"source": {
-									"path": "$['data']['limit']"
-								},
-								"sink": {
-									"path": "limit"
-								}
-							},
-							{
-								"source": {
-									"path": "$['data']['count']"
-								},
-								"sink": {
-									"path": "count"
-								}
-							},
-							{
-								"source": {
 									"path": "['student_id']"
 								},
 								"sink": {
 									"path": "student_id"
 								}
+							},
+							{
+								"source": {
+									"path": "['student_full_name']"
+								},
+								"sink": {
+									"path": "student_full_name"
+								}
+							},
+							{
+								"source": {
+									"path": "['student_email']"
+								},
+								"sink": {
+									"path": "student_email"
+								}
+							},
+							{
+								"source": {
+									"path": "['student_phone']"
+								},
+								"sink": {
+									"path": "student_phone"
+								}
+							},
+							{
+								"source": {
+									"path": "['student_registration_date']"
+								},
+								"sink": {
+									"path": "student_registration_date"
+								}
+							},
+							{
+								"source": {
+									"path": "['student_active']"
+								},
+								"sink": {
+									"path": "student_active"
+								}
+							},
+							{
+								"source": {
+									"path": "['metas']['zoho_id']"
+								},
+								"sink": {
+									"path": "zoho_id"
+								}
+							},
+							{
+								"source": {
+									"path": "['metas']['ciudad']"
+								},
+								"sink": {
+									"path": "ciudad"
+								}
+							},
+							{
+								"source": {
+									"path": "['metas']['codigo']"
+								},
+								"sink": {
+									"path": "codigo"
+								}
+							},
+							{
+								"source": {
+									"path": "['metas']['pais']"
+								},
+								"sink": {
+									"path": "pais"
+								}
+							},
+							{
+								"source": {
+									"path": "['metas']['edad']"
+								},
+								"sink": {
+									"path": "edad"
+								}
 							}
 						],
-						"collectionReference": ""
+						"collectionReference": "$['data']['items']"
 					}
 				},
 				"inputs": [
