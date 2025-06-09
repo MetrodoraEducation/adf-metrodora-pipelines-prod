@@ -25,6 +25,7 @@
 				"     ignoreNoFilesFound: false,",
 				"     format: 'json',",
 				"     fileSystem: 'bronze',",
+				"     folderPath: 'lakehouse/classlife_931/enrollments/2025/06/09',",
 				"     fileName: 'JsaClassLifeEnrollments.json',",
 				"     documentForm: 'documentPerLine') ~> source1",
 				"source1 derive() ~> derivedColumn1"
