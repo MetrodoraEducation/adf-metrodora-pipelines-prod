@@ -55,8 +55,6 @@
 			{
 				"name": "ClasslifeStudents_931",
 				"type": "DatabricksNotebook",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "ExecuteClasslife931",
