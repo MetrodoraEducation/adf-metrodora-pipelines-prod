@@ -28,8 +28,7 @@
 				"     folderPath: 'lakehouse/classlife_931/students/2025/06/09',",
 				"     fileName: 'JsaClassLifeStudents.json',",
 				"     documentForm: 'documentPerLine') ~> source1",
-				"source1 derive(column1 = ERROR_FUNCTION(''),",
-				"          column2 = ERROR_FUNCTION('')) ~> derivedColumn1"
+				"source1 derive(school_id = toString(byName('school_id'))) ~> derivedColumn1"
 			]
 		}
 	}
