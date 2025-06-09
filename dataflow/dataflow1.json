@@ -25,7 +25,7 @@
 				"     ignoreNoFilesFound: false,",
 				"     format: 'json',",
 				"     fileSystem: 'bronze',",
-				"     folderPath: (@concat('lakehouse/classlife_931/enrollments/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))),",
+				"     folderPath: (@concat('lakehouse/classlife_931/enrollments/', formatDateTime(currentUTC(), 'yyyy'), '/', formatDateTime(currentUTC(), 'MM'), '/', formatDateTime(currentUTC(), 'dd'))),",
 				"     fileName: 'JsaClassLifeEnrollments.json',",
 				"     documentForm: 'documentPerLine') ~> source1",
 				"source1 derive() ~> derivedColumn1"
