@@ -6,6 +6,8 @@
 				"name": "WebClasslifeEnroll_groups",
 				"description": "Activity web that calls the endpoint enroll_groups",
 				"type": "WebActivity",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -37,6 +39,8 @@
 				"name": "ClasslifeProductos_931",
 				"description": "ClasslifeEnrollGroups",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "WebClasslifeEnroll_groups",
@@ -190,7 +194,117 @@
 							"type": "JsonWriteSettings"
 						}
 					},
-					"enableStaging": false
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "$['data']['items'][0]['student_id']"
+								},
+								"sink": {
+									"path": "student_id"
+								}
+							},
+							{
+								"source": {
+									"path": "$['data']['items'][0]['student_full_name']"
+								},
+								"sink": {
+									"path": "student_full_name"
+								}
+							},
+							{
+								"source": {
+									"path": "$['data']['items'][0]['student_name']"
+								},
+								"sink": {
+									"path": "student_name"
+								}
+							},
+							{
+								"source": {
+									"path": "$['data']['items'][0]['student_lastname']"
+								},
+								"sink": {
+									"path": "student_lastname"
+								}
+							},
+							{
+								"source": {
+									"path": "$['data']['items'][0]['student_lastnameend']"
+								},
+								"sink": {
+									"path": "student_lastnameend"
+								}
+							},
+							{
+								"source": {
+									"path": "$['data']['items'][0]['student_email']"
+								},
+								"sink": {
+									"path": "student_email"
+								}
+							},
+							{
+								"source": {
+									"path": "$['data']['items'][0]['student_phone']"
+								},
+								"sink": {
+									"path": "student_phone"
+								}
+							},
+							{
+								"source": {
+									"path": "$['data']['items'][0]['student_registration_date']"
+								},
+								"sink": {
+									"path": "student_registration_date"
+								}
+							},
+							{
+								"source": {
+									"path": "$['data']['items'][0]['student_active']"
+								},
+								"sink": {
+									"path": "student_active"
+								}
+							},
+							{
+								"source": {
+									"path": "$['data']['items'][0]['student_blocked']"
+								},
+								"sink": {
+									"path": "student_blocked"
+								}
+							},
+							{
+								"source": {
+									"path": "$['data']['items'][0]['school_id']"
+								},
+								"sink": {
+									"path": "school_id"
+								}
+							},
+							{
+								"source": {
+									"path": "$['data']['items'][0]['metas']['zoho_id']"
+								},
+								"sink": {
+									"path": "zoho_id"
+								}
+							},
+							{
+								"source": {
+									"path": "$['data']['items'][0]['metas']['ciudad']"
+								},
+								"sink": {
+									"path": "ciudad"
+								}
+							}
+						],
+						"collectionReference": ""
+					}
 				},
 				"inputs": [
 					{
@@ -220,6 +334,8 @@
 				"name": "WebClasslifeEnrollments",
 				"description": "Activity web that calls the endpoint Enrollments",
 				"type": "WebActivity",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -251,6 +367,8 @@
 				"name": "Enrollments_931",
 				"description": "Enrollments",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "WebClasslifeEnrollments",
@@ -327,6 +445,8 @@
 				"name": "WebClasslifeReceipts",
 				"description": "Activity web that calls the endpoint Receipts",
 				"type": "WebActivity",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -358,6 +478,8 @@
 				"name": "Receipts_931",
 				"description": "Receipts",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "WebClasslifeReceipts",
@@ -434,6 +556,8 @@
 				"name": "WebClasslifeAdmissions",
 				"description": "Activity web that calls the endpoint Admissions",
 				"type": "WebActivity",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -465,6 +589,8 @@
 				"name": "Admissions_931",
 				"description": "Admissions",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "WebClasslifeAdmissions",
@@ -533,68 +659,6 @@
 								"type": "Expression"
 							},
 							"filename": "JsaClassLifeAdmissions.json"
-						}
-					}
-				]
-			},
-			{
-				"name": "Enrollments_931_parquet",
-				"description": "Enrollments",
-				"type": "Copy",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "JsonSource",
-						"storeSettings": {
-							"type": "AzureBlobFSReadSettings",
-							"recursive": true,
-							"enablePartitionDiscovery": false
-						},
-						"formatSettings": {
-							"type": "JsonReadSettings"
-						}
-					},
-					"sink": {
-						"type": "ParquetSink",
-						"storeSettings": {
-							"type": "AzureBlobFSWriteSettings"
-						},
-						"formatSettings": {
-							"type": "ParquetWriteSettings"
-						}
-					},
-					"enableStaging": false
-				},
-				"inputs": [
-					{
-						"referenceName": "ds_adsl_json",
-						"type": "DatasetReference",
-						"parameters": {
-							"container": "bronze",
-							"folder": "@concat('lakehouse/classlife_931/enrollments/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
-							"filename": "JsaClassLifeStudents.json"
-						}
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "ds_adsl_parquet",
-						"type": "DatasetReference",
-						"parameters": {
-							"container": "bronze",
-							"folder": {
-								"value": "@concat('lakehouse/classlife_931/students/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
-								"type": "Expression"
-							},
-							"filename": "JsaClassLifeEnrollments.parquet"
 						}
 					}
 				]
