@@ -194,149 +194,7 @@
 							"type": "JsonWriteSettings"
 						}
 					},
-					"enableStaging": false,
-					"translator": {
-						"type": "TabularTranslator",
-						"mappings": [
-							{
-								"source": {
-									"path": "$['status']"
-								},
-								"sink": {
-									"path": "status"
-								}
-							},
-							{
-								"source": {
-									"path": "$['data']"
-								},
-								"sink": {
-									"path": "data"
-								}
-							},
-							{
-								"source": {
-									"path": "$['data']['items'][0]['student_id']"
-								},
-								"sink": {
-									"path": "student_id"
-								}
-							},
-							{
-								"source": {
-									"path": "$['data']['items'][0]['student_full_name']"
-								},
-								"sink": {
-									"path": "student_full_name"
-								}
-							},
-							{
-								"source": {
-									"path": "$['data']['items'][0]['student_name']"
-								},
-								"sink": {
-									"path": "student_name"
-								}
-							},
-							{
-								"source": {
-									"path": "$['data']['items'][0]['student_lastname']"
-								},
-								"sink": {
-									"path": "student_lastname"
-								}
-							},
-							{
-								"source": {
-									"path": "$['data']['items'][0]['student_lastnameend']"
-								},
-								"sink": {
-									"path": "student_lastnameend"
-								}
-							},
-							{
-								"source": {
-									"path": "$['data']['items'][0]['student_email']"
-								},
-								"sink": {
-									"path": "student_email"
-								}
-							},
-							{
-								"source": {
-									"path": "$['data']['items'][0]['student_phone']"
-								},
-								"sink": {
-									"path": "student_phone"
-								}
-							},
-							{
-								"source": {
-									"path": "$['data']['items'][0]['student_registration_date']"
-								},
-								"sink": {
-									"path": "student_registration_date"
-								}
-							},
-							{
-								"source": {
-									"path": "$['data']['items'][0]['student_active']"
-								},
-								"sink": {
-									"path": "student_active"
-								}
-							},
-							{
-								"source": {
-									"path": "$['data']['items'][0]['edad']"
-								},
-								"sink": {
-									"path": "edad"
-								}
-							},
-							{
-								"source": {
-									"path": "$['data']['items'][0]['metas']['zoho_id']"
-								},
-								"sink": {
-									"path": "zoho_id"
-								}
-							},
-							{
-								"source": {
-									"path": "$['data']['items'][0]['metas']['pais']"
-								},
-								"sink": {
-									"path": "pais"
-								}
-							},
-							{
-								"source": {
-									"path": "$['data']['items'][0]['metas']['ciudad']"
-								},
-								"sink": {
-									"path": "ciudad"
-								}
-							},
-							{
-								"source": {
-									"path": "$['data']['items'][0]['metas']['codigo']"
-								},
-								"sink": {
-									"path": "codigo"
-								}
-							},
-							{
-								"source": {
-									"path": "$['data']['items'][0]['metas']['direccion']"
-								},
-								"sink": {
-									"path": "direccion"
-								}
-							}
-						],
-						"collectionReference": ""
-					}
+					"enableStaging": false
 				},
 				"inputs": [
 					{
@@ -691,6 +549,129 @@
 								"type": "Expression"
 							},
 							"filename": "JsaClassLifeAdmissions.json"
+						}
+					}
+				]
+			},
+			{
+				"name": "ClasslifeStudents_931_copy1",
+				"description": "ClasslifeStudents",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "ClasslifeStudents_931",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "JsonSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "JsonReadSettings"
+						}
+					},
+					"sink": {
+						"type": "JsonSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "JsonWriteSettings"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "$['status']"
+								},
+								"sink": {
+									"path": "status"
+								}
+							},
+							{
+								"source": {
+									"path": "$['data']['total']"
+								},
+								"sink": {
+									"path": "total"
+								}
+							},
+							{
+								"source": {
+									"path": "$['data']['page']"
+								},
+								"sink": {
+									"path": "page"
+								}
+							},
+							{
+								"source": {
+									"path": "$['data']['limit']"
+								},
+								"sink": {
+									"path": "limit"
+								}
+							},
+							{
+								"source": {
+									"path": "$['data']['count']"
+								},
+								"sink": {
+									"path": "count"
+								}
+							},
+							{
+								"source": {
+									"path": "student_id"
+								},
+								"sink": {
+									"path": "student_id"
+								}
+							}
+						],
+						"collectionReference": ""
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_adsl_json",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "bronze",
+							"folder": "@concat('lakehouse/classlife_931/students/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+							"filename": "JsaClassLifeStudents.json"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_adsl_json",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "bronze",
+							"folder": {
+								"value": "@concat('lakehouse/classlife_931/students/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'),'/','student_cleaned')",
+								"type": "Expression"
+							},
+							"filename": "JsaClassLifeStudents.json"
 						}
 					}
 				]
