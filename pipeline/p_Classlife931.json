@@ -640,7 +640,7 @@
 							},
 							{
 								"source": {
-									"path": "student_id"
+									"path": "['student_id']"
 								},
 								"sink": {
 									"path": "student_id"
