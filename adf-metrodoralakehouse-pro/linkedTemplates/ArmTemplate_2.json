@@ -3825,6 +3825,177 @@
 								}
 							}
 						]
+					},
+					{
+						"name": "ClasslifeStudents_931_cleaned",
+						"description": "ClasslifeStudents",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "ClasslifeStudents_931",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "JsonSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "JsonReadSettings"
+								}
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"path": "[['student_id']"
+										},
+										"sink": {
+											"path": "student_id"
+										}
+									},
+									{
+										"source": {
+											"path": "[['student_full_name']"
+										},
+										"sink": {
+											"path": "student_full_name"
+										}
+									},
+									{
+										"source": {
+											"path": "[['student_email']"
+										},
+										"sink": {
+											"path": "student_email"
+										}
+									},
+									{
+										"source": {
+											"path": "[['student_phone']"
+										},
+										"sink": {
+											"path": "student_phone"
+										}
+									},
+									{
+										"source": {
+											"path": "[['student_registration_date']"
+										},
+										"sink": {
+											"path": "student_registration_date"
+										}
+									},
+									{
+										"source": {
+											"path": "[['student_active']"
+										},
+										"sink": {
+											"path": "student_active"
+										}
+									},
+									{
+										"source": {
+											"path": "[['metas']['zoho_id']"
+										},
+										"sink": {
+											"path": "zoho_id"
+										}
+									},
+									{
+										"source": {
+											"path": "[['metas']['ciudad']"
+										},
+										"sink": {
+											"path": "ciudad"
+										}
+									},
+									{
+										"source": {
+											"path": "[['metas']['codigo']"
+										},
+										"sink": {
+											"path": "codigo"
+										}
+									},
+									{
+										"source": {
+											"path": "[['metas']['pais']"
+										},
+										"sink": {
+											"path": "pais"
+										}
+									},
+									{
+										"source": {
+											"path": "[['metas']['edad']"
+										},
+										"sink": {
+											"path": "edad"
+										}
+									},
+									{
+										"source": {
+											"path": "[['metas']['direccion']"
+										},
+										"sink": {
+											"path": "direccion"
+										}
+									}
+								],
+								"collectionReference": "$['data']['items']"
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_adsl_json",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "bronze",
+									"folder": "@concat('lakehouse/classlife_931/students/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+									"filename": "JsaClassLifeStudents.json"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_adsl_json",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "bronze",
+									"folder": {
+										"value": "@concat('lakehouse/classlife_931/students/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'),'/','student_cleaned')",
+										"type": "Expression"
+									},
+									"filename": "JsaClassLifeStudents.json"
+								}
+							}
+						]
 					}
 				],
 				"policy": {
