@@ -21,8 +21,8 @@
 				"     ignoreNoFilesFound: false,",
 				"     format: 'json',",
 				"     fileSystem: 'bronze',",
-				"     folderPath: 'lakehouse/classlife_931/enrollments/2025/06/09',",
-				"     fileName: 'JsaClassLifeEnrollments.json',",
+				"     folderPath: 'lakehouse/classlife_931/students/2025/06/09',",
+				"     fileName: 'JsaClassLifeStudents.json',",
 				"     documentForm: 'documentPerLine') ~> source1"
 			]
 		}
