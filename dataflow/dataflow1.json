@@ -13,11 +13,7 @@
 				}
 			],
 			"sinks": [],
-			"transformations": [
-				{
-					"name": "derivedColumn1"
-				}
-			],
+			"transformations": [],
 			"scriptLines": [
 				"source(useSchema: false,",
 				"     allowSchemaDrift: true,",
@@ -25,10 +21,9 @@
 				"     ignoreNoFilesFound: false,",
 				"     format: 'json',",
 				"     fileSystem: 'bronze',",
-				"     folderPath: (concat('lakehouse/classlife_931/students/', toString(currentDate(), 'yyyy'), '/', toString(currentDate(), 'MM'), '/', toString(currentDate(), 'dd'))),",
+				"     folderPath: 'lakehouse/classlife_931/enrollments/2025/06/09',",
 				"     fileName: 'JsaClassLifeEnrollments.json',",
-				"     documentForm: 'documentPerLine') ~> source1",
-				"source1 derive() ~> derivedColumn1"
+				"     documentForm: 'documentPerLine') ~> source1"
 			]
 		}
 	}
