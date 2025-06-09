@@ -6,8 +6,6 @@
 				"name": "WebClasslifeEnroll_groups",
 				"description": "Activity web that calls the endpoint enroll_groups",
 				"type": "WebActivity",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -39,8 +37,6 @@
 				"name": "ClasslifeProductos_931",
 				"description": "ClasslifeEnrollGroups",
 				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "WebClasslifeEnroll_groups",
@@ -148,8 +144,6 @@
 				"name": "ClasslifeStudents_931",
 				"description": "ClasslifeStudents",
 				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "WebClasslifeStudents",
@@ -226,8 +220,6 @@
 				"name": "WebClasslifeEnrollments",
 				"description": "Activity web that calls the endpoint Enrollments",
 				"type": "WebActivity",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -259,8 +251,6 @@
 				"name": "Enrollments_931",
 				"description": "Enrollments",
 				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "WebClasslifeEnrollments",
@@ -337,8 +327,6 @@
 				"name": "WebClasslifeReceipts",
 				"description": "Activity web that calls the endpoint Receipts",
 				"type": "WebActivity",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -370,8 +358,6 @@
 				"name": "Receipts_931",
 				"description": "Receipts",
 				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "WebClasslifeReceipts",
@@ -448,8 +434,6 @@
 				"name": "WebClasslifeAdmissions",
 				"description": "Activity web that calls the endpoint Admissions",
 				"type": "WebActivity",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -481,8 +465,6 @@
 				"name": "Admissions_931",
 				"description": "Admissions",
 				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "WebClasslifeAdmissions",
@@ -556,7 +538,7 @@
 				]
 			},
 			{
-				"name": "ClasslifeStudents_931_copy1",
+				"name": "ClasslifeStudents_931_cleaned",
 				"description": "ClasslifeStudents",
 				"type": "Copy",
 				"dependsOn": [
