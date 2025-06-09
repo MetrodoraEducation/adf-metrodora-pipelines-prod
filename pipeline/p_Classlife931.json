@@ -200,6 +200,22 @@
 						"mappings": [
 							{
 								"source": {
+									"path": "$['status']"
+								},
+								"sink": {
+									"path": "status"
+								}
+							},
+							{
+								"source": {
+									"path": "$['data']"
+								},
+								"sink": {
+									"path": "data"
+								}
+							},
+							{
+								"source": {
 									"path": "$['data']['items'][0]['student_id']"
 								},
 								"sink": {
@@ -272,18 +288,10 @@
 							},
 							{
 								"source": {
-									"path": "$['data']['items'][0]['student_blocked']"
+									"path": "$['data']['items'][0]['edad']"
 								},
 								"sink": {
-									"path": "student_blocked"
-								}
-							},
-							{
-								"source": {
-									"path": "$['data']['items'][0]['school_id']"
-								},
-								"sink": {
-									"path": "school_id"
+									"path": "edad"
 								}
 							},
 							{
@@ -296,10 +304,34 @@
 							},
 							{
 								"source": {
+									"path": "$['data']['items'][0]['metas']['pais']"
+								},
+								"sink": {
+									"path": "pais"
+								}
+							},
+							{
+								"source": {
 									"path": "$['data']['items'][0]['metas']['ciudad']"
 								},
 								"sink": {
 									"path": "ciudad"
+								}
+							},
+							{
+								"source": {
+									"path": "$['data']['items'][0]['metas']['codigo']"
+								},
+								"sink": {
+									"path": "codigo"
+								}
+							},
+							{
+								"source": {
+									"path": "$['data']['items'][0]['metas']['direccion']"
+								},
+								"sink": {
+									"path": "direccion"
 								}
 							}
 						],
