@@ -559,7 +559,22 @@
 				"typeProperties": {
 					"dataflow": {
 						"referenceName": "dataflow1",
-						"type": "DataFlowReference"
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"source1": {
+								"container": "bronze"
+							}
+						},
+						"linkedServiceParameters": {
+							"source1": {
+								"linkedService": {
+									"container": "bronze"
+								},
+								"schemaLinkedService": {
+									"container": "bronze"
+								}
+							}
+						}
 					},
 					"compute": {
 						"coreCount": 8,
