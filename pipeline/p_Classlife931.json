@@ -538,10 +538,17 @@
 				]
 			},
 			{
-				"name": "Enrollments_931_copy1",
+				"name": "Enrollments_931_parquet",
 				"description": "Enrollments",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Enrollments_931",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -578,7 +585,9 @@
 						"referenceName": "ds_adsl_json",
 						"type": "DatasetReference",
 						"parameters": {
-							"container": "bronze"
+							"container": "bronze",
+							"folder": "@concat('lakehouse/classlife_931/enrollments/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+							"filename": "JsaClassLifeEnrollments.json"
 						}
 					}
 				],
@@ -588,7 +597,10 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"container": "bronze",
-							"folder": "budget",
+							"folder": {
+								"value": "@concat('lakehouse/classlife_931/enrollments/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+								"type": "Expression"
+							},
 							"filename": "masterbudget.parquet"
 						}
 					}
