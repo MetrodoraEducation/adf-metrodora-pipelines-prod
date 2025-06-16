@@ -4,16 +4,16 @@
 	"parameters": {
 		"factoryName": {
 			"type": "string",
-			"metadata": "Nombre de instancia de Data Factory",
+			"metadata": "Data Factory name",
 			"defaultValue": "adf-metrodoralakehouse-pro"
 		},
 		"HttpSharepointMetrodora_password": {
 			"type": "secureString",
-			"metadata": "Cadena protegida para \"password\"de \"HttpSharepointMetrodora\""
+			"metadata": "Secure string for 'password' of 'HttpSharepointMetrodora'"
 		},
 		"ls_PostgreSql_connectionString": {
 			"type": "secureString",
-			"metadata": "Cadena protegida para \"connectionString\"de \"ls_PostgreSql\"",
+			"metadata": "Secure string for 'connectionString' of 'ls_PostgreSql'",
 			"defaultValue": "Host=psql-metrodoralakehouse-pro.postgres.database.azure.com;Port=5432;Database=lakehouse;UID=sqladminuser;EncryptionMethod=1;ValidateServerCertificate=0"
 		},
 		"HttpSharepointMetrodora_properties_typeProperties_url": {
@@ -62,11 +62,11 @@
 		},
 		"containerUri": {
 			"type": "string",
-			"metadata": "URI de la cuenta de almacenamiento que contiene las plantillas de ARM vinculadas."
+			"metadata": "URI to storage account containing linked ARM templates"
 		},
 		"containerSasToken": {
 			"type": "string",
-			"metadata": "Token de SAS para la cuenta de almacenamiento que contiene las plantillas de ARM vinculadas"
+			"metadata": "Sas token to storage account containing linked ARM templates"
 		}
 	},
 	"variables": {
