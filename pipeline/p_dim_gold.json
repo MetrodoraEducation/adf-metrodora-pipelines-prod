@@ -686,7 +686,7 @@
 				}
 			},
 			{
-				"name": "Dim_origen_campania_gold_copy1",
+				"name": "Dim_tipo_conversion_gold",
 				"type": "DatabricksNotebook",
 				"dependsOn": [
 					{
@@ -706,7 +706,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"notebookPath": {
-						"value": "@concat(pipeline().parameters.gold_storage_databricks, 'dim_origen_campania_gold')",
+						"value": "@concat(pipeline().parameters.gold_storage_databricks, 'dim_tipo_conversion_gold')",
 						"type": "Expression"
 					}
 				},
