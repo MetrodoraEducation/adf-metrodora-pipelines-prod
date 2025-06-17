@@ -348,8 +348,6 @@
 			{
 				"name": "Classlife931Bronze_Full",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "CallsSalesBronzeSilver_Full",
