@@ -687,7 +687,7 @@
 								"source": {
 									"type": "AzurePostgreSqlSource",
 									"query": {
-										"value": "select count(*) from public.fct_recibos",
+										"value": "SELECT cod_lead, COUNT(*)\nFROM fctventa\nGROUP BY cod_lead\nHAVING COUNT(*) > 1;",
 										"type": "Expression"
 									},
 									"partitionOption": "None"
@@ -699,6 +699,30 @@
 										"schema": "public",
 										"table": "f0calls"
 									}
+								}
+							}
+						},
+						{
+							"name": "After_counts_fct_recibos_copy1",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Count_duplicates_fct_ventas",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "after_counts_fct_recibos",
+								"value": {
+									"value": "@string(activity('Count_duplicates_fct_ventas').output.firstRow.count)",
+									"type": "Expression"
 								}
 							}
 						}
@@ -753,6 +777,9 @@
 				"type": "String"
 			},
 			"inserted_records_fct_recibos": {
+				"type": "String"
+			},
+			"Count_duplicates_fct_ventas": {
 				"type": "String"
 			}
 		},
