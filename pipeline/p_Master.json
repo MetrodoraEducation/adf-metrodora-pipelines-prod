@@ -730,6 +730,62 @@
 									"type": "Expression"
 								}
 							}
+						},
+						{
+							"name": "Count_cod_oportunidad_duplicates_fct_ventas",
+							"type": "Lookup",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzurePostgreSqlSource",
+									"query": {
+										"value": "SELECT cod_oportunidad, COUNT(*)\nFROM fctventa\nWHERE cod_oportunidad IS NOT NULL\nGROUP BY cod_oportunidad\nHAVING COUNT(*) > 1;\n",
+										"type": "Expression"
+									},
+									"partitionOption": "None"
+								},
+								"dataset": {
+									"referenceName": "ds_PostgreSql",
+									"type": "DatasetReference",
+									"parameters": {
+										"schema": "public",
+										"table": "f0calls"
+									}
+								},
+								"firstRowOnly": false
+							}
+						},
+						{
+							"name": "Count_cod_oportunidad_duplicates",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Count_cod_oportunidad_duplicates_fct_ventas",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "Count_cod_oportunidad_duplicates_fct_ventas",
+								"value": {
+									"value": "@string(activity('Count_cod_oportunidad_duplicates_fct_ventas').output.value)",
+									"type": "Expression"
+								}
+							}
 						}
 					]
 				}
@@ -785,6 +841,9 @@
 				"type": "String"
 			},
 			"Count_cod_lead_duplicates_fct_ventas": {
+				"type": "String"
+			},
+			"Count_cod_oportunidad_duplicates_fct_ventas": {
 				"type": "String"
 			}
 		},
