@@ -514,6 +514,8 @@
 						{
 							"name": "Get_After_Count_fct_ventas",
 							"type": "Lookup",
+							"state": "Inactive",
+							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [],
 							"policy": {
 								"timeout": "0.12:00:00",
@@ -545,6 +547,8 @@
 						{
 							"name": "After_counts_fct_ventas",
 							"type": "SetVariable",
+							"state": "Inactive",
+							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [
 								{
 									"activity": "Get_After_Count_fct_ventas",
@@ -569,6 +573,8 @@
 						{
 							"name": "inserted_records_fct_ventas",
 							"type": "SetVariable",
+							"state": "Inactive",
+							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [
 								{
 									"activity": "After_counts_fct_ventas",
