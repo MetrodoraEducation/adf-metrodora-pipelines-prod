@@ -790,6 +790,9 @@
 			},
 			"Count_cod_lead_duplicates_fct_ventas": {
 				"type": "String"
+			},
+			"Count_cod_oportunidad_duplicates_fct_ventas": {
+				"type": "String"
 			}
 		},
 		"folder": {
