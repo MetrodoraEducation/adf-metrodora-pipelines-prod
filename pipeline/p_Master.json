@@ -691,7 +691,7 @@
 								"source": {
 									"type": "AzurePostgreSqlSource",
 									"query": {
-										"value": "SELECT cod_lead, COUNT(*)\nFROM fctventa\nGROUP BY cod_lead\nHAVING COUNT(*) > 1;",
+										"value": "SELECT cod_lead, COUNT(*)\nFROM fctventa\nWHERE cod_lead IS NOT NULL\nGROUP BY cod_lead\nHAVING COUNT(*) > 1;",
 										"type": "Expression"
 									},
 									"partitionOption": "None"
