@@ -76,6 +76,8 @@
 			{
 				"name": "Send Failed Email",
 				"type": "WebActivity",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Execute p_General",
@@ -719,7 +721,7 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"variableName": "after_counts_fct_recibos",
+								"variableName": "Count_cod_lead_duplicates_fct_ventas",
 								"value": {
 									"value": "@string(activity('Count_duplicates_fct_ventas').output.firstRow.count)",
 									"type": "Expression"
@@ -779,7 +781,7 @@
 			"inserted_records_fct_recibos": {
 				"type": "String"
 			},
-			"Count_duplicates_fct_ventas": {
+			"Count_cod_lead_duplicates_fct_ventas": {
 				"type": "String"
 			}
 		},
