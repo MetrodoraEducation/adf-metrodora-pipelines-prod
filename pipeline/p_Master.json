@@ -703,7 +703,8 @@
 										"schema": "public",
 										"table": "f0calls"
 									}
-								}
+								},
+								"firstRowOnly": false
 							}
 						},
 						{
@@ -725,7 +726,7 @@
 							"typeProperties": {
 								"variableName": "Count_cod_lead_duplicates_fct_ventas",
 								"value": {
-									"value": "@string(activity('Count_cod_lead_duplicates_fct_ventas').output.firstRow.count)",
+									"value": "@string(activity('Count_cod_lead_duplicates_fct_ventas').output.value)",
 									"type": "Expression"
 								}
 							}
