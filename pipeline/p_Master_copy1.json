@@ -674,7 +674,7 @@
 							}
 						},
 						{
-							"name": "Count_duplicates_fct_ventas",
+							"name": "Count_cod_lead_duplicates_fct_ventas",
 							"type": "Lookup",
 							"dependsOn": [],
 							"policy": {
@@ -705,11 +705,11 @@
 							}
 						},
 						{
-							"name": "After_counts_fct_recibos_copy1",
+							"name": "Count_cod_lead_duplicates",
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "Count_duplicates_fct_ventas",
+									"activity": "Count_cod_lead_duplicates_fct_ventas",
 									"dependencyConditions": [
 										"Succeeded"
 									]
