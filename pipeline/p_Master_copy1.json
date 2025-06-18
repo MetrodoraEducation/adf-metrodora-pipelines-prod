@@ -48,6 +48,8 @@
 			{
 				"name": "Send Succesfully Email",
 				"type": "WebActivity",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "ForEach_After_Count",
@@ -707,7 +709,8 @@
 										"schema": "public",
 										"table": "f0calls"
 									}
-								}
+								},
+								"firstRowOnly": false
 							}
 						},
 						{
