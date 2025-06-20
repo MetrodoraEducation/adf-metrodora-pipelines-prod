@@ -568,8 +568,6 @@
 			{
 				"name": "Dim_jerarquia_marketing_gold",
 				"type": "DatabricksNotebook",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Dim_sede_gold",
