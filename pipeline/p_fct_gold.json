@@ -130,7 +130,7 @@
 			"name": "Lakehouse/Gold"
 		},
 		"annotations": [],
-		"lastPublishTime": "2025-03-22T17:50:18Z"
+		"lastPublishTime": "2025-06-05T11:43:47Z"
 	},
 	"type": "Microsoft.DataFactory/factories/pipelines"
 }

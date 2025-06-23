@@ -68,7 +68,7 @@
 			"name": "Lakehouse/General"
 		},
 		"annotations": [],
-		"lastPublishTime": "2025-03-22T17:50:21Z"
+		"lastPublishTime": "2025-03-27T20:32:46Z"
 	},
 	"type": "Microsoft.DataFactory/factories/pipelines"
 }

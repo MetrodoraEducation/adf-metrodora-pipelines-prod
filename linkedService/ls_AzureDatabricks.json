@@ -1,5 +1,6 @@
 {
 	"name": "ls_AzureDatabricks",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
 	"properties": {
 		"annotations": [],
 		"type": "AzureDatabricks",
@@ -9,6 +10,5 @@
 			"workspaceResourceId": "/subscriptions/736f3166-527e-4261-9240-edec12d189d7/resourceGroups/rg-lakehouse-pro/providers/Microsoft.Databricks/workspaces/dbw-metrodoralakehouse-pro",
 			"existingClusterId": "1216-171311-yqwga0m4"
 		}
-	},
-	"type": "Microsoft.DataFactory/factories/linkedservices"
+	}
 }

@@ -213,7 +213,7 @@
 			"name": "Lakehouse/General/General_dimFijas_Mapeo"
 		},
 		"annotations": [],
-		"lastPublishTime": "2025-03-22T17:50:20Z"
+		"lastPublishTime": "2025-03-24T15:15:06Z"
 	},
 	"type": "Microsoft.DataFactory/factories/pipelines"
 }
