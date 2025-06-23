@@ -420,7 +420,10 @@
 						"referenceName": "ds_Classlife",
 						"type": "DatasetReference",
 						"parameters": {
-							"relativeUrl": "receipts?showMetas=1"
+							"relativeUrl": {
+								"value": "@concat('receipts?showMetas=1&limit=', pipeline().parameters.limit)",
+								"type": "Expression"
+							}
 						}
 					}
 				],
@@ -527,7 +530,10 @@
 						"referenceName": "ds_Classlife",
 						"type": "DatasetReference",
 						"parameters": {
-							"relativeUrl": "admissions?showMetas=1"
+							"relativeUrl": {
+								"value": "@concat('admissions?showMetas=1&limit=', pipeline().parameters.limit)",
+								"type": "Expression"
+							}
 						}
 					}
 				],
