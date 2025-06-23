@@ -90,7 +90,10 @@
 						"referenceName": "ds_Classlife",
 						"type": "DatasetReference",
 						"parameters": {
-							"relativeUrl": "enroll_groups?showMetas=1"
+							"relativeUrl": {
+								"value": "@concat('enroll_groups?showMetas=1&limit=', pipeline().parameters.limit)",
+								"type": "Expression"
+							}
 						}
 					}
 				],
