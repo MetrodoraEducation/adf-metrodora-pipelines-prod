@@ -546,6 +546,10 @@
 			"API_KEY": {
 				"type": "string",
 				"defaultValue": "C!Fd4e045d16e5544"
+			},
+			"limit": {
+				"type": "string",
+				"defaultValue": "1500"
 			}
 		},
 		"folder": {
