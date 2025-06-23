@@ -4,7 +4,7 @@
 	"parameters": {
 		"factoryName": {
 			"type": "string",
-			"metadata": "Data Factory name",
+			"metadata": "Nombre de instancia de Data Factory",
 			"defaultValue": "adf-metrodoralakehouse-pro"
 		}
 	},
@@ -2544,7 +2544,7 @@
 					"name": "Lakehouse/Gold"
 				},
 				"annotations": [],
-				"lastPublishTime": "2025-03-22T17:50:18Z"
+				"lastPublishTime": "2025-04-24T20:17:06Z"
 			},
 			"dependsOn": []
 		},
@@ -2816,7 +2816,10 @@
 								"referenceName": "ds_Classlife",
 								"type": "DatasetReference",
 								"parameters": {
-									"relativeUrl": "enroll_groups?showMetas=1"
+									"relativeUrl": {
+										"value": "@concat('enroll_groups?showMetas=1&limit=', pipeline().parameters.limit)",
+										"type": "Expression"
+									}
 								}
 							}
 						],
@@ -2923,7 +2926,10 @@
 								"referenceName": "ds_Classlife",
 								"type": "DatasetReference",
 								"parameters": {
-									"relativeUrl": "students?showMetas=1"
+									"relativeUrl": {
+										"value": "@concat('students?showMetas=1&limit=', pipeline().parameters.limit)",
+										"type": "Expression"
+									}
 								}
 							}
 						],
@@ -3030,7 +3036,10 @@
 								"referenceName": "ds_Classlife",
 								"type": "DatasetReference",
 								"parameters": {
-									"relativeUrl": "enrollments?showMetas=1"
+									"relativeUrl": {
+										"value": "@concat('enrollments?showMetas=1&limit=', pipeline().parameters.limit)",
+										"type": "Expression"
+									}
 								}
 							}
 						],
@@ -3137,7 +3146,10 @@
 								"referenceName": "ds_Classlife",
 								"type": "DatasetReference",
 								"parameters": {
-									"relativeUrl": "receipts?showMetas=1"
+									"relativeUrl": {
+										"value": "@concat('receipts?showMetas=1&limit=', pipeline().parameters.limit)",
+										"type": "Expression"
+									}
 								}
 							}
 						],
@@ -3244,7 +3256,10 @@
 								"referenceName": "ds_Classlife",
 								"type": "DatasetReference",
 								"parameters": {
-									"relativeUrl": "admissions?showMetas=1"
+									"relativeUrl": {
+										"value": "@concat('admissions?showMetas=1&limit=', pipeline().parameters.limit)",
+										"type": "Expression"
+									}
 								}
 							}
 						],
@@ -3275,13 +3290,17 @@
 					"API_KEY": {
 						"type": "string",
 						"defaultValue": "C!Fd4e045d16e5544"
+					},
+					"limit": {
+						"type": "string",
+						"defaultValue": "1500"
 					}
 				},
 				"folder": {
 					"name": "Lakehouse/Bronze"
 				},
 				"annotations": [],
-				"lastPublishTime": "2025-03-22T17:50:20Z"
+				"lastPublishTime": "2025-06-03T16:56:15Z"
 			},
 			"dependsOn": []
 		},
@@ -3379,7 +3398,10 @@
 								"referenceName": "ds_Classlife",
 								"type": "DatasetReference",
 								"parameters": {
-									"relativeUrl": "enroll_groups?showMetas=1"
+									"relativeUrl": {
+										"value": "@concat('enroll_groups?showMetas=1&limit=', pipeline().parameters.limit)",
+										"type": "Expression"
+									}
 								}
 							}
 						],
@@ -3486,7 +3508,10 @@
 								"referenceName": "ds_Classlife",
 								"type": "DatasetReference",
 								"parameters": {
-									"relativeUrl": "students?showMetas=1"
+									"relativeUrl": {
+										"value": "@concat('students?showMetas=1&limit=', pipeline().parameters.limit)",
+										"type": "Expression"
+									}
 								}
 							}
 						],
@@ -3593,7 +3618,10 @@
 								"referenceName": "ds_Classlife",
 								"type": "DatasetReference",
 								"parameters": {
-									"relativeUrl": "enrollments?showMetas=1"
+									"relativeUrl": {
+										"value": "@concat('enrollments?showMetas=1&limit=', pipeline().parameters.limit)",
+										"type": "Expression"
+									}
 								}
 							}
 						],
@@ -3700,7 +3728,10 @@
 								"referenceName": "ds_Classlife",
 								"type": "DatasetReference",
 								"parameters": {
-									"relativeUrl": "receipts?showMetas=1"
+									"relativeUrl": {
+										"value": "@concat('receipts?showMetas=1&limit=', pipeline().parameters.limit)",
+										"type": "Expression"
+									}
 								}
 							}
 						],
@@ -3807,7 +3838,10 @@
 								"referenceName": "ds_Classlife",
 								"type": "DatasetReference",
 								"parameters": {
-									"relativeUrl": "admissions?showMetas=1"
+									"relativeUrl": {
+										"value": "@concat('admissions?showMetas=1&limit=', pipeline().parameters.limit)",
+										"type": "Expression"
+									}
 								}
 							}
 						],
@@ -4009,13 +4043,17 @@
 					"API_KEY": {
 						"type": "string",
 						"defaultValue": "C!F5ec7888d40c7e8"
+					},
+					"limit": {
+						"type": "string",
+						"defaultValue": "1500"
 					}
 				},
 				"folder": {
 					"name": "Lakehouse/Bronze"
 				},
 				"annotations": [],
-				"lastPublishTime": "2025-03-22T17:50:20Z"
+				"lastPublishTime": "2025-06-09T17:21:05Z"
 			},
 			"dependsOn": []
 		},
@@ -4327,7 +4365,7 @@
 					"name": "Lakehouse/Bronze"
 				},
 				"annotations": [],
-				"lastPublishTime": "2025-03-22T17:50:20Z"
+				"lastPublishTime": "2025-03-23T10:53:24Z"
 			},
 			"dependsOn": []
 		},

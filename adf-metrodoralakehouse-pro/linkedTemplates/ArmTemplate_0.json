@@ -4,12 +4,12 @@
 	"parameters": {
 		"factoryName": {
 			"type": "string",
-			"metadata": "Data Factory name",
+			"metadata": "Nombre de instancia de Data Factory",
 			"defaultValue": "adf-metrodoralakehouse-pro"
 		},
 		"HttpSharepointMetrodora_password": {
 			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'HttpSharepointMetrodora'"
+			"metadata": "Cadena protegida para \"password\"de \"HttpSharepointMetrodora\""
 		},
 		"HttpSharepointMetrodora_properties_typeProperties_url": {
 			"type": "string",
@@ -251,7 +251,7 @@
 					"name": "Lakehouse/DWH"
 				},
 				"annotations": [],
-				"lastPublishTime": "2025-03-22T17:50:18Z"
+				"lastPublishTime": "2025-05-14T10:11:48Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/ls_AzureDatabricks')]"
@@ -322,7 +322,7 @@
 					"name": "Lakehouse/Gold"
 				},
 				"annotations": [],
-				"lastPublishTime": "2025-03-22T17:50:18Z"
+				"lastPublishTime": "2025-05-14T10:11:48Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/ls_AzureDatabricks')]"
@@ -835,7 +835,7 @@
 					"name": "Lakehouse/Silver"
 				},
 				"annotations": [],
-				"lastPublishTime": "2025-03-22T17:50:18Z"
+				"lastPublishTime": "2025-06-03T16:56:15Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/ls_AzureDatabricks')]"
@@ -1036,7 +1036,7 @@
 					"name": "Lakehouse/Silver"
 				},
 				"annotations": [],
-				"lastPublishTime": "2025-03-22T17:50:18Z"
+				"lastPublishTime": "2025-06-03T16:56:15Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/ls_AzureDatabricks')]"
@@ -1775,7 +1775,7 @@
 					"name": "Lakehouse/Gold"
 				},
 				"annotations": [],
-				"lastPublishTime": "2025-03-22T17:50:18Z"
+				"lastPublishTime": "2025-06-16T15:56:13Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/ls_AzureDatabricks')]"
@@ -1918,7 +1918,7 @@
 					"name": "Lakehouse/Gold"
 				},
 				"annotations": [],
-				"lastPublishTime": "2025-03-22T17:50:18Z"
+				"lastPublishTime": "2025-06-05T11:43:47Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/ls_AzureDatabricks')]"
