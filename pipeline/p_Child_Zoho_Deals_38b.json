@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@and(\n  equals(trim(coalesce(variables('NextPageTokenParent'), '')), ''),\n  equals(trim(coalesce(variables('NextPageToken'), '')), '')\n)",
+						"value": "@and(\n  equals(trim(coalesce(pipeline().parameters.NextPageToken, '')), ''),\n  equals(trim(coalesce(variables('NextPageToken'), '')), '')\n)",
 						"type": "Expression"
 					},
 					"activities": [
@@ -320,8 +320,8 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "NextPageTokenParent",
-					"value": "@pipeline().parameters.NextPageToken"
+					"variableName": "NextPageToken",
+					"value": ""
 				}
 			},
 			{
