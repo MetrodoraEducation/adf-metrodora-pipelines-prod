@@ -114,7 +114,7 @@
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "Execute Deals 38b",
+						"activity": "1 Executed Deals",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -159,7 +159,7 @@
 				}
 			},
 			{
-				"name": "Execute Deals 38b",
+				"name": "1 Executed Deals",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
@@ -318,7 +318,7 @@
 				}
 			},
 			{
-				"name": "Execute Deals 38b_copy1",
+				"name": "2 Executed Deals",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
@@ -379,7 +379,7 @@
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "Execute Deals 38b",
+						"activity": "1 Executed Deals",
 						"dependencyConditions": [
 							"Succeeded"
 						]
