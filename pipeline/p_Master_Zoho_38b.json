@@ -127,11 +127,28 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
+					"expression": {
+						"value": "@not(\n  or(equals(variables('NextPageToken'), ''), equals(variables('NextPageToken'), null))\n)",
+						"type": "Expression"
+					},
 					"activities": [
 						{
 							"name": "Execute Pipeline1",
 							"type": "ExecutePipeline",
-							"dependsOn": [],
+							"dependsOn": [
+								{
+									"activity": "NextPageToken",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								},
+								{
+									"activity": "PageCounter",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
 							"policy": {
 								"secureInput": false
 							},
@@ -172,6 +189,34 @@
 										"type": "Expression"
 									}
 								}
+							}
+						},
+						{
+							"name": "NextPageToken",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "AccessToken",
+								"value": "@activity('ExecuteChild').output.next_page_token\n"
+							}
+						},
+						{
+							"name": "PageCounter",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "PageCounter",
+								"value": "@string(add(int(variables('PageCounter')), 1))\n"
 							}
 						}
 					],
@@ -228,6 +273,9 @@
 				"defaultValue": 0
 			},
 			"TokenStartTime": {
+				"type": "String"
+			},
+			"AccessToken": {
 				"type": "String"
 			}
 		},
