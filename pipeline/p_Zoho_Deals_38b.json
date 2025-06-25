@@ -310,16 +310,10 @@
 			"AccessToken": {
 				"type": "string"
 			},
-			"PageToken": {
-				"type": "string"
-			},
 			"PageCounter": {
 				"type": "string"
 			},
 			"IfModifiedSince": {
-				"type": "string"
-			},
-			"NextPageToken": {
 				"type": "string"
 			}
 		},
