@@ -5,14 +5,7 @@
 			{
 				"name": "UntilDeals",
 				"type": "Until",
-				"dependsOn": [
-					{
-						"activity": "Set variable1",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
@@ -325,8 +318,8 @@
 				}
 			},
 			{
-				"name": "Set variable1",
-				"type": "SetVariable",
+				"name": "If Condition1",
+				"type": "IfCondition",
 				"dependsOn": [
 					{
 						"activity": "PageCounterParent",
@@ -341,14 +334,12 @@
 						]
 					}
 				],
-				"policy": {
-					"secureOutput": false,
-					"secureInput": false
-				},
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "Variableprueba",
-					"value": "@concat('PARENT:', variables('NextPageTokenParent'), ' - TOKEN:', variables('NextPageToken'))\n"
+					"expression": {
+						"value": "@not(\n  and(\n    equals(trim(coalesce(variables('NextPageTokenParent'), '')), ''),\n    equals(trim(coalesce(variables('NextPageToken'), '')), '')\n  )\n)",
+						"type": "Expression"
+					}
 				}
 			}
 		],
@@ -410,9 +401,6 @@
 				"type": "String"
 			},
 			"NextPageTokenParent": {
-				"type": "String"
-			},
-			"Variableprueba": {
 				"type": "String"
 			}
 		},
