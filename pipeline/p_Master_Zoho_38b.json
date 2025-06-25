@@ -114,7 +114,7 @@
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "WebZohoAPI",
+						"activity": "Execute Deals 38b",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -128,7 +128,7 @@
 				"typeProperties": {
 					"variableName": "PageCounter",
 					"value": {
-						"value": "@variables('TempCounter')",
+						"value": "@activity('Execute Deals 38b').output.pipelineReturnValue.PageCounter",
 						"type": "Expression"
 					}
 				}
@@ -138,7 +138,13 @@
 				"type": "IfCondition",
 				"dependsOn": [
 					{
-						"activity": "Execute Deals 38b",
+						"activity": "PageCounter",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "NextPageToken",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -170,12 +176,6 @@
 					},
 					{
 						"activity": "Set variable Users Leads",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "PageCounter",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -368,9 +368,33 @@
 							"type": "Expression"
 						},
 						"NextPageToken": {
-							"value": "@activity('Execute Deals 38b').output.pipelineReturnValue.NextPageToken",
+							"value": "@variables('NextPageToken')",
 							"type": "Expression"
 						}
+					}
+				}
+			},
+			{
+				"name": "NextPageToken",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Execute Deals 38b",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "NextPageToken",
+					"value": {
+						"value": "@if(contains(activity('Execute Deals 38b').output.pipelineReturnValue, 'NextPageToken'), activity('Execute Deals 38b').output.pipelineReturnValue.NextPageToken, '')",
+						"type": "Expression"
 					}
 				}
 			}
@@ -390,7 +414,7 @@
 			},
 			"reprocessDate": {
 				"type": "string",
-				"defaultValue": "1"
+				"defaultValue": "2"
 			},
 			"AccessToken": {
 				"type": "string"
