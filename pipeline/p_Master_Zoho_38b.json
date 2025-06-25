@@ -212,16 +212,16 @@
 							"value": "@variables('WebActivityName')",
 							"type": "Expression"
 						},
-						"PageToken": {
-							"value": "@variables('NextPageToken')",
-							"type": "Expression"
-						},
 						"PageCounter": {
 							"value": "@variables('PageCounter')",
 							"type": "Expression"
 						},
 						"IfModifiedSince": {
 							"value": "@variables('If-Modified-Since')",
+							"type": "Expression"
+						},
+						"NextPageToken": {
+							"value": "@variables('NextPageToken')",
 							"type": "Expression"
 						}
 					}
@@ -359,16 +359,16 @@
 							"value": "@variables('WebActivityName')",
 							"type": "Expression"
 						},
-						"PageToken": {
-							"value": "@activity('Execute Deals 38b').output.pipelineReturnValue.NextPageToken",
-							"type": "Expression"
-						},
 						"PageCounter": {
 							"value": "@variables('PageCounter')",
 							"type": "Expression"
 						},
 						"IfModifiedSince": {
 							"value": "@variables('If-Modified-Since')",
+							"type": "Expression"
+						},
+						"NextPageToken": {
+							"value": "@activity('Execute Deals 38b').output.pipelineReturnValue.NextPageToken",
 							"type": "Expression"
 						}
 					}
