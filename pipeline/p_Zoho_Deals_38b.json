@@ -247,7 +247,8 @@
 									{
 										"key": "NextPageToken",
 										"value": {
-											"type": "String"
+											"type": "String",
+											"content": "@activity('GetNextPageTokenDeals').output.firstRow.info.next_page_token"
 										}
 									}
 								],
