@@ -147,7 +147,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@greater(\n    div(sub(ticks(utcnow()), ticks(variables('TokenStartTime'))), 10000000),\n    50\n)",
+						"value": "@greater(\n    div(sub(ticks(utcnow()), ticks(variables('TokenStartTime'))), 10000000),\n    10\n)",
 						"type": "Expression"
 					}
 				}
@@ -318,8 +318,8 @@
 				}
 			},
 			{
-				"name": "Wait1",
-				"type": "Wait",
+				"name": "Execute Deals 38b_copy1",
+				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
 						"activity": "If Condition1",
@@ -328,9 +328,50 @@
 						]
 					}
 				],
+				"policy": {
+					"secureInput": false
+				},
 				"userProperties": [],
 				"typeProperties": {
-					"waitTimeInSeconds": 5
+					"pipeline": {
+						"referenceName": "p_Zoho_Deals_38b",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"client_id": {
+							"value": "@pipeline().parameters.client_id",
+							"type": "Expression"
+						},
+						"client_secret": {
+							"value": "@pipeline().parameters.client_secret",
+							"type": "Expression"
+						},
+						"refresh_token": {
+							"value": "@pipeline().parameters.refresh_token",
+							"type": "Expression"
+						},
+						"reprocessDate": {
+							"value": "@variables('AccessToken')",
+							"type": "Expression"
+						},
+						"AccessToken": {
+							"value": "@variables('WebActivityName')",
+							"type": "Expression"
+						},
+						"PageToken": {
+							"value": "@activity('Execute Deals 38b').output",
+							"type": "Expression"
+						},
+						"PageCounter": {
+							"value": "@variables('PageCounter')",
+							"type": "Expression"
+						},
+						"IfModifiedSince": {
+							"value": "@variables('If-Modified-Since')",
+							"type": "Expression"
+						}
+					}
 				}
 			}
 		],
@@ -349,7 +390,7 @@
 			},
 			"reprocessDate": {
 				"type": "string",
-				"defaultValue": "2"
+				"defaultValue": "1"
 			},
 			"AccessToken": {
 				"type": "string"
