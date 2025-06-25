@@ -3,44 +3,9 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "WebZohoAPI",
-				"type": "WebActivity",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"method": "POST",
-					"headers": {
-						"Content-Type": "application/x-www-form-urlencoded"
-					},
-					"url": "https://accounts.zoho.eu/oauth/v2/token",
-					"body": {
-						"value": "@concat('client_id=', pipeline().parameters.client_id, \n        '&client_secret=', pipeline().parameters.client_secret,\n        '&refresh_token=', pipeline().parameters.refresh_token,\n        '&grant_type=refresh_token')",
-						"type": "Expression"
-					},
-					"authentication": {
-						"type": "MSI",
-						"resource": "https://vault.azure.net"
-					}
-				}
-			},
-			{
 				"name": "Set variable Users",
 				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "WebZohoAPI",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"secureOutput": false,
 					"secureInput": false
@@ -57,14 +22,7 @@
 			{
 				"name": "If Modified Since Date",
 				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "WebZohoAPI",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"secureOutput": false,
 					"secureInput": false
@@ -99,7 +57,14 @@
 						{
 							"name": "CopydataZohoDeals",
 							"type": "Copy",
-							"dependsOn": [],
+							"dependsOn": [
+								{
+									"activity": "WebZohoAPIDeals",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
 							"policy": {
 								"timeout": "0.12:00:00",
 								"retry": 0,
@@ -117,7 +82,7 @@
 									"additionalHeaders": {
 										"Content-Type": "application/json",
 										"Authorization": {
-											"value": "@concat('Bearer ', activity('WebZohoAPI').output.access_token)",
+											"value": "@concat('Bearer ', activity('WebZohoAPIDeals').output.access_token)",
 											"type": "Expression"
 										},
 										"If-Modified-Since": {
@@ -305,6 +270,34 @@
 								"value": {
 									"value": "@variables('TempCounter')",
 									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "WebZohoAPIDeals",
+							"type": "WebActivity",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"method": "POST",
+								"headers": {
+									"Content-Type": "application/x-www-form-urlencoded"
+								},
+								"url": "https://accounts.zoho.eu/oauth/v2/token",
+								"body": {
+									"value": "@concat('client_id=', pipeline().parameters.client_id, \n        '&client_secret=', pipeline().parameters.client_secret,\n        '&refresh_token=', pipeline().parameters.refresh_token,\n        '&grant_type=refresh_token')",
+									"type": "Expression"
+								},
+								"authentication": {
+									"type": "MSI",
+									"resource": "https://vault.azure.net"
 								}
 							}
 						}
@@ -1089,6 +1082,34 @@
 				"userProperties": [],
 				"typeProperties": {
 					"waitTimeInSeconds": 30
+				}
+			},
+			{
+				"name": "WebZohoAPI_copy1",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "POST",
+					"headers": {
+						"Content-Type": "application/x-www-form-urlencoded"
+					},
+					"url": "https://accounts.zoho.eu/oauth/v2/token",
+					"body": {
+						"value": "@concat('client_id=', pipeline().parameters.client_id, \n        '&client_secret=', pipeline().parameters.client_secret,\n        '&refresh_token=', pipeline().parameters.refresh_token,\n        '&grant_type=refresh_token')",
+						"type": "Expression"
+					},
+					"authentication": {
+						"type": "MSI",
+						"resource": "https://vault.azure.net"
+					}
 				}
 			}
 		],
