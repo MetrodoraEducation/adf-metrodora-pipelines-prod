@@ -38,7 +38,7 @@
 											"type": "Expression"
 										},
 										"If-Modified-Since": {
-											"value": "@variables('If-Modified-Since')",
+											"value": "@pipeline().parameters.IfModifiedSince",
 											"type": "Expression"
 										}
 									},
@@ -254,6 +254,9 @@
 				"type": "string"
 			},
 			"PageCounter": {
+				"type": "string"
+			},
+			"IfModifiedSince": {
 				"type": "string"
 			}
 		},
