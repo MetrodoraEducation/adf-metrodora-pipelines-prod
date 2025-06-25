@@ -22,7 +22,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@or(\n  equals(trim(variables('NextPageToken')), ''),\n  equals(variables('NextPageToken'), null)\n)",
+						"value": "@or(\n  equals(trim(variables('NextPageToken')), ''),\n  or(\n    equals(variables('NextPageToken'), null),\n    and(\n      equals(trim(pipeline().parameters.NextPageToken), ''),\n      equals(trim(variables('NextPageToken')), '')\n    )\n  )\n)",
 						"type": "Expression"
 					},
 					"activities": [
@@ -326,8 +326,8 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "NextPageToken",
-					"value": "@pipeline().parameters.NextPageToken"
+					"variableName": "NextPageTokenParent",
+					"value": ""
 				}
 			}
 		],
@@ -386,6 +386,9 @@
 				"type": "String"
 			},
 			"AccessToken": {
+				"type": "String"
+			},
+			"NextPageTokenParent": {
 				"type": "String"
 			}
 		},
