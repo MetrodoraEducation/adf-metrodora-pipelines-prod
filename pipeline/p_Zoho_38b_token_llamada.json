@@ -860,7 +860,7 @@
 				"type": "IfCondition",
 				"dependsOn": [
 					{
-						"activity": "If Modified Since Date Leads",
+						"activity": "SetTokenStartTime",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -869,7 +869,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@greater(\n    div(sub(ticks(utcnow()), ticks(variables('TokenStartTime'))), 10000000),\n    3500\n)",
+						"value": "@greater(\n    div(\n        sub(ticks(utcnow()), ticks(variables('TokenStartTime'))),\n        10000000\n    ),\n    3500\n)",
 						"type": "Expression"
 					},
 					"ifTrueActivities": [
@@ -926,34 +926,11 @@
 							}
 						},
 						{
-							"name": "SetTokenStartTime",
-							"type": "SetVariable",
+							"name": "UntilLeads",
+							"type": "Until",
 							"dependsOn": [
 								{
 									"activity": "Set variable Users Leads",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"policy": {
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "TokenStartTime",
-								"value": "@utcNow()\n"
-							}
-						},
-						{
-							"name": "UntilLeads",
-							"type": "Until",
-							"state": "Inactive",
-							"onInactiveMarkAs": "Succeeded",
-							"dependsOn": [
-								{
-									"activity": "SetTokenStartTime",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -967,7 +944,7 @@
 								},
 								"activities": [
 									{
-										"name": "Get NextPageTokenLeads",
+										"name": "GetNextPageTokenLeads",
 										"type": "Lookup",
 										"dependsOn": [
 											{
@@ -1033,7 +1010,7 @@
 										"typeProperties": {
 											"variableName": "NextPageToken",
 											"value": {
-												"value": "@activity('Get NextPageTokenLeads').output.firstRow.info.next_page_token\n",
+												"value": "@activity('GetNextPageTokenLeads').output.firstRow.info.next_page_token\n",
 												"type": "Expression"
 											}
 										}
@@ -1067,7 +1044,7 @@
 										"type": "SetVariable",
 										"dependsOn": [
 											{
-												"activity": "Get NextPageTokenLeads",
+												"activity": "GetNextPageTokenLeads",
 												"dependencyConditions": [
 													"Succeeded"
 												]
@@ -1194,8 +1171,6 @@
 			{
 				"name": "If Modified Since Date Leads",
 				"type": "SetVariable",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "If Condition Delete",
@@ -1215,6 +1190,27 @@
 						"value": "@formatDateTime(addDays(utcnow(), if(equals(pipeline().parameters.reprocessDate, ''), -7, sub(0, int(pipeline().parameters.reprocessDate)))), 'yyyy-MM-ddTHH:mm:ssZ')",
 						"type": "Expression"
 					}
+				}
+			},
+			{
+				"name": "SetTokenStartTime",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "If Modified Since Date Leads",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "TokenStartTime",
+					"value": "@utcNow()\n"
 				}
 			}
 		],
