@@ -22,7 +22,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@or(\n  equals(trim(variables('NextPageToken')), ''),\n  or(\n    equals(variables('NextPageToken'), null),\n    and(\n      equals(trim(pipeline().parameters.NextPageToken), ''),\n      equals(trim(variables('NextPageToken')), '')\n    )\n  )\n)",
+						"value": "@or(\n  equals(trim(coalesce(variables('NextPageToken'), '')), ''),\n  equals(trim(coalesce(pipeline().parameters.NextPageToken, '')), '')\n)",
 						"type": "Expression"
 					},
 					"activities": [
