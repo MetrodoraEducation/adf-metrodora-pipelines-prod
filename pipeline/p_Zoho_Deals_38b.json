@@ -248,7 +248,36 @@
 										"key": "NextPageToken",
 										"value": {
 											"type": "String",
-											"content": "@activity('GetNextPageTokenDeals').output.firstRow.info.next_page_token"
+											"content": ""
+										}
+									}
+								],
+								"setSystemVariable": true
+							}
+						},
+						{
+							"name": "PageCounter",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "NextPageToken",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "pipelineReturnValue",
+								"value": [
+									{
+										"key": "PageCounter",
+										"value": {
+											"type": "String"
 										}
 									}
 								],
