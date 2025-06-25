@@ -140,7 +140,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@greater(\n    div(sub(ticks(utcnow()), ticks(variables('TokenStartTime'))), 10000000),\n    3500\n)",
+						"value": "@greater(\n    div(sub(ticks(utcnow()), ticks(variables('TokenStartTime'))), 10000000),\n    100\n)",
 						"type": "Expression"
 					}
 				}
@@ -202,15 +202,15 @@
 							"type": "Expression"
 						},
 						"AccessToken": {
-							"value": "@pipeline().parameters.AccessToken",
+							"value": "@variables('AccessToken')",
 							"type": "Expression"
 						},
 						"PageToken": {
-							"value": "@pipeline().parameters.PageToken",
+							"value": "@variables('NextPageToken')",
 							"type": "Expression"
 						},
 						"PageCounter": {
-							"value": "@pipeline().parameters.PageCounter",
+							"value": "@variables('PageCounter')",
 							"type": "Expression"
 						}
 					}
