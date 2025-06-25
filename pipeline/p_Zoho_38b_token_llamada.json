@@ -141,11 +141,11 @@
 				}
 			},
 			{
-				"name": "SetNextPageTokenLeads_copy1",
+				"name": "SetNextPageTokenLeads",
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "PageCounterLeads_copy1",
+						"activity": "PageCounterLeads",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -165,11 +165,11 @@
 				}
 			},
 			{
-				"name": "LogtokenLeads_copy1",
+				"name": "LogtokenLeads",
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "SetNextPageTokenLeads_copy1",
+						"activity": "SetNextPageTokenLeads",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -189,7 +189,7 @@
 				}
 			},
 			{
-				"name": "TempCounterLeads_copy1",
+				"name": "TempCounterLeads",
 				"type": "SetVariable",
 				"dependsOn": [
 					{
@@ -213,11 +213,11 @@
 				}
 			},
 			{
-				"name": "PageCounterLeads_copy1",
+				"name": "PageCounterLeads",
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "TempCounterLeads_copy1",
+						"activity": "TempCounterLeads",
 						"dependencyConditions": [
 							"Succeeded"
 						]
