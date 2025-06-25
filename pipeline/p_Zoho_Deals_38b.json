@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "UntilDeals_copy1",
+				"name": "UntilDeals",
 				"type": "Until",
 				"dependsOn": [],
 				"userProperties": [],
