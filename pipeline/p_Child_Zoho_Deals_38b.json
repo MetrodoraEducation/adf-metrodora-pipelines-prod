@@ -344,7 +344,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@not(\n  and(\n    equals(trim(coalesce(variables('NextPageTokenParent'), '')), ''),\n    equals(trim(coalesce(variables('NextPageToken'), '')), '')\n  )\n)",
+						"value": "@not(\n  and(\n    equals(trim(coalesce(pipeline().parameters.NextPageToken, '')), ''),\n    equals(trim(coalesce(variables('NextPageToken'), '')), '')\n  )\n)",
 						"type": "Expression"
 					}
 				}
