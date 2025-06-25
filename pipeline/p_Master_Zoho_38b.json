@@ -103,8 +103,8 @@
 				}
 			},
 			{
-				"name": "Until1",
-				"type": "Until",
+				"name": "If Condition1",
+				"type": "IfCondition",
 				"dependsOn": [
 					{
 						"activity": "If Modified Since Date Leads",
@@ -128,99 +128,9 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@not(\n  or(equals(variables('NextPageToken'), ''), equals(variables('NextPageToken'), null))\n)",
+						"value": "@greater(\n  div(sub(ticks(utcnow()), ticks(variables('TokenStartTime'))), 10000000),\n  3500\n)",
 						"type": "Expression"
-					},
-					"activities": [
-						{
-							"name": "Execute Pipeline1",
-							"type": "ExecutePipeline",
-							"dependsOn": [
-								{
-									"activity": "NextPageToken",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								},
-								{
-									"activity": "PageCounter",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"policy": {
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"pipeline": {
-									"referenceName": "p_Zoho_38b_token_llamada",
-									"type": "PipelineReference"
-								},
-								"waitOnCompletion": true,
-								"parameters": {
-									"client_id": {
-										"value": "@pipeline().parameters.client_id",
-										"type": "Expression"
-									},
-									"client_secret": {
-										"value": "@pipeline().parameters.client_secret",
-										"type": "Expression"
-									},
-									"refresh_token": {
-										"value": "@pipeline().parameters.refresh_token",
-										"type": "Expression"
-									},
-									"reprocessDate": {
-										"value": "@pipeline().parameters.reprocessDate",
-										"type": "Expression"
-									},
-									"AccessToken": {
-										"value": "@pipeline().parameters.AccessToken",
-										"type": "Expression"
-									},
-									"PageToken": {
-										"value": "@pipeline().parameters.PageToken",
-										"type": "Expression"
-									},
-									"PageCounter": {
-										"value": "@pipeline().parameters.PageCounter",
-										"type": "Expression"
-									}
-								}
-							}
-						},
-						{
-							"name": "NextPageToken",
-							"type": "SetVariable",
-							"dependsOn": [],
-							"policy": {
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "AccessToken",
-								"value": "@activity('ExecuteChild').output.next_page_token\n"
-							}
-						},
-						{
-							"name": "PageCounter",
-							"type": "SetVariable",
-							"dependsOn": [],
-							"policy": {
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "PageCounter",
-								"value": "@string(add(int(variables('PageCounter')), 1))\n"
-							}
-						}
-					],
-					"timeout": "0.12:00:00"
+					}
 				}
 			}
 		],
