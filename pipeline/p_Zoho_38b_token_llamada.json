@@ -131,7 +131,7 @@
 									"additionalHeaders": {
 										"Content-Type": "application/json",
 										"Authorization": {
-											"value": "@concat('Bearer ', pipeline().parameters.AccessToken)",
+											"value": "@concat('Bearer ', variables('AccessToken'))",
 											"type": "Expression"
 										},
 										"If-Modified-Since": {
@@ -376,6 +376,9 @@
 				"defaultValue": 0
 			},
 			"TokenStartTime": {
+				"type": "String"
+			},
+			"AccessToken": {
 				"type": "String"
 			}
 		},
