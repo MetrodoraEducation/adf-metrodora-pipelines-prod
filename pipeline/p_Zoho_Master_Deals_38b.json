@@ -5,7 +5,20 @@
 			{
 				"name": "UntilDeals",
 				"type": "Until",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "PageCounterParent",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "NextPageTokenParent",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
@@ -287,6 +300,34 @@
 						}
 					],
 					"timeout": "0.12:00:00"
+				}
+			},
+			{
+				"name": "PageCounterParent",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "PageCounter",
+					"value": "@pipeline().parameters.PageCounter"
+				}
+			},
+			{
+				"name": "NextPageTokenParent",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "NextPageToken",
+					"value": "@pipeline().parameters.NextPageToken"
 				}
 			}
 		],
