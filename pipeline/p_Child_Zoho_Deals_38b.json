@@ -7,13 +7,7 @@
 				"type": "Until",
 				"dependsOn": [
 					{
-						"activity": "PageCounterParent",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "NextPageTokenParent",
+						"activity": "Set variable1",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -22,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@or(\n  equals(trim(coalesce(variables('NextPageTokenParent'), '')), ''),\n  equals(trim(coalesce(variables('NextPageToken'), '')), '')\n)",
+						"value": "@and(\n  equals(trim(coalesce(variables('NextPageTokenParent'), '')), ''),\n  equals(trim(coalesce(variables('NextPageToken'), '')), '')\n)",
 						"type": "Expression"
 					},
 					"activities": [
@@ -329,6 +323,33 @@
 					"variableName": "NextPageTokenParent",
 					"value": "@pipeline().parameters.NextPageToken"
 				}
+			},
+			{
+				"name": "Set variable1",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "PageCounterParent",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "NextPageTokenParent",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "Variableprueba",
+					"value": "@concat('PARENT:', variables('NextPageTokenParent'), ' - TOKEN:', variables('NextPageToken'))\n"
+				}
 			}
 		],
 		"parameters": {
@@ -389,6 +410,9 @@
 				"type": "String"
 			},
 			"NextPageTokenParent": {
+				"type": "String"
+			},
+			"Variableprueba": {
 				"type": "String"
 			}
 		},
