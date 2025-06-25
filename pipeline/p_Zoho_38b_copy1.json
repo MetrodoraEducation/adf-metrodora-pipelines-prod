@@ -176,14 +176,9 @@
 						{
 							"name": "GetNextPageTokenDeals",
 							"type": "Lookup",
-							"dependsOn": [
-								{
-									"activity": "CopydataZohoDeals",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
+							"state": "Inactive",
+							"onInactiveMarkAs": "Succeeded",
+							"dependsOn": [],
 							"policy": {
 								"timeout": "0.12:00:00",
 								"retry": 0,
@@ -221,6 +216,8 @@
 						{
 							"name": "Set NextPageTokenDeals",
 							"type": "SetVariable",
+							"state": "Inactive",
+							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [
 								{
 									"activity": "PageCounterDeals",
@@ -245,6 +242,8 @@
 						{
 							"name": "LogtokenDeals",
 							"type": "SetVariable",
+							"state": "Inactive",
+							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [
 								{
 									"activity": "Set NextPageTokenDeals",
@@ -269,6 +268,8 @@
 						{
 							"name": "TempCounterDeals",
 							"type": "SetVariable",
+							"state": "Inactive",
+							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [
 								{
 									"activity": "GetNextPageTokenDeals",
@@ -293,6 +294,8 @@
 						{
 							"name": "PageCounterDeals",
 							"type": "SetVariable",
+							"state": "Inactive",
+							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [
 								{
 									"activity": "TempCounterDeals",
@@ -310,6 +313,40 @@
 								"variableName": "PageCounter",
 								"value": {
 									"value": "@variables('TempCounter')",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Web1",
+							"type": "WebActivity",
+							"dependsOn": [
+								{
+									"activity": "CopydataZohoDeals",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"method": "GET",
+								"headers": {
+									"Authorization": {
+										"value": "@concat('Bearer ', activity('WebZohoAPI').output.access_token)",
+										"type": "Expression"
+									},
+									"Content-Type": "application/json"
+								},
+								"url": {
+									"value": "@concat('https://www.zohoapis.eu/crm/v7/Deals?per_page=1&page_token=', variables('NextPageToken'), '&fields=id')",
 									"type": "Expression"
 								}
 							}
