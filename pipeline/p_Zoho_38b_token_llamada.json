@@ -3,22 +3,6 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Wait1",
-				"type": "Wait",
-				"dependsOn": [
-					{
-						"activity": "UntilLeads",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"waitTimeInSeconds": 2
-				}
-			},
-			{
 				"name": "CheckFolderExists",
 				"type": "GetMetadata",
 				"dependsOn": [],
@@ -109,11 +93,59 @@
 				}
 			},
 			{
-				"name": "If Modified Since Date Leads",
+				"name": "GetNextPageTokenLeads_copy1",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "CopydataZohoLeads_copy1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "JsonSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "JsonReadSettings"
+						}
+					},
+					"dataset": {
+						"referenceName": "ds_adsl_json",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "bronze",
+							"folder": {
+								"value": "@concat('lakehouse/zoho_38b/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+								"type": "Expression"
+							},
+							"filename": {
+								"value": "@concat('JsaZohoLeads_', string(variables('PageCounter')), '.json')",
+								"type": "Expression"
+							}
+						}
+					}
+				}
+			},
+			{
+				"name": "SetNextPageTokenLeads_copy1",
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "WebZohoAPILeads",
+						"activity": "PageCounterLeads_copy1",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -125,19 +157,19 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "If-Modified-Since",
+					"variableName": "NextPageToken",
 					"value": {
-						"value": "@formatDateTime(addDays(utcnow(), if(equals(pipeline().parameters.reprocessDate, ''), -7, sub(0, int(pipeline().parameters.reprocessDate)))), 'yyyy-MM-ddTHH:mm:ssZ')",
+						"value": "@activity('GetNextPageTokenLeads').output.firstRow.info.next_page_token\n",
 						"type": "Expression"
 					}
 				}
 			},
 			{
-				"name": "SetTokenStartTime",
+				"name": "LogtokenLeads_copy1",
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "WebZohoAPILeads",
+						"activity": "SetNextPageTokenLeads_copy1",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -149,13 +181,64 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "TokenStartTime",
-					"value": "@utcNow()\n"
+					"variableName": "Log_Token",
+					"value": {
+						"value": "@string(variables('NextPageToken'))",
+						"type": "Expression"
+					}
 				}
 			},
 			{
-				"name": "WebZohoAPILeads",
-				"type": "WebActivity",
+				"name": "TempCounterLeads_copy1",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "GetNextPageTokenLeads_copy1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "TempCounter",
+					"value": {
+						"value": "@add(variables('PageCounter'), 1)",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "PageCounterLeads_copy1",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "TempCounterLeads_copy1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "PageCounter",
+					"value": {
+						"value": "@variables('TempCounter')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "CopydataZohoLeads_copy1",
+				"type": "Copy",
 				"dependsOn": [
 					{
 						"activity": "If Condition Delete",
@@ -173,296 +256,66 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"method": "POST",
-					"headers": {
-						"Content-Type": "application/x-www-form-urlencoded"
-					},
-					"url": "https://accounts.zoho.eu/oauth/v2/token",
-					"body": {
-						"value": "@concat('client_id=', pipeline().parameters.client_id, \n        '&client_secret=', pipeline().parameters.client_secret,\n        '&refresh_token=', pipeline().parameters.refresh_token,\n        '&grant_type=refresh_token')",
-						"type": "Expression"
-					},
-					"authentication": {
-						"type": "MSI",
-						"resource": "https://vault.azure.net"
-					}
-				}
-			},
-			{
-				"name": "Set variable Users Leads",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "WebZohoAPILeads",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "WebActivityName",
-					"value": {
-						"value": "@activity('WebZohoAPILeads').output.access_token\n",
-						"type": "Expression"
-					}
-				}
-			},
-			{
-				"name": "UntilLeads",
-				"type": "Until",
-				"dependsOn": [
-					{
-						"activity": "If Modified Since Date Leads",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "SetTokenStartTime",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "Set variable Users Leads",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"expression": {
-						"value": "@or(\n  equals(trim(variables('NextPageToken')), ''),\n  equals(variables('NextPageToken'), null)\n)",
-						"type": "Expression"
-					},
-					"activities": [
-						{
-							"name": "GetNextPageTokenLeads",
-							"type": "Lookup",
-							"dependsOn": [
-								{
-									"activity": "CopydataZohoLeads",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:01:40",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "GET",
+						"additionalHeaders": {
+							"Content-Type": "application/json",
+							"Authorization": {
+								"value": "@concat('Bearer ', activity('WebZohoAPILeads').output.access_token)",
+								"type": "Expression"
 							},
-							"userProperties": [],
-							"typeProperties": {
-								"source": {
-									"type": "JsonSource",
-									"storeSettings": {
-										"type": "AzureBlobFSReadSettings",
-										"recursive": true,
-										"enablePartitionDiscovery": false
-									},
-									"formatSettings": {
-										"type": "JsonReadSettings"
-									}
-								},
-								"dataset": {
-									"referenceName": "ds_adsl_json",
-									"type": "DatasetReference",
-									"parameters": {
-										"container": "bronze",
-										"folder": {
-											"value": "@concat('lakehouse/zoho_38b/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
-											"type": "Expression"
-										},
-										"filename": {
-											"value": "@concat('JsaZohoLeads_', string(variables('PageCounter')), '.json')",
-											"type": "Expression"
-										}
-									}
-								}
+							"If-Modified-Since": {
+								"value": "@variables('If-Modified-Since')",
+								"type": "Expression"
 							}
 						},
-						{
-							"name": "SetNextPageTokenLeads",
-							"type": "SetVariable",
-							"dependsOn": [
-								{
-									"activity": "PageCounterLeads",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"policy": {
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "NextPageToken",
-								"value": {
-									"value": "@activity('GetNextPageTokenLeads').output.firstRow.info.next_page_token\n",
-									"type": "Expression"
-								}
-							}
-						},
-						{
-							"name": "LogtokenLeads",
-							"type": "SetVariable",
-							"dependsOn": [
-								{
-									"activity": "SetNextPageTokenLeads",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"policy": {
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "Log_Token",
-								"value": {
-									"value": "@string(variables('NextPageToken'))",
-									"type": "Expression"
-								}
-							}
-						},
-						{
-							"name": "TempCounterLeads",
-							"type": "SetVariable",
-							"dependsOn": [
-								{
-									"activity": "GetNextPageTokenLeads",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"policy": {
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "TempCounter",
-								"value": {
-									"value": "@add(variables('PageCounter'), 1)",
-									"type": "Expression"
-								}
-							}
-						},
-						{
-							"name": "PageCounterLeads",
-							"type": "SetVariable",
-							"dependsOn": [
-								{
-									"activity": "TempCounterLeads",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"policy": {
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "PageCounter",
-								"value": {
-									"value": "@variables('TempCounter')",
-									"type": "Expression"
-								}
-							}
-						},
-						{
-							"name": "CopydataZohoLeads",
-							"type": "Copy",
-							"dependsOn": [],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"source": {
-									"type": "RestSource",
-									"httpRequestTimeout": "00:01:40",
-									"requestInterval": "00.00:00:00.010",
-									"requestMethod": "GET",
-									"additionalHeaders": {
-										"Content-Type": "application/json",
-										"Authorization": {
-											"value": "@concat('Bearer ', activity('WebZohoAPILeads').output.access_token)",
-											"type": "Expression"
-										},
-										"If-Modified-Since": {
-											"value": "@variables('If-Modified-Since')",
-											"type": "Expression"
-										}
-									},
-									"paginationRules": {
-										"supportRFC5988": "true"
-									}
-								},
-								"sink": {
-									"type": "JsonSink",
-									"storeSettings": {
-										"type": "AzureBlobFSWriteSettings"
-									},
-									"formatSettings": {
-										"type": "JsonWriteSettings"
-									}
-								},
-								"enableStaging": false
-							},
-							"inputs": [
-								{
-									"referenceName": "ds_Zoho_API",
-									"type": "DatasetReference",
-									"parameters": {
-										"relativeUrl": {
-											"value": "@if(\n    or(equals(variables('NextPageToken'), null), equals(variables('NextPageToken'), '')),\n    'https://www.zohoapis.eu/crm/v7/Leads?per_page=200&fields=Created_Date,Apellido_2,Description,device,Email,First_Name,id,id_producto,id_programa,Last_Name,lead_correlation_id,lead_rating,lead_scoring,Lead_Source,Lead_Status,Mobile,Motivos_de_perdida,Nacionalidad,Owner,Phone,Provincia,Residencia,Sexo,source,Tipolog_a_de_cliente,Typo_Conversion,utm_ad_id,utm_adset_id,utm_campaign_id,utm_campaign_name,utm_channel,utm_estrategia,utm_medium,utm_perfil,utm_source,utm_term,utm_type,Modified_Time,Created_Time,L_nea_de_Negocio,Oportunidad_Asociada,ID_Clientify,Modalidad_de_curso,Sede',\n    concat('https://www.zohoapis.eu/crm/v7/Leads?per_page=200&page_token=', variables('NextPageToken'), '&fields=Created_Date,Apellido_2,Description,device,Email,First_Name,id,id_producto,id_programa,Last_Name,lead_correlation_id,lead_rating,lead_scoring,Lead_Source,Lead_Status,Mobile,Motivos_de_perdida,Nacionalidad,Owner,Phone,Provincia,Residencia,Sexo,source,Tipolog_a_de_cliente,Typo_Conversion,utm_ad_id,utm_adset_id,utm_campaign_id,utm_campaign_name,utm_channel,utm_estrategia,utm_medium,utm_perfil,utm_source,utm_term,utm_type,Modified_Time,Created_Time,L_nea_de_Negocio,Oportunidad_Asociada,ID_Clientify,Modalidad_de_curso,Sede')\n)",
-											"type": "Expression"
-										}
-									}
-								}
-							],
-							"outputs": [
-								{
-									"referenceName": "ds_adsl_json",
-									"type": "DatasetReference",
-									"parameters": {
-										"container": "bronze",
-										"folder": {
-											"value": "@concat('lakehouse/zoho_38b/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
-											"type": "Expression"
-										},
-										"filename": {
-											"value": "@concat('JsaZohoLeads_', string(variables('PageCounter')), '.json')",
-											"type": "Expression"
-										}
-									}
-								}
-							]
+						"paginationRules": {
+							"supportRFC5988": "true"
 						}
-					],
-					"timeout": "0.12:00:00"
-				}
+					},
+					"sink": {
+						"type": "JsonSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "JsonWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_Zoho_API",
+						"type": "DatasetReference",
+						"parameters": {
+							"relativeUrl": {
+								"value": "@if(\n    or(equals(variables('NextPageToken'), null), equals(variables('NextPageToken'), '')),\n    'https://www.zohoapis.eu/crm/v7/Leads?per_page=200&fields=Created_Date,Apellido_2,Description,device,Email,First_Name,id,id_producto,id_programa,Last_Name,lead_correlation_id,lead_rating,lead_scoring,Lead_Source,Lead_Status,Mobile,Motivos_de_perdida,Nacionalidad,Owner,Phone,Provincia,Residencia,Sexo,source,Tipolog_a_de_cliente,Typo_Conversion,utm_ad_id,utm_adset_id,utm_campaign_id,utm_campaign_name,utm_channel,utm_estrategia,utm_medium,utm_perfil,utm_source,utm_term,utm_type,Modified_Time,Created_Time,L_nea_de_Negocio,Oportunidad_Asociada,ID_Clientify,Modalidad_de_curso,Sede',\n    concat('https://www.zohoapis.eu/crm/v7/Leads?per_page=200&page_token=', variables('NextPageToken'), '&fields=Created_Date,Apellido_2,Description,device,Email,First_Name,id,id_producto,id_programa,Last_Name,lead_correlation_id,lead_rating,lead_scoring,Lead_Source,Lead_Status,Mobile,Motivos_de_perdida,Nacionalidad,Owner,Phone,Provincia,Residencia,Sexo,source,Tipolog_a_de_cliente,Typo_Conversion,utm_ad_id,utm_adset_id,utm_campaign_id,utm_campaign_name,utm_channel,utm_estrategia,utm_medium,utm_perfil,utm_source,utm_term,utm_type,Modified_Time,Created_Time,L_nea_de_Negocio,Oportunidad_Asociada,ID_Clientify,Modalidad_de_curso,Sede')\n)",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_adsl_json",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "bronze",
+							"folder": {
+								"value": "@concat('lakehouse/zoho_38b/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+								"type": "Expression"
+							},
+							"filename": {
+								"value": "@concat('JsaZohoLeads_', string(variables('PageCounter')), '.json')",
+								"type": "Expression"
+							}
+						}
+					}
+				]
 			}
 		],
 		"parameters": {
@@ -481,6 +334,15 @@
 			"reprocessDate": {
 				"type": "string",
 				"defaultValue": "7"
+			},
+			"AccessToken": {
+				"type": "string"
+			},
+			"PageToken": {
+				"type": "string"
+			},
+			"PageCounter": {
+				"type": "string"
 			}
 		},
 		"variables": {
