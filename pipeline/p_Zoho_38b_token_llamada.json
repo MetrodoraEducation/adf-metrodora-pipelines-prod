@@ -131,7 +131,7 @@
 									"additionalHeaders": {
 										"Content-Type": "application/json",
 										"Authorization": {
-											"value": "@concat('Bearer ', variables('AccessToken'))",
+											"value": "@concat('Bearer ', pipeline().parameters.AccessToken)",
 											"type": "Expression"
 										},
 										"If-Modified-Since": {
