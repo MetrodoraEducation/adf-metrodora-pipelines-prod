@@ -7,7 +7,7 @@
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "WebZohoAPILeads",
+						"activity": "WebZohoAPI",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -31,7 +31,7 @@
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "WebZohoAPILeads",
+						"activity": "WebZohoAPI",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -51,7 +51,7 @@
 				}
 			},
 			{
-				"name": "WebZohoAPILeads",
+				"name": "WebZohoAPI",
 				"type": "WebActivity",
 				"dependsOn": [],
 				"policy": {
@@ -83,7 +83,7 @@
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "WebZohoAPILeads",
+						"activity": "WebZohoAPI",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -97,7 +97,7 @@
 				"typeProperties": {
 					"variableName": "WebActivityName",
 					"value": {
-						"value": "@activity('WebZohoAPILeads').output.access_token\n",
+						"value": "@activity('WebZohoAPI').output.access_token\n",
 						"type": "Expression"
 					}
 				}
