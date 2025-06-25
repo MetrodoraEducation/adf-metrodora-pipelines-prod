@@ -128,7 +128,7 @@
 				"typeProperties": {
 					"variableName": "PageCounter",
 					"value": {
-						"value": "@activity('Execute Deals 38b').output.pipelineReturnValue.PageCounter",
+						"value": "@if(contains(activity('Execute Deals 38b').output.pipelineReturnValue, 'PageCounter'), activity('Execute Deals 38b').output.pipelineReturnValue.PageCounter, pipeline().parameters.PageCounter)",
 						"type": "Expression"
 					}
 				}
