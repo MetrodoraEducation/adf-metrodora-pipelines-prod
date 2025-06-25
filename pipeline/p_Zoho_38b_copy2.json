@@ -324,7 +324,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"notebookPath": {
-									"value": "@concat(pipeline().parameters.silver_storage_databricks,'PRUEBA_ZohoDeals_38b')",
+									"value": "@concat(pipeline().parameters.silver_storage_databricks,'zoho_38b/PRUEBA_ZohoDeals_38b')",
 									"type": "Expression"
 								}
 							},
