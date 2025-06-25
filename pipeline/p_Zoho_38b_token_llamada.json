@@ -133,7 +133,7 @@
 								"type": "Expression"
 							},
 							"filename": {
-								"value": "@concat('JsaZohoLeads_', string(variables('PageCounter')), '.json')",
+								"value": "@concat('JsaZohoLeads_', string(pipeline().parameters.PageCounter), '.json')",
 								"type": "Expression"
 							}
 						}
