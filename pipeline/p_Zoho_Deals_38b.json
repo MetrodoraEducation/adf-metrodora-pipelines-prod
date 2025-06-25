@@ -248,7 +248,7 @@
 										"key": "NextPageToken",
 										"value": {
 											"type": "String",
-											"content": ""
+											"content": "@variables('NextPageToken')"
 										}
 									}
 								],
@@ -277,7 +277,8 @@
 									{
 										"key": "PageCounter",
 										"value": {
-											"type": "String"
+											"type": "String",
+											"content": "@variables('PageCounter')"
 										}
 									}
 								],
