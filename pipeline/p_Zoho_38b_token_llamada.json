@@ -97,7 +97,7 @@
 				"type": "Lookup",
 				"dependsOn": [
 					{
-						"activity": "CopydataZohoLeads_copy1",
+						"activity": "CopydataZohoLeads",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -237,7 +237,7 @@
 				}
 			},
 			{
-				"name": "CopydataZohoLeads_copy1",
+				"name": "CopydataZohoLeads",
 				"type": "Copy",
 				"dependsOn": [
 					{
