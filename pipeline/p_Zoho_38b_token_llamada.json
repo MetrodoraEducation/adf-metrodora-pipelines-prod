@@ -93,7 +93,7 @@
 				}
 			},
 			{
-				"name": "GetNextPageTokenLeads_copy1",
+				"name": "GetNextPageTokenLeads",
 				"type": "Lookup",
 				"dependsOn": [
 					{
@@ -193,7 +193,7 @@
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "GetNextPageTokenLeads_copy1",
+						"activity": "GetNextPageTokenLeads",
 						"dependencyConditions": [
 							"Succeeded"
 						]
