@@ -860,7 +860,7 @@
 				"type": "IfCondition",
 				"dependsOn": [
 					{
-						"activity": "If Condition Delete",
+						"activity": "If Modified Since Date Leads",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -926,35 +926,11 @@
 							}
 						},
 						{
-							"name": "If Modified Since Date Leads",
-							"type": "SetVariable",
-							"dependsOn": [
-								{
-									"activity": "WebZohoAPILeads",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"policy": {
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "If-Modified-Since",
-								"value": {
-									"value": "@formatDateTime(addDays(utcnow(), if(equals(pipeline().parameters.reprocessDate, ''), -7, sub(0, int(pipeline().parameters.reprocessDate)))), 'yyyy-MM-ddTHH:mm:ssZ')",
-									"type": "Expression"
-								}
-							}
-						},
-						{
 							"name": "SetTokenStartTime",
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "WebZohoAPILeads",
+									"activity": "Set variable Users Leads",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -973,19 +949,9 @@
 						{
 							"name": "UntilLeads",
 							"type": "Until",
+							"state": "Inactive",
+							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [
-								{
-									"activity": "Set variable Users Leads",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								},
-								{
-									"activity": "If Modified Since Date Leads",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								},
 								{
 									"activity": "SetTokenStartTime",
 									"dependencyConditions": [
@@ -1223,6 +1189,32 @@
 							}
 						}
 					]
+				}
+			},
+			{
+				"name": "If Modified Since Date Leads",
+				"type": "SetVariable",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [
+					{
+						"activity": "If Condition Delete",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "If-Modified-Since",
+					"value": {
+						"value": "@formatDateTime(addDays(utcnow(), if(equals(pipeline().parameters.reprocessDate, ''), -7, sub(0, int(pipeline().parameters.reprocessDate)))), 'yyyy-MM-ddTHH:mm:ssZ')",
+						"type": "Expression"
+					}
 				}
 			}
 		],
