@@ -264,7 +264,7 @@
 						"additionalHeaders": {
 							"Content-Type": "application/json",
 							"Authorization": {
-								"value": "@concat('Bearer ', activity('WebZohoAPILeads').output.access_token)",
+								"value": "@concat('Bearer ', pipeline().parameters.AccessToken)",
 								"type": "Expression"
 							},
 							"If-Modified-Since": {
@@ -293,7 +293,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"relativeUrl": {
-								"value": "@if(\n    or(equals(variables('NextPageToken'), null), equals(variables('NextPageToken'), '')),\n    'https://www.zohoapis.eu/crm/v7/Leads?per_page=200&fields=Created_Date,Apellido_2,Description,device,Email,First_Name,id,id_producto,id_programa,Last_Name,lead_correlation_id,lead_rating,lead_scoring,Lead_Source,Lead_Status,Mobile,Motivos_de_perdida,Nacionalidad,Owner,Phone,Provincia,Residencia,Sexo,source,Tipolog_a_de_cliente,Typo_Conversion,utm_ad_id,utm_adset_id,utm_campaign_id,utm_campaign_name,utm_channel,utm_estrategia,utm_medium,utm_perfil,utm_source,utm_term,utm_type,Modified_Time,Created_Time,L_nea_de_Negocio,Oportunidad_Asociada,ID_Clientify,Modalidad_de_curso,Sede',\n    concat('https://www.zohoapis.eu/crm/v7/Leads?per_page=200&page_token=', variables('NextPageToken'), '&fields=Created_Date,Apellido_2,Description,device,Email,First_Name,id,id_producto,id_programa,Last_Name,lead_correlation_id,lead_rating,lead_scoring,Lead_Source,Lead_Status,Mobile,Motivos_de_perdida,Nacionalidad,Owner,Phone,Provincia,Residencia,Sexo,source,Tipolog_a_de_cliente,Typo_Conversion,utm_ad_id,utm_adset_id,utm_campaign_id,utm_campaign_name,utm_channel,utm_estrategia,utm_medium,utm_perfil,utm_source,utm_term,utm_type,Modified_Time,Created_Time,L_nea_de_Negocio,Oportunidad_Asociada,ID_Clientify,Modalidad_de_curso,Sede')\n)",
+								"value": "@if(\n    or(equals(pipeline().parameters.PageToken, null), equals(pipeline().parameters.PageToken, '')),\n    'https://www.zohoapis.eu/crm/v7/Leads?per_page=200&fields=Created_Date,Apellido_2,Description,device,Email,First_Name,id,id_producto,id_programa,Last_Name,lead_correlation_id,lead_rating,lead_scoring,Lead_Source,Lead_Status,Mobile,Motivos_de_perdida,Nacionalidad,Owner,Phone,Provincia,Residencia,Sexo,source,Tipolog_a_de_cliente,Typo_Conversion,utm_ad_id,utm_adset_id,utm_campaign_id,utm_campaign_name,utm_channel,utm_estrategia,utm_medium,utm_perfil,utm_source,utm_term,utm_type,Modified_Time,Created_Time,L_nea_de_Negocio,Oportunidad_Asociada,ID_Clientify,Modalidad_de_curso,Sede',\n    concat('https://www.zohoapis.eu/crm/v7/Leads?per_page=200&page_token=', pipeline().parameters.PageToken, '&fields=Created_Date,Apellido_2,Description,device,Email,First_Name,id,id_producto,id_programa,Last_Name,lead_correlation_id,lead_rating,lead_scoring,Lead_Source,Lead_Status,Mobile,Motivos_de_perdida,Nacionalidad,Owner,Phone,Provincia,Residencia,Sexo,source,Tipolog_a_de_cliente,Typo_Conversion,utm_ad_id,utm_adset_id,utm_campaign_id,utm_campaign_name,utm_channel,utm_estrategia,utm_medium,utm_perfil,utm_source,utm_term,utm_type,Modified_Time,Created_Time,L_nea_de_Negocio,Oportunidad_Asociada,ID_Clientify,Modalidad_de_curso,Sede')\n)",
 								"type": "Expression"
 							}
 						}
@@ -310,7 +310,7 @@
 								"type": "Expression"
 							},
 							"filename": {
-								"value": "@concat('JsaZohoLeads_', string(variables('PageCounter')), '.json')",
+								"value": "@concat('JsaZohoLeads_', string(pipeline().parameters.PageCounter), '.json')",
 								"type": "Expression"
 							}
 						}
