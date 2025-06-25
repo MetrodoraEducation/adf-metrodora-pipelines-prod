@@ -673,6 +673,8 @@
 			{
 				"name": "Wait2",
 				"type": "Wait",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "UntilLeads",
@@ -689,6 +691,8 @@
 			{
 				"name": "CopydataZohoUsers",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Wait2",
@@ -763,6 +767,8 @@
 			{
 				"name": "CopydataZohoCampaigns",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "CopydataZohoUsers",
@@ -927,6 +933,8 @@
 			{
 				"name": "UntilContactos",
 				"type": "Until",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Wait3",
@@ -1167,6 +1175,8 @@
 			{
 				"name": "Wait3",
 				"type": "Wait",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "CopydataZohoCampaigns",
