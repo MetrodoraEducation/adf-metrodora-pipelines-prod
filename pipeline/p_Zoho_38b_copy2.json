@@ -226,7 +226,7 @@
 							"typeProperties": {
 								"variableName": "NextPageToken",
 								"value": {
-									"value": "@activity('GetNextTokenFromNotebook').output.firstRow.info.next_page_token",
+									"value": "@activity('GetNextTokenFromNotebook').output",
 									"type": "Expression"
 								}
 							}
