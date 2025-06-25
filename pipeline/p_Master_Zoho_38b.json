@@ -360,7 +360,7 @@
 							"type": "Expression"
 						},
 						"PageToken": {
-							"value": "@activity('Execute Deals 38b').output",
+							"value": "@activity('Execute Deals 38b').output.NextPageToken",
 							"type": "Expression"
 						},
 						"PageCounter": {
