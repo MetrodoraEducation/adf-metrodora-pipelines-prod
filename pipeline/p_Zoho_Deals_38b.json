@@ -315,6 +315,9 @@
 			},
 			"IfModifiedSince": {
 				"type": "string"
+			},
+			"NextPageToken": {
+				"type": "string"
 			}
 		},
 		"variables": {
