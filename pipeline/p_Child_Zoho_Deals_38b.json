@@ -321,7 +321,10 @@
 				"userProperties": [],
 				"typeProperties": {
 					"variableName": "NextPageToken",
-					"value": ""
+					"value": {
+						"value": "@pipeline().parameters.NextPageToken",
+						"type": "Expression"
+					}
 				}
 			},
 			{
