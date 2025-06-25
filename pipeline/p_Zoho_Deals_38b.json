@@ -146,11 +146,17 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"variableName": "NextPageToken",
-								"value": {
-									"value": "@activity('GetNextPageTokenDeals').output.firstRow.info.next_page_token",
-									"type": "Expression"
-								}
+								"variableName": "pipelineReturnValue",
+								"value": [
+									{
+										"key": "NextPageToken",
+										"value": {
+											"type": "String",
+											"content": "@activity('GetNextPageTokenDeals').output.firstRow.info.next_page_token"
+										}
+									}
+								],
+								"setSystemVariable": true
 							}
 						},
 						{
