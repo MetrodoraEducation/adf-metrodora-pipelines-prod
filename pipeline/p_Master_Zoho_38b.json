@@ -103,8 +103,51 @@
 				}
 			},
 			{
+				"name": "PageCounter",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "WebZohoAPI",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "PageCounter",
+					"value": {
+						"value": "@variables('TempCounter')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
 				"name": "If Condition1",
 				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Execute Pipeline1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@greater(\n    div(sub(ticks(utcnow()), ticks(variables('TokenStartTime'))), 10000000),\n    3500\n)",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Execute Pipeline1",
+				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
 						"activity": "If Modified Since Date Leads",
@@ -123,13 +166,53 @@
 						"dependencyConditions": [
 							"Succeeded"
 						]
+					},
+					{
+						"activity": "PageCounter",
+						"dependencyConditions": [
+							"Succeeded"
+						]
 					}
 				],
+				"policy": {
+					"secureInput": false
+				},
 				"userProperties": [],
 				"typeProperties": {
-					"expression": {
-						"value": "@greater(\n  div(sub(ticks(utcnow()), ticks(variables('TokenStartTime'))), 10000000),\n  3500\n)",
-						"type": "Expression"
+					"pipeline": {
+						"referenceName": "p_Zoho_38b_token_llamada",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"client_id": {
+							"value": "@pipeline().parameters.client_id",
+							"type": "Expression"
+						},
+						"client_secret": {
+							"value": "@pipeline().parameters.client_secret",
+							"type": "Expression"
+						},
+						"refresh_token": {
+							"value": "@pipeline().parameters.refresh_token",
+							"type": "Expression"
+						},
+						"reprocessDate": {
+							"value": "@pipeline().parameters.reprocessDate",
+							"type": "Expression"
+						},
+						"AccessToken": {
+							"value": "@pipeline().parameters.AccessToken",
+							"type": "Expression"
+						},
+						"PageToken": {
+							"value": "@pipeline().parameters.PageToken",
+							"type": "Expression"
+						},
+						"PageCounter": {
+							"value": "@pipeline().parameters.PageCounter",
+							"type": "Expression"
+						}
 					}
 				}
 			}
