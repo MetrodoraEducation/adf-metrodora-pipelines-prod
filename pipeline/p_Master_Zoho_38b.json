@@ -147,7 +147,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@greater(\n    div(sub(ticks(utcnow()), ticks(variables('TokenStartTime'))), 10000000),\n    100\n)",
+						"value": "@greater(\n    div(sub(ticks(utcnow()), ticks(variables('TokenStartTime'))), 10000000),\n    50\n)",
 						"type": "Expression"
 					}
 				}
@@ -218,6 +218,10 @@
 						},
 						"PageCounter": {
 							"value": "@variables('PageCounter')",
+							"type": "Expression"
+						},
+						"IfModifiedSince": {
+							"value": "@variables('If-Modified-Since')",
 							"type": "Expression"
 						}
 					}
@@ -312,6 +316,22 @@
 						}
 					]
 				}
+			},
+			{
+				"name": "Wait1",
+				"type": "Wait",
+				"dependsOn": [
+					{
+						"activity": "If Condition1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 5
+				}
 			}
 		],
 		"parameters": {
@@ -329,7 +349,7 @@
 			},
 			"reprocessDate": {
 				"type": "string",
-				"defaultValue": "1"
+				"defaultValue": "2"
 			},
 			"AccessToken": {
 				"type": "string"
