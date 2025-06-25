@@ -22,7 +22,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@or(\n  equals(trim(variables('NextPageTokenParent')), ''),\n  equals(trim(variables('NextPageToken')), '')\n)",
+						"value": "@or(\n  equals(trim(coalesce(variables('NextPageTokenParent'), '')), ''),\n  equals(trim(coalesce(variables('NextPageToken'), '')), '')\n)",
 						"type": "Expression"
 					},
 					"activities": [
