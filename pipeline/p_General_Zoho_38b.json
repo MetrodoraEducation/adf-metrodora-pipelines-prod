@@ -62,6 +62,27 @@
 			"silver_storage_databricks": {
 				"type": "string",
 				"defaultValue": "/Workspace/Repos/production_repository/notebooks-databricks-prod/Lakehouse/Silver/"
+			},
+			"client_id": {
+				"type": "string",
+				"defaultValue": "1000.1F4VDBCZ89HIY80175SZZF595HBSNO"
+			},
+			"client_secret": {
+				"type": "string",
+				"defaultValue": "d3743dfd871d30ac90d12b3e6ac02de1111c51076e"
+			},
+			"refresh_token": {
+				"type": "string",
+				"defaultValue": "1000.38b38aaaa19f9e17d7228903a78f2220.44022c9409dbc53987bcc273e18eb666"
+			},
+			"AccessToken": {
+				"type": "string"
+			},
+			"PageToken": {
+				"type": "string"
+			},
+			"PageCounter": {
+				"type": "string"
 			}
 		},
 		"folder": {
