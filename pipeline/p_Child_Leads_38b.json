@@ -149,10 +149,13 @@
 									"parameters": {
 										"container": "bronze",
 										"folder": {
-											"value": "@concat('lakehouse/zoho_38b/Deals/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+											"value": "@concat('lakehouse/zoho_38b/Leads/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
 											"type": "Expression"
 										},
-										"filename": "@concat('JsaZohoDeals_', string(variables('PageCounter')), '.json')"
+										"filename": {
+											"value": "@concat('JsaZohoLeads_', string(variables('PageCounter')), '.json')",
+											"type": "Expression"
+										}
 									}
 								}
 							]
@@ -194,10 +197,13 @@
 									"parameters": {
 										"container": "bronze",
 										"folder": {
-											"value": "@concat('lakehouse/zoho_38b/Deals/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+											"value": "@concat('lakehouse/zoho_38b/Leads/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
 											"type": "Expression"
 										},
-										"filename": "@concat('JsaZohoDeals_', string(variables('PageCounter')), '.json')"
+										"filename": {
+											"value": "@concat('JsaZohoLeads_', string(variables('PageCounter')), '.json')",
+											"type": "Expression"
+										}
 									}
 								}
 							}
