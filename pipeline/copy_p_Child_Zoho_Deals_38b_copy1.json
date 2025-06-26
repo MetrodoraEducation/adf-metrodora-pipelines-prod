@@ -7,7 +7,7 @@
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "SetTokenStartTime",
+						"activity": "Set variable Users Leads",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -30,12 +30,6 @@
 				"name": "NextPageTokenParent",
 				"type": "SetVariable",
 				"dependsOn": [
-					{
-						"activity": "SetTokenStartTime",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
 					{
 						"activity": "Set variable Users Leads",
 						"dependencyConditions": [
@@ -354,30 +348,6 @@
 						}
 					],
 					"timeout": "0.12:00:00"
-				}
-			},
-			{
-				"name": "SetTokenStartTime",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "WebZohoAPI",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "TokenStartTime",
-					"value": {
-						"value": "@utcNow()\n",
-						"type": "Expression"
-					}
 				}
 			},
 			{
