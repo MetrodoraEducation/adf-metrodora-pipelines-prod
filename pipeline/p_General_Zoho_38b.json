@@ -5,6 +5,8 @@
 			{
 				"name": "ExecuteZohoBronze_38b",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"secureInput": false
@@ -27,6 +29,8 @@
 			{
 				"name": "ExecuteZohoBronzetoSilver_38b",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "ExecuteZohoBronze_38b",
@@ -48,6 +52,48 @@
 					"parameters": {
 						"silver_storage_databricks": {
 							"value": "@pipeline().parameters.silver_storage_databricks",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "P Master Deals",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "p_Master_Deals_Zoho_38b",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"client_id": {
+							"value": "@pipeline().parameters.client_id",
+							"type": "Expression"
+						},
+						"client_secret": {
+							"value": "@pipeline().parameters.client_secret",
+							"type": "Expression"
+						},
+						"refresh_token": {
+							"value": "@pipeline().parameters.refresh_token",
+							"type": "Expression"
+						},
+						"reprocessDate": {
+							"value": "@variables('AccesToken')",
+							"type": "Expression"
+						},
+						"AccessToken": {
+							"value": "@variables('WebActivityName')",
+							"type": "Expression"
+						},
+						"PageToken": {
+							"value": "@variables('PageCounter')",
 							"type": "Expression"
 						}
 					}
@@ -83,6 +129,34 @@
 			},
 			"PageCounter": {
 				"type": "string"
+			}
+		},
+		"variables": {
+			"WebActivityName": {
+				"type": "String"
+			},
+			"If-Modified-Since": {
+				"type": "String"
+			},
+			"NextPageToken": {
+				"type": "String"
+			},
+			"Log_Token": {
+				"type": "String"
+			},
+			"PageCounter": {
+				"type": "String",
+				"defaultValue": "1"
+			},
+			"TempCounter": {
+				"type": "String",
+				"defaultValue": "0"
+			},
+			"TokenStartTime": {
+				"type": "String"
+			},
+			"AccesToken": {
+				"type": "String"
 			}
 		},
 		"folder": {
