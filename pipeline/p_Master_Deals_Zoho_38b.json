@@ -21,7 +21,7 @@
 				"typeProperties": {
 					"variableName": "PageCounter",
 					"value": {
-						"value": "@if(contains(activity('1 Executed Deals').output.pipelineReturnValue, 'PageCounter'), activity('1 Executed Deals').output.pipelineReturnValue.PageCounter, pipeline().parameters.PageCounter)",
+						"value": "@activity('1 Executed Deals').output.pipelineReturnValue.PageCounter",
 						"type": "Expression"
 					}
 				}
@@ -227,7 +227,7 @@
 				"typeProperties": {
 					"variableName": "NextPageTokenPrueba",
 					"value": {
-						"value": "@if(\n  contains(activity('1 Executed Deals').output.pipelineReturnValue, 'NextPageToken'),\n  activity('1 Executed Deals').output.pipelineReturnValue.NextPageToken,\n  ''\n)",
+						"value": "@activity('1 Executed Deals').output.pipelineReturnValue.NextPageToken",
 						"type": "Expression"
 					}
 				}
@@ -542,10 +542,6 @@
 			},
 			"PageToken": {
 				"type": "string"
-			},
-			"PageCounter": {
-				"type": "int",
-				"defaultValue": 1
 			},
 			"NextPageToken": {
 				"type": "string"
