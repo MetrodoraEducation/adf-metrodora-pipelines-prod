@@ -5,7 +5,20 @@
 			{
 				"name": "PageCounterParent",
 				"type": "SetVariable",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "If Modified Since Date Leads",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "SetTokenStartTime",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"secureOutput": false,
 					"secureInput": false
@@ -22,7 +35,26 @@
 			{
 				"name": "NextPageTokenParent",
 				"type": "SetVariable",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "If Modified Since Date Leads",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "SetTokenStartTime",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set variable Users Leads",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"secureOutput": false,
 					"secureInput": false
@@ -334,6 +366,106 @@
 						}
 					],
 					"timeout": "0.12:00:00"
+				}
+			},
+			{
+				"name": "If Modified Since Date Leads",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "WebZohoAPI",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "If-Modified-Since",
+					"value": {
+						"value": "@formatDateTime(addDays(utcnow(), if(equals(pipeline().parameters.reprocessDate, ''), -7, sub(0, int(pipeline().parameters.reprocessDate)))), 'yyyy-MM-ddTHH:mm:ssZ')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "SetTokenStartTime",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "WebZohoAPI",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "TokenStartTime",
+					"value": {
+						"value": "@utcNow()\n",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "WebZohoAPI",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "POST",
+					"headers": {
+						"Content-Type": "application/x-www-form-urlencoded"
+					},
+					"url": "https://accounts.zoho.eu/oauth/v2/token",
+					"body": {
+						"value": "@concat('client_id=', pipeline().parameters.client_id, \n        '&client_secret=', pipeline().parameters.client_secret,\n        '&refresh_token=', pipeline().parameters.refresh_token,\n        '&grant_type=refresh_token')",
+						"type": "Expression"
+					},
+					"authentication": {
+						"type": "MSI",
+						"resource": "https://vault.azure.net"
+					}
+				}
+			},
+			{
+				"name": "Set variable Users Leads",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "WebZohoAPI",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "WebActivityName",
+					"value": {
+						"value": "@activity('WebZohoAPI').output.access_token\n",
+						"type": "Expression"
+					}
 				}
 			}
 		],
