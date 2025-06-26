@@ -74,7 +74,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "p_Child_Deals_38b",
+						"referenceName": "p_Child_Leads_38b",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
@@ -256,7 +256,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "p_Child_Deals_38b",
+									"referenceName": "p_Child_Leads_38b",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
@@ -448,7 +448,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "p_Child_Deals_38b",
+									"referenceName": "p_Child_Leads_38b",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
