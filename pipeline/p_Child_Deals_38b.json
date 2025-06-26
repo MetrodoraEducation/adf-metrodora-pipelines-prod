@@ -11,6 +11,12 @@
 						"dependencyConditions": [
 							"Succeeded"
 						]
+					},
+					{
+						"activity": "SetTokenStartTime",
+						"dependencyConditions": [
+							"Succeeded"
+						]
 					}
 				],
 				"policy": {
@@ -32,6 +38,12 @@
 				"dependsOn": [
 					{
 						"activity": "Set variable Users Leads",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "SetTokenStartTime",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -70,7 +82,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@or(\n  equals(pipeline().parameters.NextPageToken, null),\n  equals(trim(variables('NextPageToken')), '')\n)",
+						"value": "@or(\n  or(\n    equals(variables('NextPageToken'), null),\n    equals(trim(variables('NextPageToken')), '')\n  ),\n  greater(\n    div(sub(ticks(utcnow()), ticks(pipeline().parameters.TokenStartTime)), 10000000),\n    3450\n  )\n)",
 						"type": "Expression"
 					},
 					"activities": [
@@ -401,6 +413,30 @@
 						"type": "Expression"
 					}
 				}
+			},
+			{
+				"name": "SetTokenStartTime",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "WebZohoAPI",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "TokenStartTime",
+					"value": {
+						"value": "@pipeline().parameters.TokenStartTime",
+						"type": "Expression"
+					}
+				}
 			}
 		],
 		"parameters": {
@@ -430,6 +466,9 @@
 				"type": "string"
 			},
 			"NextPageToken": {
+				"type": "string"
+			},
+			"TokenStartTime": {
 				"type": "string"
 			}
 		},
