@@ -113,7 +113,7 @@
 									"additionalHeaders": {
 										"Content-Type": "application/json",
 										"Authorization": {
-											"value": "@concat('Bearer ', pipeline().parameters.AccessToken)",
+											"value": "@concat('Bearer ', activity('WebZohoAPI').output.access_token)",
 											"type": "Expression"
 										},
 										"If-Modified-Since": {
