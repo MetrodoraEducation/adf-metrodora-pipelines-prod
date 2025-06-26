@@ -379,40 +379,8 @@
 				}
 			},
 			{
-				"name": "NextPageToken",
+				"name": "Page Counter and NextpageToken",
 				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "UntilDeals",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "pipelineReturnValue",
-					"value": [
-						{
-							"key": "NextPageToken",
-							"value": {
-								"type": "Expression",
-								"content": "@variables('NextPageToken')"
-							}
-						}
-					],
-					"setSystemVariable": true
-				}
-			},
-			{
-				"name": "PageCounter",
-				"type": "SetVariable",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "UntilDeals",
@@ -434,6 +402,13 @@
 							"value": {
 								"type": "Expression",
 								"content": "@variables('PageCounter')"
+							}
+						},
+						{
+							"key": "NextPageToken",
+							"value": {
+								"type": "Expression",
+								"content": "@variables('NextPageToken')"
 							}
 						}
 					],
