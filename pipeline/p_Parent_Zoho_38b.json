@@ -134,7 +134,7 @@
 				}
 			},
 			{
-				"name": "If Condition1",
+				"name": "If Seconds Start Execution",
 				"type": "IfCondition",
 				"dependsOn": [
 					{
@@ -318,63 +318,6 @@
 				}
 			},
 			{
-				"name": "2 Executed Deals",
-				"type": "ExecutePipeline",
-				"dependsOn": [
-					{
-						"activity": "If Condition1",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "p_Child_Zoho_Deals_38b",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"client_id": {
-							"value": "@pipeline().parameters.client_id",
-							"type": "Expression"
-						},
-						"client_secret": {
-							"value": "@pipeline().parameters.client_secret",
-							"type": "Expression"
-						},
-						"refresh_token": {
-							"value": "@pipeline().parameters.refresh_token",
-							"type": "Expression"
-						},
-						"reprocessDate": {
-							"value": "@variables('AccessToken')",
-							"type": "Expression"
-						},
-						"AccessToken": {
-							"value": "@variables('WebActivityName')",
-							"type": "Expression"
-						},
-						"PageCounter": {
-							"value": "@variables('PageCounter')",
-							"type": "Expression"
-						},
-						"IfModifiedSince": {
-							"value": "@variables('If-Modified-Since')",
-							"type": "Expression"
-						},
-						"NextPageToken": {
-							"value": "@variables('NextPageToken')",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
 				"name": "NextPageToken",
 				"type": "SetVariable",
 				"dependsOn": [
@@ -396,6 +339,93 @@
 						"value": "@if(contains(activity('1 Executed Deals').output.pipelineReturnValue, 'NextPageToken'), activity('1 Executed Deals').output.pipelineReturnValue.NextPageToken, '')",
 						"type": "Expression"
 					}
+				}
+			},
+			{
+				"name": "If Pagination",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "If Seconds Start Execution",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@not(\n  or(\n    equals(trim(coalesce(variables('NextPageToken'), '')), ''),\n    equals(variables('NextPageToken'), null)\n  )\n)",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "2 Executed Deals",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"policy": {
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "p_Child_Zoho_Deals_38b",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"client_id": {
+										"value": "@pipeline().parameters.client_id",
+										"type": "Expression"
+									},
+									"client_secret": {
+										"value": "@pipeline().parameters.client_secret",
+										"type": "Expression"
+									},
+									"refresh_token": {
+										"value": "@pipeline().parameters.refresh_token",
+										"type": "Expression"
+									},
+									"reprocessDate": {
+										"value": "@variables('AccessToken')",
+										"type": "Expression"
+									},
+									"AccessToken": {
+										"value": "@variables('WebActivityName')",
+										"type": "Expression"
+									},
+									"PageCounter": {
+										"value": "@variables('PageCounter')",
+										"type": "Expression"
+									},
+									"IfModifiedSince": {
+										"value": "@variables('If-Modified-Since')",
+										"type": "Expression"
+									},
+									"NextPageToken": {
+										"value": "@variables('NextPageToken')",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Wait1",
+				"type": "Wait",
+				"dependsOn": [
+					{
+						"activity": "If Pagination",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 1
 				}
 			}
 		],
