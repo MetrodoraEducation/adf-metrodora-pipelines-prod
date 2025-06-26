@@ -374,7 +374,7 @@
 				"typeProperties": {
 					"variableName": "PageCounter",
 					"value": {
-						"value": "@if(contains(activity('2 Executed Deals').output.pipelineReturnValue, 'PageCounter'), activity('2 Executed Deals').output.pipelineReturnValue.PageCounter, pipeline().parameters.PageCounter)",
+						"value": "@activity('2 Executed Deals').output.pipelineReturnValue.PageCounter",
 						"type": "Expression"
 					}
 				}
@@ -398,7 +398,7 @@
 				"typeProperties": {
 					"variableName": "NextPageToken",
 					"value": {
-						"value": "@if(contains(activity('2 Executed Deals').output.pipelineReturnValue, 'NextPageToken'), activity('2 Executed Deals').output.pipelineReturnValue.NextPageToken, '')",
+						"value": "@activity('2 Executed Deals').output.pipelineReturnValue.NextPageToken",
 						"type": "Expression"
 					}
 				}
@@ -535,7 +535,7 @@
 			},
 			"reprocessDate": {
 				"type": "string",
-				"defaultValue": "3"
+				"defaultValue": "2"
 			},
 			"AccessToken": {
 				"type": "string"
