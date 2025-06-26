@@ -110,6 +110,10 @@
 						"NextPageToken": {
 							"value": "@variables('NextPageToken')",
 							"type": "Expression"
+						},
+						"TokenStartTime": {
+							"value": "@variables('TokenStartTime')",
+							"type": "Expression"
 						}
 					}
 				}
