@@ -7,7 +7,7 @@
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "1 Executed Deals",
+						"activity": "1 Executed Leads",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -52,7 +52,7 @@
 				}
 			},
 			{
-				"name": "1 Executed Deals",
+				"name": "1 Executed Leads",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
@@ -74,7 +74,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "p_Child_Deals_38b",
+						"referenceName": "p_Child_Leads_38b",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
@@ -213,7 +213,7 @@
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "1 Executed Deals",
+						"activity": "1 Executed Leads",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -381,7 +381,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "p_Child_Deals_38b",
+									"referenceName": "p_Child_Leads_38b",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
@@ -472,7 +472,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "p_Child_Deals_38b",
+									"referenceName": "p_Child_Leads_38b",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
