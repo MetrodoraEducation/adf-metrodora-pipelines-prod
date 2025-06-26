@@ -5,8 +5,6 @@
 			{
 				"name": "ExecuteZohoBronze_38b",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"secureInput": false
@@ -29,8 +27,6 @@
 			{
 				"name": "ExecuteZohoBronzetoSilver_38b",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "ExecuteZohoBronze_38b",
@@ -60,6 +56,8 @@
 			{
 				"name": "P Master Deals",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"secureInput": false
