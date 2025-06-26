@@ -354,7 +354,7 @@
 					{
 						"activity": "1 Hour pagination",
 						"dependencyConditions": [
-							"Completed"
+							"Succeeded"
 						]
 					}
 				],
@@ -378,7 +378,7 @@
 					{
 						"activity": "1 Hour pagination",
 						"dependencyConditions": [
-							"Completed"
+							"Succeeded"
 						]
 					}
 				],
@@ -390,7 +390,7 @@
 				"typeProperties": {
 					"variableName": "NextPageToken",
 					"value": {
-						"value": "@if(contains(activity('1 Executed Deals').output.pipelineReturnValue, 'NextPageToken'), activity('1 Executed Deals').output.pipelineReturnValue.NextPageToken, '')",
+						"value": "@if(contains(activity('2 Executed Deals').output.pipelineReturnValue, 'NextPageToken'), activity('2 Executed Deals').output.pipelineReturnValue.NextPageToken, '')",
 						"type": "Expression"
 					}
 				}
@@ -402,13 +402,13 @@
 					{
 						"activity": "2 PageCounter",
 						"dependencyConditions": [
-							"Succeeded"
+							"Completed"
 						]
 					},
 					{
 						"activity": "2 NextPageToken",
 						"dependencyConditions": [
-							"Succeeded"
+							"Completed"
 						]
 					}
 				],
