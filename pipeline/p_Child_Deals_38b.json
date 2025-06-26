@@ -82,7 +82,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@or(\n  or(\n    equals(variables('NextPageToken'), null),\n    equals(trim(variables('NextPageToken')), '')\n  ),\n  greater(\n    div(sub(ticks(utcnow()), ticks(pipeline().parameters.TokenStartTime)), 10000000),\n    80\n  )\n)",
+						"value": "@or(\n  or(\n    equals(variables('NextPageToken'), null),\n    equals(trim(variables('NextPageToken')), '')\n  ),\n  greater(\n    div(sub(ticks(utcnow()), ticks(pipeline().parameters.TokenStartTime)), 10000000),\n    3300\n  )\n)",
 						"type": "Expression"
 					},
 					"activities": [
