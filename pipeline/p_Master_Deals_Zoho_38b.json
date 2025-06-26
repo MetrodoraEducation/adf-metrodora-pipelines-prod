@@ -5,8 +5,6 @@
 			{
 				"name": "PageCounter",
 				"type": "SetVariable",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "1 Executed Deals",
