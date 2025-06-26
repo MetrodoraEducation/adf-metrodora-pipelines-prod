@@ -223,7 +223,7 @@
 				"typeProperties": {
 					"variableName": "NextPageToken",
 					"value": {
-						"value": "@if(contains(activity('1 Executed Deals').output.pipelineReturnValue, 'NextPageToken'), activity('1 Executed Deals').output.pipelineReturnValue.NextPageToken, '')",
+						"value": "@concat('tokenvalido11224124141')",
 						"type": "Expression"
 					}
 				}
@@ -379,7 +379,7 @@
 			},
 			"reprocessDate": {
 				"type": "string",
-				"defaultValue": "1"
+				"defaultValue": "2"
 			},
 			"AccessToken": {
 				"type": "string"
