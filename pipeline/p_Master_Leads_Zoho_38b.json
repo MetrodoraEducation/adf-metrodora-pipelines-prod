@@ -372,7 +372,7 @@
 					},
 					"ifTrueActivities": [
 						{
-							"name": "3 Executed Deals",
+							"name": "3 Executed Leads",
 							"type": "ExecutePipeline",
 							"dependsOn": [],
 							"policy": {
@@ -463,7 +463,7 @@
 					},
 					"ifTrueActivities": [
 						{
-							"name": "2 Executed Deals",
+							"name": "2 Executed Leads",
 							"type": "ExecutePipeline",
 							"dependsOn": [],
 							"policy": {
