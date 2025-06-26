@@ -225,7 +225,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "NextPageTokenPrueba",
+					"variableName": "NextPageToken",
 					"value": {
 						"value": "@activity('1 Executed Deals').output.pipelineReturnValue.NextPageToken",
 						"type": "Expression"
@@ -246,7 +246,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@and(\n  not(equals(trim(coalesce(variables('NextPageToken'), '')), '')),\n  not(equals(variables('NextPageToken'), null))\n)",
+						"value": "@not(empty(variables('NextPageToken')))",
 						"type": "Expression"
 					},
 					"ifTrueActivities": [
