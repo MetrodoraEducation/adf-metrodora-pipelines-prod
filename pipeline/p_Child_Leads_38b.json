@@ -51,7 +51,7 @@
 				}
 			},
 			{
-				"name": "UntilDeals",
+				"name": "UntilLeads",
 				"type": "Until",
 				"dependsOn": [
 					{
@@ -75,7 +75,7 @@
 					},
 					"activities": [
 						{
-							"name": "CopydataZohoDeals",
+							"name": "CopydataZohoLeads",
 							"type": "Copy",
 							"dependsOn": [],
 							"policy": {
@@ -140,17 +140,20 @@
 											"value": "@concat('lakehouse/zoho_38b/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
 											"type": "Expression"
 										},
-										"filename": "@concat('JsaZohoDeals_', string(variables('PageCounter')), '.json')"
+										"filename": {
+											"value": "@concat('JsaZohoLeads_', string(variables('PageCounter')), '.json')",
+											"type": "Expression"
+										}
 									}
 								}
 							]
 						},
 						{
-							"name": "GetNextPageTokenDeals",
+							"name": "GetNextPageTokenLeads",
 							"type": "Lookup",
 							"dependsOn": [
 								{
-									"activity": "CopydataZohoDeals",
+									"activity": "CopydataZohoLeads",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -185,17 +188,20 @@
 											"value": "@concat('lakehouse/zoho_38b/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
 											"type": "Expression"
 										},
-										"filename": "@concat('JsaZohoDeals_', string(variables('PageCounter')), '.json')"
+										"filename": {
+											"value": "@concat('JsaZohoLeads_', string(variables('PageCounter')), '.json')",
+											"type": "Expression"
+										}
 									}
 								}
 							}
 						},
 						{
-							"name": "Set NextPageTokenDeals",
+							"name": "Set NextPageTokenLeads",
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "PageCounterDeals",
+									"activity": "PageCounterLeads",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -209,17 +215,17 @@
 							"typeProperties": {
 								"variableName": "NextPageToken",
 								"value": {
-									"value": "@activity('GetNextPageTokenDeals').output.firstRow.info.next_page_token",
+									"value": "@activity('GetNextPageTokenLeads').output.firstRow.info.next_page_token",
 									"type": "Expression"
 								}
 							}
 						},
 						{
-							"name": "LogtokenDeals",
+							"name": "LogtokenLeads",
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "Set NextPageTokenDeals",
+									"activity": "Set NextPageTokenLeads",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -239,11 +245,11 @@
 							}
 						},
 						{
-							"name": "TempCounterDeals",
+							"name": "TempCounterLeads",
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "GetNextPageTokenDeals",
+									"activity": "GetNextPageTokenLeads",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -263,11 +269,11 @@
 							}
 						},
 						{
-							"name": "PageCounterDeals",
+							"name": "PageCounterLeads",
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "TempCounterDeals",
+									"activity": "TempCounterLeads",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -291,7 +297,7 @@
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "LogtokenDeals",
+									"activity": "LogtokenLeads",
 									"dependencyConditions": [
 										"Succeeded"
 									]
