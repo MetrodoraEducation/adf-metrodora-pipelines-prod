@@ -41,6 +41,12 @@
 						"dependencyConditions": [
 							"Succeeded"
 						]
+					},
+					{
+						"activity": "New SetTokenStartTime",
+						"dependencyConditions": [
+							"Succeeded"
+						]
 					}
 				],
 				"userProperties": [],
@@ -343,6 +349,12 @@
 						"dependencyConditions": [
 							"Completed"
 						]
+					},
+					{
+						"activity": "2 SetTokenStartTime",
+						"dependencyConditions": [
+							"Completed"
+						]
 					}
 				],
 				"userProperties": [],
@@ -517,6 +529,54 @@
 							}
 						}
 					]
+				}
+			},
+			{
+				"name": "New SetTokenStartTime",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "1 Executed Leads",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "TokenStartTime",
+					"value": {
+						"value": "@utcNow()\n",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "2 SetTokenStartTime",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "1 Hour pagination",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "TokenStartTime",
+					"value": {
+						"value": "@utcNow()\n",
+						"type": "Expression"
+					}
 				}
 			}
 		],
