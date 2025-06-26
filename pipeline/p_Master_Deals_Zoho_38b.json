@@ -535,7 +535,7 @@
 			},
 			"reprocessDate": {
 				"type": "string",
-				"defaultValue": "5"
+				"defaultValue": "60"
 			},
 			"AccessToken": {
 				"type": "string"
