@@ -544,7 +544,8 @@
 				"type": "string"
 			},
 			"PageCounter": {
-				"type": "int"
+				"type": "int",
+				"defaultValue": 1
 			},
 			"NextPageToken": {
 				"type": "string"
