@@ -46,7 +46,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@greater(\n    div(sub(ticks(utcnow()), ticks(variables('TokenStartTime'))), 10000000),\n    3350\n)",
+						"value": "@greater(\n    div(sub(ticks(utcnow()), ticks(variables('TokenStartTime'))), 10000000),\n    150\n)",
 						"type": "Expression"
 					}
 				}
