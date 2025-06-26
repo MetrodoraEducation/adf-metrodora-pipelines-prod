@@ -56,7 +56,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "If Condition Delete",
+						"activity": "If Modified Since Date Leads",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -307,6 +307,30 @@
 				"userProperties": [],
 				"typeProperties": {
 					"waitTimeInSeconds": 1
+				}
+			},
+			{
+				"name": "If Modified Since Date Leads",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "If Condition Delete",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "If-Modified-Since",
+					"value": {
+						"value": "@formatDateTime(addDays(utcnow(), if(equals(pipeline().parameters.reprocessDate, ''), -7, sub(0, int(pipeline().parameters.reprocessDate)))), 'yyyy-MM-ddTHH:mm:ssZ')",
+						"type": "Expression"
+					}
 				}
 			}
 		],
