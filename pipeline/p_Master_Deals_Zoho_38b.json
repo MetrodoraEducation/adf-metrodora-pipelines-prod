@@ -1,5 +1,5 @@
 {
-	"name": "Copy_p_Parent_Zoho_38b_copy1",
+	"name": "p_Master_Deals_Zoho_38b",
 	"properties": {
 		"activities": [
 			{
@@ -74,7 +74,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "copy_p_Child_Zoho_Deals_38b_copy1",
+						"referenceName": "p_Child_Deals_38b",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
@@ -256,7 +256,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "copy_p_Child_Zoho_Deals_38b_copy1",
+									"referenceName": "p_Child_Deals_38b",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
@@ -448,7 +448,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "copy_p_Child_Zoho_Deals_38b_copy1",
+									"referenceName": "p_Child_Deals_38b",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
