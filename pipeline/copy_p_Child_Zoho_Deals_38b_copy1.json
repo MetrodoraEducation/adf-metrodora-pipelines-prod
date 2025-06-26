@@ -7,12 +7,6 @@
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "If Modified Since Date Leads",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
 						"activity": "SetTokenStartTime",
 						"dependencyConditions": [
 							"Succeeded"
@@ -36,12 +30,6 @@
 				"name": "NextPageTokenParent",
 				"type": "SetVariable",
 				"dependsOn": [
-					{
-						"activity": "If Modified Since Date Leads",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
 					{
 						"activity": "SetTokenStartTime",
 						"dependencyConditions": [
@@ -366,30 +354,6 @@
 						}
 					],
 					"timeout": "0.12:00:00"
-				}
-			},
-			{
-				"name": "If Modified Since Date Leads",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "WebZohoAPI",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "If-Modified-Since",
-					"value": {
-						"value": "@formatDateTime(addDays(utcnow(), if(equals(pipeline().parameters.reprocessDate, ''), -7, sub(0, int(pipeline().parameters.reprocessDate)))), 'yyyy-MM-ddTHH:mm:ssZ')",
-						"type": "Expression"
-					}
 				}
 			},
 			{
