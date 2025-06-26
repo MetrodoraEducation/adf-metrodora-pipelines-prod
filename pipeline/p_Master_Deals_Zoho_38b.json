@@ -246,7 +246,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@not(\n  or(\n    equals(trim(coalesce(variables('NextPageToken'), '')), ''),\n    equals(variables('NextPageToken'), null)\n  )\n)",
+						"value": "@and(\n  not(equals(trim(coalesce(variables('NextPageToken'), '')), '')),\n  not(equals(variables('NextPageToken'), null))\n)",
 						"type": "Expression"
 					},
 					"ifTrueActivities": [
