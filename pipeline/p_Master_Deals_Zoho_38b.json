@@ -285,7 +285,7 @@
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "2 Executed Deals",
+						"activity": "1 Hour pagination",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -309,7 +309,7 @@
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "2 Executed Deals",
+						"activity": "1 Hour pagination",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -445,8 +445,8 @@
 				}
 			},
 			{
-				"name": "2 Executed Deals",
-				"type": "ExecutePipeline",
+				"name": "1 Hour pagination",
+				"type": "IfCondition",
 				"dependsOn": [
 					{
 						"activity": "If Seconds 3350 Start",
@@ -455,54 +455,68 @@
 						]
 					}
 				],
-				"policy": {
-					"secureInput": false
-				},
 				"userProperties": [],
 				"typeProperties": {
-					"pipeline": {
-						"referenceName": "p_Child_Deals_38b",
-						"type": "PipelineReference"
+					"expression": {
+						"value": "@not(\n  or(\n    equals(trim(coalesce(variables('NextPageToken'), '')), ''),\n    equals(variables('NextPageToken'), null)\n  )\n)",
+						"type": "Expression"
 					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"client_id": {
-							"value": "@pipeline().parameters.client_id",
-							"type": "Expression"
-						},
-						"client_secret": {
-							"value": "@pipeline().parameters.client_secret",
-							"type": "Expression"
-						},
-						"refresh_token": {
-							"value": "@pipeline().parameters.refresh_token",
-							"type": "Expression"
-						},
-						"reprocessDate": {
-							"value": "@variables('AccessToken')",
-							"type": "Expression"
-						},
-						"AccessToken": {
-							"value": "@variables('WebActivityName')",
-							"type": "Expression"
-						},
-						"PageCounter": {
-							"value": "@variables('PageCounter')",
-							"type": "Expression"
-						},
-						"IfModifiedSince": {
-							"value": "@variables('If-Modified-Since')",
-							"type": "Expression"
-						},
-						"NextPageToken": {
-							"value": "@variables('NextPageToken')",
-							"type": "Expression"
-						},
-						"TokenStartTime": {
-							"value": "@variables('TokenStartTime')",
-							"type": "Expression"
+					"ifTrueActivities": [
+						{
+							"name": "2 Executed Deals",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"policy": {
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "p_Child_Deals_38b",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"client_id": {
+										"value": "@pipeline().parameters.client_id",
+										"type": "Expression"
+									},
+									"client_secret": {
+										"value": "@pipeline().parameters.client_secret",
+										"type": "Expression"
+									},
+									"refresh_token": {
+										"value": "@pipeline().parameters.refresh_token",
+										"type": "Expression"
+									},
+									"reprocessDate": {
+										"value": "@variables('AccessToken')",
+										"type": "Expression"
+									},
+									"AccessToken": {
+										"value": "@variables('WebActivityName')",
+										"type": "Expression"
+									},
+									"PageCounter": {
+										"value": "@variables('PageCounter')",
+										"type": "Expression"
+									},
+									"IfModifiedSince": {
+										"value": "@variables('If-Modified-Since')",
+										"type": "Expression"
+									},
+									"NextPageToken": {
+										"value": "@variables('NextPageToken')",
+										"type": "Expression"
+									},
+									"TokenStartTime": {
+										"value": "@variables('TokenStartTime')",
+										"type": "Expression"
+									}
+								}
+							}
 						}
-					}
+					]
 				}
 			}
 		],
@@ -521,7 +535,7 @@
 			},
 			"reprocessDate": {
 				"type": "string",
-				"defaultValue": "3"
+				"defaultValue": "5"
 			},
 			"AccessToken": {
 				"type": "string"
