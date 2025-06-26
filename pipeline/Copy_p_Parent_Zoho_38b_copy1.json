@@ -27,7 +27,7 @@
 				}
 			},
 			{
-				"name": "If Seconds Start Execution",
+				"name": "If Seconds 3350 Start",
 				"type": "IfCondition",
 				"dependsOn": [
 					{
@@ -229,11 +229,11 @@
 				}
 			},
 			{
-				"name": "If Pagination",
+				"name": "1 Hour pagination",
 				"type": "IfCondition",
 				"dependsOn": [
 					{
-						"activity": "If Seconds Start Execution",
+						"activity": "If Seconds 3350 Start",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -300,22 +300,6 @@
 				}
 			},
 			{
-				"name": "Wait1",
-				"type": "Wait",
-				"dependsOn": [
-					{
-						"activity": "If Pagination",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"waitTimeInSeconds": 1
-				}
-			},
-			{
 				"name": "If Modified Since Date Leads",
 				"type": "SetVariable",
 				"dependsOn": [
@@ -362,6 +346,166 @@
 						"type": "Expression"
 					}
 				}
+			},
+			{
+				"name": "2 PageCounter",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "1 Hour pagination",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "PageCounter",
+					"value": {
+						"value": "@if(contains(activity('2 Executed Deals').output.pipelineReturnValue, 'PageCounter'), activity('2 Executed Deals').output.pipelineReturnValue.PageCounter, pipeline().parameters.PageCounter)",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "2 NextPageToken",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "1 Hour pagination",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "NextPageToken",
+					"value": {
+						"value": "@if(contains(activity('1 Executed Deals').output.pipelineReturnValue, 'NextPageToken'), activity('1 Executed Deals').output.pipelineReturnValue.NextPageToken, '')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "If Seconds 6700 Start",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "2 PageCounter",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "2 NextPageToken",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@greater(\n    div(sub(ticks(utcnow()), ticks(variables('TokenStartTime'))), 10000000),\n    6700\n)",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "2 Hour pagination",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "If Seconds 6700 Start",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@not(\n  or(\n    equals(trim(coalesce(variables('NextPageToken'), '')), ''),\n    equals(variables('NextPageToken'), null)\n  )\n)",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "3 Executed Deals",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"policy": {
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "copy_p_Child_Zoho_Deals_38b_copy1",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"client_id": {
+										"value": "@pipeline().parameters.client_id",
+										"type": "Expression"
+									},
+									"client_secret": {
+										"value": "@pipeline().parameters.client_secret",
+										"type": "Expression"
+									},
+									"refresh_token": {
+										"value": "@pipeline().parameters.refresh_token",
+										"type": "Expression"
+									},
+									"reprocessDate": {
+										"value": "@variables('AccessToken')",
+										"type": "Expression"
+									},
+									"AccessToken": {
+										"value": "@variables('WebActivityName')",
+										"type": "Expression"
+									},
+									"PageCounter": {
+										"value": "@variables('PageCounter')",
+										"type": "Expression"
+									},
+									"IfModifiedSince": {
+										"value": "@variables('If-Modified-Since')",
+										"type": "Expression"
+									},
+									"NextPageToken": {
+										"value": "@variables('NextPageToken')",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Wait1",
+				"type": "Wait",
+				"dependsOn": [
+					{
+						"activity": "2 Hour pagination",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 1
+				}
 			}
 		],
 		"parameters": {
@@ -379,7 +523,7 @@
 			},
 			"reprocessDate": {
 				"type": "string",
-				"defaultValue": "2"
+				"defaultValue": "1"
 			},
 			"AccessToken": {
 				"type": "string"
