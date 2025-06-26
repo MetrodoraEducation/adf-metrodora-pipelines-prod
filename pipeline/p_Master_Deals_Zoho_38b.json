@@ -296,6 +296,10 @@
 									"NextPageToken": {
 										"value": "@variables('NextPageToken')",
 										"type": "Expression"
+									},
+									"TokenStartTime": {
+										"value": "@variables('TokenStartTime')",
+										"type": "Expression"
 									}
 								}
 							}
@@ -487,6 +491,10 @@
 									},
 									"NextPageToken": {
 										"value": "@variables('NextPageToken')",
+										"type": "Expression"
+									},
+									"TokenStartTime": {
+										"value": "@variables('TokenStartTime')",
 										"type": "Expression"
 									}
 								}
