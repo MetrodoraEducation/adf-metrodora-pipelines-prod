@@ -56,7 +56,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@or(\n  equals(variables('NextPageToken'), null),\n  equals(trim(variables('NextPageToken')), '')\n)",
+						"value": "@or(\n  equals(pipeline().parameters.NextPageToken, null),\n  equals(trim(variables('NextPageToken')), '')\n)",
 						"type": "Expression"
 					},
 					"activities": [
