@@ -424,15 +424,15 @@
 						]
 					},
 					{
-						"activity": "Classlife931Bronze_Full",
+						"activity": "Zoho_38bSilver_Full",
 						"dependencyConditions": [
 							"Succeeded"
 						]
 					},
 					{
-						"activity": "Zoho_38bSilver_Full",
+						"activity": "Classlife931Bronze_Full",
 						"dependencyConditions": [
-							"Succeeded"
+							"Completed"
 						]
 					}
 				],
