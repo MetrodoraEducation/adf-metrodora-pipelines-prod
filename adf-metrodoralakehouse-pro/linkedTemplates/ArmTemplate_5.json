@@ -4,7 +4,7 @@
 	"parameters": {
 		"factoryName": {
 			"type": "string",
-			"metadata": "Nombre de instancia de Data Factory",
+			"metadata": "Data Factory name",
 			"defaultValue": "adf-metrodoralakehouse-pro"
 		}
 	},
@@ -12,6 +12,259 @@
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/df_SalesDWHF0')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "DWHF0"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"linkedService": {
+								"referenceName": "ls_adsl",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sourceSalesGoldF0"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "ds_PostgreSql",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "alterRow1"
+						},
+						{
+							"name": "MapDrifted1",
+							"description": "Crea una asignación explícita para cada columna de desfase."
+						}
+					],
+					"scriptLines": [
+						"source(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'gold',",
+						"     folderPath: 'lakehousef0/sales') ~> sourceSalesGoldF0",
+						"MapDrifted1 alterRow(insertIf(true()),",
+						"     partitionBy('hash', 1)) ~> alterRow1",
+						"sourceSalesGoldF0 derive(amount = toDouble(byName('amount')),",
+						"          created = toTimestamp(byName('created')),",
+						"          id = toString(byName('id')),",
+						"          name = toString(byName('name')),",
+						"          filepath = toString(byName('filepath')),",
+						"          descuento = toDouble(byName('descuento')),",
+						"          descuento_matricula = toDouble(byName('descuento_matricula')),",
+						"          fecha_inscripcion = toTimestamp(byName('fecha_inscripcion')),",
+						"          processdate = toTimestamp(byName('processdate')),",
+						"          sourcesystem = toString(byName('sourcesystem')),",
+						"          modified = toTimestamp(byName('modified')),",
+						"          centro = toString(byName('centro')),",
+						"          source = toString(byName('source')),",
+						"          date_closed = toTimestamp(byName('date_closed')),",
+						"          owner_name = toString(byName('owner_name')),",
+						"          estudio = toString(byName('estudio')),",
+						"          contact_email = toString(byName('contact_email')),",
+						"          contact_phone = toString(byName('contact_phone')),",
+						"          stage_value = toString(byName('stage_value')),",
+						"          status_desc = toString(byName('status_desc')),",
+						"          byratings_rating = toString(byName('byratings_rating')),",
+						"          sede = toString(byName('sede')),",
+						"          modalidad = toString(byName('modalidad')),",
+						"          lost_reason_value = toString(byName('lost_reason_value')),",
+						"          tiempo_de_maduracion = toDouble(byName('tiempo_de_maduracion')),",
+						"          new_enrollent = toInteger(byName('new_enrollent')),",
+						"          lead_neto = toInteger(byName('lead_neto')),",
+						"          status_final = toString(byName('status_final')),",
+						"          created_date = toDate(byName('created_date')),",
+						"     partitionBy('hash', 1)) ~> MapDrifted1",
+						"alterRow1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     recreate:true,",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> sink1"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_AircallCallsSilverF0')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "DataFlowAircallSilverF0",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "df_AircallCallsSilverF0",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"sourceAircallBronze": {
+										"container": "bronze",
+										"folder": {
+											"value": "@concat('lakehousef0/aircall/calls/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+											"type": "Expression"
+										},
+										"filename": "aircallcalls.json"
+									},
+									"sinkAircallSilver": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "LakehouseF0/SilverF0"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-22T17:50:21Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_BudgetDWHF0')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "DataFlowBudgetDWHF0",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "df_BudgetDWHF0",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"sourceBudgetGoldF0": {},
+									"sink1": {
+										"schema": "public",
+										"table": "f0budget"
+									}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "LakehouseF0/DWHF0"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-22T17:50:20Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_BudgetGoldF0')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "DataFlowBudgetGoldF0",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "df_BudgetGoldF0",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"sourceBudgetBronzeF0": {
+										"container": "bronze",
+										"folder": {
+											"value": "@concat('lakehousef0/budget/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+											"type": "Expression"
+										},
+										"filename": "masterbudget.parquet"
+									},
+									"sinkBudgetGoldF0": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "LakehouseF0/GoldF0"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-22T17:50:20Z"
+			},
+			"dependsOn": []
+		},
 		{
 			"name": "[concat(parameters('factoryName'), '/p_CallsDWHF0')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
@@ -947,85 +1200,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/p_General_Zoho_38b')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "ExecuteZohoBronze_38b",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "p_Zoho_38b",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"reprocessDate": {
-									"value": "@pipeline().parameters.reprocessDate",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "ExecuteZohoBronzetoSilver_38b",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "ExecuteZohoBronze_38b",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "p_ZohoSilver_38b",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"silver_storage_databricks": {
-									"value": "@pipeline().parameters.silver_storage_databricks",
-									"type": "Expression"
-								}
-							}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"parameters": {
-					"reprocessDate": {
-						"type": "string",
-						"defaultValue": "7"
-					},
-					"silver_storage_databricks": {
-						"type": "string",
-						"defaultValue": "/Workspace/Repos/production_repository/notebooks-databricks-prod/Lakehouse/Silver/"
-					}
-				},
-				"folder": {
-					"name": "Lakehouse/General"
-				},
-				"annotations": [],
-				"lastPublishTime": "2025-06-03T16:56:15Z"
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/p_General_dimFijas_Mapeo')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -1348,6 +1522,1312 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/p_Master_Deals_Zoho_38b')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "PageCounter",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "1 Executed Deals",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "PageCounter",
+							"value": {
+								"value": "@activity('1 Executed Deals').output.pipelineReturnValue.PageCounter",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "If Seconds 3350 Start",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "PageCounter",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "NextPageToken",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "New SetTokenStartTime",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@greater(\n    div(sub(ticks(utcnow()), ticks(variables('TokenStartTime'))), 10000000),\n    3300\n)",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "1 Executed Deals",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "If Modified Since Date Leads",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "SetTokenStartTime",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "p_Child_Deals_38b",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"client_id": {
+									"value": "@pipeline().parameters.client_id",
+									"type": "Expression"
+								},
+								"client_secret": {
+									"value": "@pipeline().parameters.client_secret",
+									"type": "Expression"
+								},
+								"refresh_token": {
+									"value": "@pipeline().parameters.refresh_token",
+									"type": "Expression"
+								},
+								"reprocessDate": {
+									"value": "@variables('AccessToken')",
+									"type": "Expression"
+								},
+								"AccessToken": {
+									"value": "@variables('WebActivityName')",
+									"type": "Expression"
+								},
+								"PageCounter": {
+									"value": "@variables('PageCounter')",
+									"type": "Expression"
+								},
+								"IfModifiedSince": {
+									"value": "@variables('If-Modified-Since')",
+									"type": "Expression"
+								},
+								"NextPageToken": {
+									"value": "@variables('NextPageToken')",
+									"type": "Expression"
+								},
+								"TokenStartTime": {
+									"value": "@variables('TokenStartTime')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "CheckFolderExists",
+						"type": "GetMetadata",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "ds_adsl_json_delete",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "bronze",
+									"folder": {
+										"value": "@concat('lakehouse/zoho_38b/Deals/', formatDateTime(utcnow(),'yyyy'), '/', formatDateTime(utcnow(),'MM'), '/', formatDateTime(utcnow(),'dd'))",
+										"type": "Expression"
+									}
+								}
+							},
+							"fieldList": [
+								"exists"
+							],
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							},
+							"formatSettings": {
+								"type": "JsonReadSettings"
+							}
+						}
+					},
+					{
+						"name": "If Condition Delete",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "CheckFolderExists",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@activity('CheckFolderExists').output.exists",
+								"type": "Expression"
+							},
+							"ifTrueActivities": [
+								{
+									"name": "Delete Files in folder",
+									"type": "Delete",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"dataset": {
+											"referenceName": "ds_adsl_json_delete",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": "bronze",
+												"folder": {
+													"value": "@concat('lakehouse/zoho_38b/Deals/', formatDateTime(utcnow(),'yyyy'), '/', formatDateTime(utcnow(),'MM'), '/', formatDateTime(utcnow(),'dd'))",
+													"type": "Expression"
+												}
+											}
+										},
+										"enableLogging": false,
+										"storeSettings": {
+											"type": "AzureBlobFSReadSettings",
+											"recursive": true,
+											"enablePartitionDiscovery": false
+										}
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "NextPageToken",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "1 Executed Deals",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "NextPageToken",
+							"value": {
+								"value": "@activity('1 Executed Deals').output.pipelineReturnValue.NextPageToken",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "If Modified Since Date Leads",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "If Condition Delete",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "If-Modified-Since",
+							"value": {
+								"value": "@formatDateTime(addDays(utcnow(), if(equals(pipeline().parameters.reprocessDate, ''), -7, sub(0, int(pipeline().parameters.reprocessDate)))), 'yyyy-MM-ddTHH:mm:ssZ')",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "SetTokenStartTime",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "If Condition Delete",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "TokenStartTime",
+							"value": {
+								"value": "@utcNow()\n",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "2 PageCounter",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "1 Hour pagination",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "PageCounter",
+							"value": {
+								"value": "@activity('2 Executed Deals').output.pipelineReturnValue.PageCounter",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "2 NextPageToken",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "1 Hour pagination",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "NextPageToken",
+							"value": {
+								"value": "@activity('2 Executed Deals').output.pipelineReturnValue.NextPageToken",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "If Seconds 6700 Start",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "2 PageCounter",
+								"dependencyConditions": [
+									"Completed"
+								]
+							},
+							{
+								"activity": "2 NextPageToken",
+								"dependencyConditions": [
+									"Completed"
+								]
+							},
+							{
+								"activity": "2 SetTokenStartTime_copy1",
+								"dependencyConditions": [
+									"Completed"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@greater(\n    div(sub(ticks(utcnow()), ticks(variables('TokenStartTime'))), 10000000),\n    6700\n)",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "2 Hour pagination",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "If Seconds 6700 Start",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@not(\n  or(\n    equals(trim(coalesce(variables('NextPageToken'), '')), ''),\n    equals(variables('NextPageToken'), null)\n  )\n)",
+								"type": "Expression"
+							},
+							"ifTrueActivities": [
+								{
+									"name": "3 Executed Deals",
+									"type": "ExecutePipeline",
+									"dependsOn": [],
+									"policy": {
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "p_Child_Deals_38b",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"client_id": {
+												"value": "@pipeline().parameters.client_id",
+												"type": "Expression"
+											},
+											"client_secret": {
+												"value": "@pipeline().parameters.client_secret",
+												"type": "Expression"
+											},
+											"refresh_token": {
+												"value": "@pipeline().parameters.refresh_token",
+												"type": "Expression"
+											},
+											"reprocessDate": {
+												"value": "@variables('AccessToken')",
+												"type": "Expression"
+											},
+											"AccessToken": {
+												"value": "@variables('WebActivityName')",
+												"type": "Expression"
+											},
+											"PageCounter": {
+												"value": "@variables('PageCounter')",
+												"type": "Expression"
+											},
+											"IfModifiedSince": {
+												"value": "@variables('If-Modified-Since')",
+												"type": "Expression"
+											},
+											"NextPageToken": {
+												"value": "@variables('NextPageToken')",
+												"type": "Expression"
+											},
+											"TokenStartTime": {
+												"value": "@variables('TokenStartTime')",
+												"type": "Expression"
+											}
+										}
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "Wait1",
+						"type": "Wait",
+						"dependsOn": [
+							{
+								"activity": "2 Hour pagination",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"waitTimeInSeconds": 1
+						}
+					},
+					{
+						"name": "1 Hour pagination",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "If Seconds 3350 Start",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@not(\n  or(\n    equals(trim(coalesce(variables('NextPageToken'), '')), ''),\n    equals(variables('NextPageToken'), null)\n  )\n)",
+								"type": "Expression"
+							},
+							"ifTrueActivities": [
+								{
+									"name": "2 Executed Deals",
+									"type": "ExecutePipeline",
+									"dependsOn": [],
+									"policy": {
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "p_Child_Deals_38b",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"client_id": {
+												"value": "@pipeline().parameters.client_id",
+												"type": "Expression"
+											},
+											"client_secret": {
+												"value": "@pipeline().parameters.client_secret",
+												"type": "Expression"
+											},
+											"refresh_token": {
+												"value": "@pipeline().parameters.refresh_token",
+												"type": "Expression"
+											},
+											"reprocessDate": {
+												"value": "@variables('AccessToken')",
+												"type": "Expression"
+											},
+											"AccessToken": {
+												"value": "@variables('WebActivityName')",
+												"type": "Expression"
+											},
+											"PageCounter": {
+												"value": "@variables('PageCounter')",
+												"type": "Expression"
+											},
+											"IfModifiedSince": {
+												"value": "@variables('If-Modified-Since')",
+												"type": "Expression"
+											},
+											"NextPageToken": {
+												"value": "@variables('NextPageToken')",
+												"type": "Expression"
+											},
+											"TokenStartTime": {
+												"value": "@variables('TokenStartTime')",
+												"type": "Expression"
+											}
+										}
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "New SetTokenStartTime",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "1 Executed Deals",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "TokenStartTime",
+							"value": {
+								"value": "@utcNow()\n",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "2 SetTokenStartTime_copy1",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "1 Hour pagination",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "TokenStartTime",
+							"value": {
+								"value": "@utcNow()\n",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"client_id": {
+						"type": "string",
+						"defaultValue": "1000.1F4VDBCZ89HIY80175SZZF595HBSNO"
+					},
+					"client_secret": {
+						"type": "string",
+						"defaultValue": "d3743dfd871d30ac90d12b3e6ac02de1111c51076e"
+					},
+					"refresh_token": {
+						"type": "string",
+						"defaultValue": "1000.38b38aaaa19f9e17d7228903a78f2220.44022c9409dbc53987bcc273e18eb666"
+					},
+					"reprocessDate": {
+						"type": "string",
+						"defaultValue": "60"
+					},
+					"AccessToken": {
+						"type": "string"
+					},
+					"PageToken": {
+						"type": "string"
+					},
+					"NextPageToken": {
+						"type": "string"
+					}
+				},
+				"variables": {
+					"WebActivityName": {
+						"type": "String"
+					},
+					"If-Modified-Since": {
+						"type": "String"
+					},
+					"NextPageToken": {
+						"type": "String"
+					},
+					"Log_Token": {
+						"type": "String"
+					},
+					"PageCounter": {
+						"type": "Integer",
+						"defaultValue": 1
+					},
+					"TempCounter": {
+						"type": "Integer",
+						"defaultValue": 0
+					},
+					"TokenStartTime": {
+						"type": "String"
+					},
+					"AccessToken": {
+						"type": "String"
+					},
+					"NextPageTokenPrueba": {
+						"type": "String"
+					}
+				},
+				"folder": {
+					"name": "Lakehouse/Bronze"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-06-23T12:54:36Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_Master_Leads_Zoho_38b')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "PageCounter",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "1 Executed Leads",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "PageCounter",
+							"value": {
+								"value": "@activity('1 Executed Leads').output.pipelineReturnValue.PageCounter",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "If Seconds 3350 Start",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "PageCounter",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "NextPageToken",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "New SetTokenStartTime",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@greater(\n    div(sub(ticks(utcnow()), ticks(variables('TokenStartTime'))), 10000000),\n    3300\n)",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "1 Executed Leads",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "If Modified Since Date Leads",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "SetTokenStartTime",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "p_Child_Leads_38b",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"client_id": {
+									"value": "@pipeline().parameters.client_id",
+									"type": "Expression"
+								},
+								"client_secret": {
+									"value": "@pipeline().parameters.client_secret",
+									"type": "Expression"
+								},
+								"refresh_token": {
+									"value": "@pipeline().parameters.refresh_token",
+									"type": "Expression"
+								},
+								"reprocessDate": {
+									"value": "@variables('AccessToken')",
+									"type": "Expression"
+								},
+								"AccessToken": {
+									"value": "@variables('WebActivityName')",
+									"type": "Expression"
+								},
+								"PageCounter": {
+									"value": "@variables('PageCounter')",
+									"type": "Expression"
+								},
+								"IfModifiedSince": {
+									"value": "@variables('If-Modified-Since')",
+									"type": "Expression"
+								},
+								"NextPageToken": {
+									"value": "@variables('NextPageToken')",
+									"type": "Expression"
+								},
+								"TokenStartTime": {
+									"value": "@variables('TokenStartTime')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "CheckFolderExists",
+						"type": "GetMetadata",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "ds_adsl_json_delete",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "bronze",
+									"folder": {
+										"value": "@concat('lakehouse/zoho_38b/Leads/', formatDateTime(utcnow(),'yyyy'), '/', formatDateTime(utcnow(),'MM'), '/', formatDateTime(utcnow(),'dd'))",
+										"type": "Expression"
+									}
+								}
+							},
+							"fieldList": [
+								"exists"
+							],
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							},
+							"formatSettings": {
+								"type": "JsonReadSettings"
+							}
+						}
+					},
+					{
+						"name": "If Condition Delete",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "CheckFolderExists",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@activity('CheckFolderExists').output.exists",
+								"type": "Expression"
+							},
+							"ifTrueActivities": [
+								{
+									"name": "Delete Files in folder",
+									"type": "Delete",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"dataset": {
+											"referenceName": "ds_adsl_json_delete",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": "bronze",
+												"folder": {
+													"value": "@concat('lakehouse/zoho_38b/Leads/', formatDateTime(utcnow(),'yyyy'), '/', formatDateTime(utcnow(),'MM'), '/', formatDateTime(utcnow(),'dd'))",
+													"type": "Expression"
+												}
+											}
+										},
+										"enableLogging": false,
+										"storeSettings": {
+											"type": "AzureBlobFSReadSettings",
+											"recursive": true,
+											"enablePartitionDiscovery": false
+										}
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "NextPageToken",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "1 Executed Leads",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "NextPageToken",
+							"value": {
+								"value": "@activity('1 Executed Leads').output.pipelineReturnValue.NextPageToken",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "If Modified Since Date Leads",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "If Condition Delete",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "If-Modified-Since",
+							"value": {
+								"value": "@formatDateTime(addDays(utcnow(), if(equals(pipeline().parameters.reprocessDate, ''), -7, sub(0, int(pipeline().parameters.reprocessDate)))), 'yyyy-MM-ddTHH:mm:ssZ')",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "SetTokenStartTime",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "If Condition Delete",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "TokenStartTime",
+							"value": {
+								"value": "@utcNow()\n",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "2 PageCounter",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "1 Hour pagination",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "PageCounter",
+							"value": {
+								"value": "@activity('2 Executed Leads').output.pipelineReturnValue.PageCounter",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "2 NextPageToken",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "1 Hour pagination",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "NextPageToken",
+							"value": {
+								"value": "@activity('2 Executed Leads').output.pipelineReturnValue.NextPageToken",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "If Seconds 6700 Start",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "2 PageCounter",
+								"dependencyConditions": [
+									"Completed"
+								]
+							},
+							{
+								"activity": "2 NextPageToken",
+								"dependencyConditions": [
+									"Completed"
+								]
+							},
+							{
+								"activity": "2 SetTokenStartTime",
+								"dependencyConditions": [
+									"Completed"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@greater(\n    div(sub(ticks(utcnow()), ticks(variables('TokenStartTime'))), 10000000),\n    6700\n)",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "2 Hour pagination",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "If Seconds 6700 Start",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@not(\n  or(\n    equals(trim(coalesce(variables('NextPageToken'), '')), ''),\n    equals(variables('NextPageToken'), null)\n  )\n)",
+								"type": "Expression"
+							},
+							"ifTrueActivities": [
+								{
+									"name": "3 Executed Leads",
+									"type": "ExecutePipeline",
+									"dependsOn": [],
+									"policy": {
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "p_Child_Leads_38b",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"client_id": {
+												"value": "@pipeline().parameters.client_id",
+												"type": "Expression"
+											},
+											"client_secret": {
+												"value": "@pipeline().parameters.client_secret",
+												"type": "Expression"
+											},
+											"refresh_token": {
+												"value": "@pipeline().parameters.refresh_token",
+												"type": "Expression"
+											},
+											"reprocessDate": {
+												"value": "@variables('AccessToken')",
+												"type": "Expression"
+											},
+											"AccessToken": {
+												"value": "@variables('WebActivityName')",
+												"type": "Expression"
+											},
+											"PageCounter": {
+												"value": "@variables('PageCounter')",
+												"type": "Expression"
+											},
+											"IfModifiedSince": {
+												"value": "@variables('If-Modified-Since')",
+												"type": "Expression"
+											},
+											"NextPageToken": {
+												"value": "@variables('NextPageToken')",
+												"type": "Expression"
+											},
+											"TokenStartTime": {
+												"value": "@variables('TokenStartTime')",
+												"type": "Expression"
+											}
+										}
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "Wait1",
+						"type": "Wait",
+						"dependsOn": [
+							{
+								"activity": "2 Hour pagination",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"waitTimeInSeconds": 1
+						}
+					},
+					{
+						"name": "1 Hour pagination",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "If Seconds 3350 Start",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@not(\n  or(\n    equals(trim(coalesce(variables('NextPageToken'), '')), ''),\n    equals(variables('NextPageToken'), null)\n  )\n)",
+								"type": "Expression"
+							},
+							"ifTrueActivities": [
+								{
+									"name": "2 Executed Leads",
+									"type": "ExecutePipeline",
+									"dependsOn": [],
+									"policy": {
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "p_Child_Leads_38b",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"client_id": {
+												"value": "@pipeline().parameters.client_id",
+												"type": "Expression"
+											},
+											"client_secret": {
+												"value": "@pipeline().parameters.client_secret",
+												"type": "Expression"
+											},
+											"refresh_token": {
+												"value": "@pipeline().parameters.refresh_token",
+												"type": "Expression"
+											},
+											"reprocessDate": {
+												"value": "@variables('AccessToken')",
+												"type": "Expression"
+											},
+											"AccessToken": {
+												"value": "@variables('WebActivityName')",
+												"type": "Expression"
+											},
+											"PageCounter": {
+												"value": "@variables('PageCounter')",
+												"type": "Expression"
+											},
+											"IfModifiedSince": {
+												"value": "@variables('If-Modified-Since')",
+												"type": "Expression"
+											},
+											"NextPageToken": {
+												"value": "@variables('NextPageToken')",
+												"type": "Expression"
+											},
+											"TokenStartTime": {
+												"value": "@variables('TokenStartTime')",
+												"type": "Expression"
+											}
+										}
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "New SetTokenStartTime",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "1 Executed Leads",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "TokenStartTime",
+							"value": {
+								"value": "@utcNow()\n",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "2 SetTokenStartTime",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "1 Hour pagination",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "TokenStartTime",
+							"value": {
+								"value": "@utcNow()\n",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"client_id": {
+						"type": "string",
+						"defaultValue": "1000.1F4VDBCZ89HIY80175SZZF595HBSNO"
+					},
+					"client_secret": {
+						"type": "string",
+						"defaultValue": "d3743dfd871d30ac90d12b3e6ac02de1111c51076e"
+					},
+					"refresh_token": {
+						"type": "string",
+						"defaultValue": "1000.38b38aaaa19f9e17d7228903a78f2220.44022c9409dbc53987bcc273e18eb666"
+					},
+					"reprocessDate": {
+						"type": "string",
+						"defaultValue": "60"
+					},
+					"AccessToken": {
+						"type": "string"
+					},
+					"PageToken": {
+						"type": "string"
+					},
+					"NextPageToken": {
+						"type": "string"
+					}
+				},
+				"variables": {
+					"WebActivityName": {
+						"type": "String"
+					},
+					"If-Modified-Since": {
+						"type": "String"
+					},
+					"NextPageToken": {
+						"type": "String"
+					},
+					"Log_Token": {
+						"type": "String"
+					},
+					"PageCounter": {
+						"type": "Integer",
+						"defaultValue": 1
+					},
+					"TempCounter": {
+						"type": "Integer",
+						"defaultValue": 0
+					},
+					"TokenStartTime": {
+						"type": "String"
+					},
+					"AccessToken": {
+						"type": "String"
+					},
+					"NextPageTokenPrueba": {
+						"type": "String"
+					}
+				},
+				"folder": {
+					"name": "Lakehouse/Bronze"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-06-23T12:54:36Z"
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/p_OdooLeadSilverF0')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -1399,6 +2879,505 @@
 				},
 				"annotations": [],
 				"lastPublishTime": "2025-03-22T17:50:20Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_Parent_Zoho_38b')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "If Modified Since Date Leads",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "WebZohoAPI",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "If-Modified-Since",
+							"value": {
+								"value": "@formatDateTime(addDays(utcnow(), if(equals(pipeline().parameters.reprocessDate, ''), -7, sub(0, int(pipeline().parameters.reprocessDate)))), 'yyyy-MM-ddTHH:mm:ssZ')",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "SetTokenStartTime",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "WebZohoAPI",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "TokenStartTime",
+							"value": {
+								"value": "@utcNow()\n",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "WebZohoAPI",
+						"type": "WebActivity",
+						"dependsOn": [
+							{
+								"activity": "If Condition Delete",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "POST",
+							"headers": {
+								"Content-Type": "application/x-www-form-urlencoded"
+							},
+							"url": "https://accounts.zoho.eu/oauth/v2/token",
+							"body": {
+								"value": "@concat('client_id=', pipeline().parameters.client_id, \n        '&client_secret=', pipeline().parameters.client_secret,\n        '&refresh_token=', pipeline().parameters.refresh_token,\n        '&grant_type=refresh_token')",
+								"type": "Expression"
+							},
+							"authentication": {
+								"type": "MSI",
+								"resource": "https://vault.azure.net"
+							}
+						}
+					},
+					{
+						"name": "Set variable Users Leads",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "WebZohoAPI",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "WebActivityName",
+							"value": {
+								"value": "@activity('WebZohoAPI').output.access_token\n",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "PageCounter",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "1 Executed Deals",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "PageCounter",
+							"value": {
+								"value": "@if(contains(activity('1 Executed Deals').output.pipelineReturnValue, 'PageCounter'), activity('1 Executed Deals').output.pipelineReturnValue.PageCounter, pipeline().parameters.PageCounter)",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "If Seconds Start Execution",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "PageCounter",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "NextPageToken",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@greater(\n    div(sub(ticks(utcnow()), ticks(variables('TokenStartTime'))), 10000000),\n    10\n)",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "1 Executed Deals",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "If Modified Since Date Leads",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "SetTokenStartTime",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Set variable Users Leads",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "p_Child_Zoho_Deals_38b",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"client_id": {
+									"value": "@pipeline().parameters.client_id",
+									"type": "Expression"
+								},
+								"client_secret": {
+									"value": "@pipeline().parameters.client_secret",
+									"type": "Expression"
+								},
+								"refresh_token": {
+									"value": "@pipeline().parameters.refresh_token",
+									"type": "Expression"
+								},
+								"reprocessDate": {
+									"value": "@variables('AccessToken')",
+									"type": "Expression"
+								},
+								"AccessToken": {
+									"value": "@variables('WebActivityName')",
+									"type": "Expression"
+								},
+								"PageCounter": {
+									"value": "@variables('PageCounter')",
+									"type": "Expression"
+								},
+								"IfModifiedSince": {
+									"value": "@variables('If-Modified-Since')",
+									"type": "Expression"
+								},
+								"NextPageToken": {
+									"value": "@variables('NextPageToken')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "CheckFolderExists",
+						"type": "GetMetadata",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "ds_adsl_json_delete",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "bronze",
+									"folder": {
+										"value": "@concat('lakehouse/zoho_38b/', formatDateTime(utcnow(),'yyyy'), '/', formatDateTime(utcnow(),'MM'), '/', formatDateTime(utcnow(),'dd'))",
+										"type": "Expression"
+									}
+								}
+							},
+							"fieldList": [
+								"exists"
+							],
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							},
+							"formatSettings": {
+								"type": "JsonReadSettings"
+							}
+						}
+					},
+					{
+						"name": "If Condition Delete",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "CheckFolderExists",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@activity('CheckFolderExists').output.exists",
+								"type": "Expression"
+							},
+							"ifTrueActivities": [
+								{
+									"name": "Delete Files in folder",
+									"type": "Delete",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"dataset": {
+											"referenceName": "ds_adsl_json_delete",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": "bronze",
+												"folder": {
+													"value": "@concat('lakehouse/zoho_38b/', formatDateTime(utcnow(),'yyyy'), '/', formatDateTime(utcnow(),'MM'), '/', formatDateTime(utcnow(),'dd'))",
+													"type": "Expression"
+												}
+											}
+										},
+										"enableLogging": false,
+										"storeSettings": {
+											"type": "AzureBlobFSReadSettings",
+											"recursive": true,
+											"enablePartitionDiscovery": false
+										}
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "NextPageToken",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "1 Executed Deals",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "NextPageToken",
+							"value": {
+								"value": "@if(contains(activity('1 Executed Deals').output.pipelineReturnValue, 'NextPageToken'), activity('1 Executed Deals').output.pipelineReturnValue.NextPageToken, '')",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "If Pagination",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "If Seconds Start Execution",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@not(\n  or(\n    equals(trim(coalesce(variables('NextPageToken'), '')), ''),\n    equals(variables('NextPageToken'), null)\n  )\n)",
+								"type": "Expression"
+							},
+							"ifTrueActivities": [
+								{
+									"name": "2 Executed Deals",
+									"type": "ExecutePipeline",
+									"dependsOn": [],
+									"policy": {
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "p_Child_Zoho_Deals_38b",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"client_id": {
+												"value": "@pipeline().parameters.client_id",
+												"type": "Expression"
+											},
+											"client_secret": {
+												"value": "@pipeline().parameters.client_secret",
+												"type": "Expression"
+											},
+											"refresh_token": {
+												"value": "@pipeline().parameters.refresh_token",
+												"type": "Expression"
+											},
+											"reprocessDate": {
+												"value": "@variables('AccessToken')",
+												"type": "Expression"
+											},
+											"AccessToken": {
+												"value": "@variables('WebActivityName')",
+												"type": "Expression"
+											},
+											"PageCounter": {
+												"value": "@variables('PageCounter')",
+												"type": "Expression"
+											},
+											"IfModifiedSince": {
+												"value": "@variables('If-Modified-Since')",
+												"type": "Expression"
+											},
+											"NextPageToken": {
+												"value": "@variables('NextPageToken')",
+												"type": "Expression"
+											}
+										}
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "Wait1",
+						"type": "Wait",
+						"dependsOn": [
+							{
+								"activity": "If Pagination",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"waitTimeInSeconds": 1
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"client_id": {
+						"type": "string",
+						"defaultValue": "1000.1F4VDBCZ89HIY80175SZZF595HBSNO"
+					},
+					"client_secret": {
+						"type": "string",
+						"defaultValue": "d3743dfd871d30ac90d12b3e6ac02de1111c51076e"
+					},
+					"refresh_token": {
+						"type": "string",
+						"defaultValue": "1000.38b38aaaa19f9e17d7228903a78f2220.44022c9409dbc53987bcc273e18eb666"
+					},
+					"reprocessDate": {
+						"type": "string",
+						"defaultValue": "1"
+					},
+					"AccessToken": {
+						"type": "string"
+					},
+					"PageToken": {
+						"type": "string"
+					},
+					"PageCounter": {
+						"type": "string"
+					}
+				},
+				"variables": {
+					"WebActivityName": {
+						"type": "String"
+					},
+					"If-Modified-Since": {
+						"type": "String"
+					},
+					"NextPageToken": {
+						"type": "String"
+					},
+					"Log_Token": {
+						"type": "String"
+					},
+					"PageCounter": {
+						"type": "Integer",
+						"defaultValue": 1
+					},
+					"TempCounter": {
+						"type": "Integer",
+						"defaultValue": 0
+					},
+					"TokenStartTime": {
+						"type": "String"
+					},
+					"AccessToken": {
+						"type": "String"
+					}
+				},
+				"folder": {
+					"name": "Lakehouse/Bronze/Zoho"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-06-23T12:54:36Z"
 			},
 			"dependsOn": []
 		},
@@ -1590,491 +3569,6 @@
 				},
 				"folder": {
 					"name": "LakehouseF0/BronzeF0"
-				},
-				"annotations": [],
-				"lastPublishTime": "2025-03-22T17:50:21Z"
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/p_SalesBronzeF0_Full')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "ExecutePipelineClientifyDealsBronzeF0_Full",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "p_ClientifyDealsBronzeF0_Full",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "ExecutePipelineOdooLeadBronzeF0_Full",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "p_OdooLeadBronzeF0_Full",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "ExecutePipelineClientifyDealsBronzeF0_LostReason_Full",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "p_ClientifyDealsBronzeF0_LostReason_Full",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "ExecutePipelineClientifyDealsBronzeF0_IdForDelete",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "p_ClientifyDealsBronzeF0_IdForDelete",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"folder": {
-					"name": "LakehouseF0/BronzeF0"
-				},
-				"annotations": [],
-				"lastPublishTime": "2025-03-22T17:50:21Z"
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/p_SalesBronzeF0_Full_copy1')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "ExecutePipelineClientifyDealsBronzeF0_Full",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "p_ClientifyDealsBronzeF0_Full",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "ExecutePipelineOdooLeadBronzeF0_Full",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "p_OdooLeadBronzeF0_Full",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"folder": {
-					"name": "LakehouseF0/BronzeF0"
-				},
-				"annotations": [],
-				"lastPublishTime": "2024-11-25T09:21:38Z"
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/p_SalesBronzeF0_copy1')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "ExecutePipelineClientifyDealsBronzeF0",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "p_ClientifyDealsBronzeF0",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"dayToLoad": {
-									"value": "@pipeline().parameters.dayToLoad",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "ExecutePipelineOdooLeadBronzeF0",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "p_OdooLeadBronzeF0",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"dayToLoad": {
-									"value": "@pipeline().parameters.dayToLoad",
-									"type": "Expression"
-								}
-							}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"parameters": {
-					"dayToLoad": {
-						"type": "string",
-						"defaultValue": "7"
-					}
-				},
-				"folder": {
-					"name": "LakehouseF0/BronzeF0"
-				},
-				"annotations": [],
-				"lastPublishTime": "2024-11-25T09:21:38Z"
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/p_SalesBronze_Full')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "ExecutePipelineClientifyDealsBronze_Full",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "p_ClientifyDealsBronze_Full",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "ExecutePipelineOdooLeadBronze_Full",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "p_OdooLeadBronze_Full",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "ExecutePipelineClientifyDealsBronze_IdForDelete",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "p_ClientifyDealsBronze_IdForDelete",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"folder": {
-					"name": "Lakehouse/Bronze"
-				},
-				"annotations": [],
-				"lastPublishTime": "2025-03-22T17:50:21Z"
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/p_SalesDWHF0')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "DataFlowSalesDWHF0",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "df_SalesDWHF0",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"sourceSalesGoldF0": {},
-									"sink1": {
-										"schema": "public",
-										"table": "f0sales"
-									}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"folder": {
-					"name": "LakehouseF0/DWHF0"
-				},
-				"annotations": [],
-				"lastPublishTime": "2025-03-22T17:50:20Z"
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/p_SalesGoldF0')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "ExecutePipelineClientifyDealsGoldF0",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "ExecutePipelineOdooLeadGoldF0",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "p_ClientifyDealsGoldF0",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "ExecutePipelineOdooLeadGoldF0",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "p_OdooLeadGoldF0",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "ExecutePipelineClientifyDealsGoldF0_LeadsNetosPhone",
-						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
-						"dependsOn": [
-							{
-								"activity": "ExecutePipelineClientifyDealsGoldF0_IdForDelete",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "p_ClientifyDealsGoldF0_LeadsNetosPhone",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "ExecutePipelineClientifyDealsGoldF0_LeadsNetosEmail",
-						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
-						"dependsOn": [
-							{
-								"activity": "ExecutePipelineClientifyDealsGoldF0_LeadsNetosPhone",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "p_ClientifyDealsGoldF0_LeadsNetosEmail",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "ExecutePipelineClientifyDealsGoldF0_LostReason",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "ExecutePipelineClientifyDealsGoldF0",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "p_ClientifyDealsGoldF0_LostReason",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "ExecutePipelineClientifyDealsGoldF0_IdForDelete",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "ExecutePipelineClientifyDealsGoldF0_LostReason",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "p_ClientifyDealsGoldF0_IdForDelete",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"folder": {
-					"name": "LakehouseF0/GoldF0"
 				},
 				"annotations": [],
 				"lastPublishTime": "2025-03-22T17:50:21Z"
