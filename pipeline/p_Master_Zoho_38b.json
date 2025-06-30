@@ -3,22 +3,9 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "ExecuteZohoBronze_38b",
+				"name": "Execute Contacts 38b",
 				"type": "ExecutePipeline",
-				"dependsOn": [
-					{
-						"activity": "If Modified Since Date Leads",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "SetTokenStartTime",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"secureInput": false
 				},
@@ -76,7 +63,7 @@
 				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
-						"activity": "ExecuteZohoBronze_38b",
+						"activity": "Execute Contacts 38b",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -155,6 +142,73 @@
 					"value": {
 						"value": "@utcNow()\n",
 						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Execute Deals 38b",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "If Modified Since Date Leads",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "SetTokenStartTime",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "p_Master_Deals_Zoho_38b",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"client_id": {
+							"value": "@pipeline().parameters.client_id",
+							"type": "Expression"
+						},
+						"client_secret": {
+							"value": "@pipeline().parameters.client_secret",
+							"type": "Expression"
+						},
+						"refresh_token": {
+							"value": "@pipeline().parameters.refresh_token",
+							"type": "Expression"
+						},
+						"reprocessDate": {
+							"value": "@variables('AccesToken')",
+							"type": "Expression"
+						},
+						"AccessToken": {
+							"value": "@variables('WebActivityName')",
+							"type": "Expression"
+						},
+						"NextPageToken": {
+							"value": "@variables('NextPageToken')",
+							"type": "Expression"
+						},
+						"IfModifiedSince": {
+							"value": "@variables('If-Modified-Since')",
+							"type": "Expression"
+						},
+						"TokenStartTime": {
+							"value": "@variables('TokenStartTime')",
+							"type": "Expression"
+						},
+						"PageCounter": {
+							"value": "@variables('PageCounter')",
+							"type": "Expression"
+						}
 					}
 				}
 			}
