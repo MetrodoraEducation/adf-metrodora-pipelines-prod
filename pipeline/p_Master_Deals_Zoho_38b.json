@@ -740,6 +740,184 @@
 						}
 					]
 				}
+			},
+			{
+				"name": "4 PageCounter",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "3 Hour pagination",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "PageCounter",
+					"value": {
+						"value": "@activity('3 Executed Deals').output.pipelineReturnValue.PageCounter",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "4 NextPageToken",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "3 Hour pagination",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "NextPageToken",
+					"value": {
+						"value": "@activity('3 Executed Deals').output.pipelineReturnValue.NextPageToken",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "4 SetTokenStartTime",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "3 Hour pagination",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "TokenStartTime",
+					"value": {
+						"value": "@utcNow()\n",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "If Seconds 13300",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "4 PageCounter",
+						"dependencyConditions": [
+							"Completed"
+						]
+					},
+					{
+						"activity": "4 NextPageToken",
+						"dependencyConditions": [
+							"Completed"
+						]
+					},
+					{
+						"activity": "4 SetTokenStartTime",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@greater(\n    div(sub(ticks(utcnow()), ticks(variables('TokenStartTime'))), 10000000),\n    13300\n)",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "4 Hour pagination",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "If Seconds 13300",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@not(\n  or(\n    equals(trim(coalesce(variables('NextPageToken'), '')), ''),\n    equals(variables('NextPageToken'), null)\n  )\n)",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "5 Executed",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"policy": {
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "p_Child_Deals_38b",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"client_id": {
+										"value": "@pipeline().parameters.client_id",
+										"type": "Expression"
+									},
+									"client_secret": {
+										"value": "@pipeline().parameters.client_secret",
+										"type": "Expression"
+									},
+									"refresh_token": {
+										"value": "@pipeline().parameters.refresh_token",
+										"type": "Expression"
+									},
+									"reprocessDate": {
+										"value": "@variables('AccessToken')",
+										"type": "Expression"
+									},
+									"AccessToken": {
+										"value": "@variables('WebActivityName')",
+										"type": "Expression"
+									},
+									"PageCounter": {
+										"value": "@variables('PageCounter')",
+										"type": "Expression"
+									},
+									"IfModifiedSince": {
+										"value": "@variables('If-Modified-Since')",
+										"type": "Expression"
+									},
+									"NextPageToken": {
+										"value": "@variables('NextPageToken')",
+										"type": "Expression"
+									},
+									"TokenStartTime": {
+										"value": "@variables('TokenStartTime')",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
 			}
 		],
 		"parameters": {
