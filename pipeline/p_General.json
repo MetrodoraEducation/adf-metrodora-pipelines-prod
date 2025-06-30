@@ -145,7 +145,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "p_General_Zoho",
+						"referenceName": "p_Zoho_Master_Fisiofocus",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
@@ -162,7 +162,7 @@
 				}
 			},
 			{
-				"name": "Classlife919Bronze_Full",
+				"name": "Classlife919Full",
 				"type": "ExecutePipeline",
 				"dependsOn": [],
 				"policy": {
@@ -317,7 +317,7 @@
 				}
 			},
 			{
-				"name": "Classlife931Bronze_Full",
+				"name": "Classlife931Full",
 				"type": "ExecutePipeline",
 				"dependsOn": [],
 				"policy": {
@@ -388,7 +388,7 @@
 						]
 					},
 					{
-						"activity": "Classlife919Bronze_Full",
+						"activity": "Classlife919Full",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -400,7 +400,7 @@
 						]
 					},
 					{
-						"activity": "Classlife931Bronze_Full",
+						"activity": "Classlife931Full",
 						"dependencyConditions": [
 							"Completed"
 						]
