@@ -125,6 +125,8 @@
 			{
 				"name": "Zoho_Fisiofocus_Full",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "If Modified Since",
@@ -164,6 +166,8 @@
 			{
 				"name": "Classlife919Bronze_Full",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"secureInput": false
@@ -319,6 +323,8 @@
 			{
 				"name": "Classlife931Bronze_Full",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"secureInput": false
