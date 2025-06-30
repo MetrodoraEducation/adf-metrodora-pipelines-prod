@@ -35,34 +35,6 @@
 				}
 			},
 			{
-				"name": "CallsSalesBronzeSilver_Full",
-				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
-				"dependsOn": [],
-				"policy": {
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "p_CallsSalesBronzeSilver",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"dayToLoad": {
-							"value": "@pipeline().parameters.dayToLoad",
-							"type": "Expression"
-						},
-						"silver_storage_databricks": {
-							"value": "@pipeline().parameters.silver_storage_databricks",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
 				"name": "Dim gold",
 				"type": "ExecutePipeline",
 				"dependsOn": [
@@ -151,15 +123,9 @@
 				}
 			},
 			{
-				"name": "Zoho_Full",
+				"name": "Zoho_Fisiofocus_Full",
 				"type": "ExecutePipeline",
 				"dependsOn": [
-					{
-						"activity": "CallsSalesBronzeSilver_Full",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
 					{
 						"activity": "If Modified Since Date Leads",
 						"dependencyConditions": [
@@ -198,14 +164,7 @@
 			{
 				"name": "Classlife919Bronze_Full",
 				"type": "ExecutePipeline",
-				"dependsOn": [
-					{
-						"activity": "CallsSalesBronzeSilver_Full",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"secureInput": false
 				},
@@ -360,14 +319,7 @@
 			{
 				"name": "Classlife931Bronze_Full",
 				"type": "ExecutePipeline",
-				"dependsOn": [
-					{
-						"activity": "CallsSalesBronzeSilver_Full",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"secureInput": false
 				},
@@ -387,7 +339,7 @@
 				}
 			},
 			{
-				"name": "Zoho_38bSilver_Full",
+				"name": "Zoho_FP_38b_Full",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
@@ -430,7 +382,7 @@
 				"type": "DatabricksNotebook",
 				"dependsOn": [
 					{
-						"activity": "Zoho_Full",
+						"activity": "Zoho_Fisiofocus_Full",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -442,7 +394,7 @@
 						]
 					},
 					{
-						"activity": "Zoho_38bSilver_Full",
+						"activity": "Zoho_FP_38b_Full",
 						"dependencyConditions": [
 							"Succeeded"
 						]
