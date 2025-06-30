@@ -643,7 +643,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/p_ZohoSilver')]",
+			"name": "[concat(parameters('factoryName'), '/p_ZohoFisiofocusSilver')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -842,7 +842,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/p_ZohoSilver_38b')]",
+			"name": "[concat(parameters('factoryName'), '/p_Zoho_FP_Silver_38b')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
