@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "ExecuteZohoBronze",
+				"name": "ExecuteZohoFisiofocus",
 				"type": "ExecutePipeline",
 				"dependsOn": [],
 				"policy": {
@@ -25,11 +25,11 @@
 				}
 			},
 			{
-				"name": "ExecuteZohoBronzetoSilver",
+				"name": "ExecuteZohoFisiofocusBronzetoSilver",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "ExecuteZohoBronze",
+						"activity": "ExecuteZohoFisiofocus",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -41,7 +41,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "p_ZohoSilver",
+						"referenceName": "p_ZohoFisiofocusSilver",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
