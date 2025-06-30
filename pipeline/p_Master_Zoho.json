@@ -1,5 +1,5 @@
 {
-	"name": "p_Master_Zoho_38b",
+	"name": "p_Master_Zoho",
 	"properties": {
 		"activities": [
 			{
@@ -432,7 +432,7 @@
 			}
 		},
 		"folder": {
-			"name": "Lakehouse/Bronze"
+			"name": "Lakehouse/General"
 		},
 		"annotations": [],
 		"lastPublishTime": "2025-06-03T16:56:15Z"
