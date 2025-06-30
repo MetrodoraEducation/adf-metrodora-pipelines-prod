@@ -12,7 +12,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "p_Zoho",
+						"referenceName": "p_Zoho_Fisiofocus",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
