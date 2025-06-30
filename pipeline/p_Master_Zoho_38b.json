@@ -5,20 +5,65 @@
 			{
 				"name": "ExecuteZohoBronze_38b",
 				"type": "ExecutePipeline",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "If Modified Since Date Leads",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "SetTokenStartTime",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"secureInput": false
 				},
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "p_Zoho_38b",
+						"referenceName": "p_Master_Contacts_Zoho_38b",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
 					"parameters": {
+						"client_id": {
+							"value": "@pipeline().parameters.client_id",
+							"type": "Expression"
+						},
+						"client_secret": {
+							"value": "@pipeline().parameters.client_secret",
+							"type": "Expression"
+						},
+						"refresh_token": {
+							"value": "@pipeline().parameters.refresh_token",
+							"type": "Expression"
+						},
 						"reprocessDate": {
-							"value": "@pipeline().parameters.reprocessDate",
+							"value": "@variables('AccesToken')",
+							"type": "Expression"
+						},
+						"AccessToken": {
+							"value": "@variables('WebActivityName')",
+							"type": "Expression"
+						},
+						"NextPageToken": {
+							"value": "@variables('NextPageToken')",
+							"type": "Expression"
+						},
+						"IfModifiedSince": {
+							"value": "@variables('If-Modified-Since')",
+							"type": "Expression"
+						},
+						"TokenStartTime": {
+							"value": "@variables('TokenStartTime')",
+							"type": "Expression"
+						},
+						"PageCounter": {
+							"value": "@variables('PageCounter')",
 							"type": "Expression"
 						}
 					}
@@ -78,6 +123,40 @@
 						}
 					}
 				}
+			},
+			{
+				"name": "If Modified Since Date Leads",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "If-Modified-Since",
+					"value": {
+						"value": "@formatDateTime(addDays(utcnow(), if(equals(pipeline().parameters.reprocessDate, ''), -7, sub(0, int(pipeline().parameters.reprocessDate)))), 'yyyy-MM-ddTHH:mm:ssZ')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "SetTokenStartTime",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "TokenStartTime",
+					"value": {
+						"value": "@utcNow()\n",
+						"type": "Expression"
+					}
+				}
 			}
 		],
 		"parameters": {
@@ -109,6 +188,9 @@
 			},
 			"PageCounter": {
 				"type": "string"
+			},
+			"NextPageToken": {
+				"type": "string"
 			}
 		},
 		"variables": {
@@ -125,12 +207,12 @@
 				"type": "String"
 			},
 			"PageCounter": {
-				"type": "String",
-				"defaultValue": "1"
+				"type": "Integer",
+				"defaultValue": 1
 			},
 			"TempCounter": {
-				"type": "String",
-				"defaultValue": "0"
+				"type": "Integer",
+				"defaultValue": 0
 			},
 			"TokenStartTime": {
 				"type": "String"

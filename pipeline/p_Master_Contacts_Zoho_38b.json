@@ -595,6 +595,9 @@
 			},
 			"TokenStartTime": {
 				"type": "string"
+			},
+			"PageCounter": {
+				"type": "string"
 			}
 		},
 		"variables": {
