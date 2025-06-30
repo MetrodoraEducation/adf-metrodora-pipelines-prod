@@ -354,18 +354,6 @@
 			},
 			"NextPageToken": {
 				"type": "string"
-			},
-			"client_id_fisiofocus": {
-				"type": "string",
-				"defaultValue": "1000.1F4VDBCZ89HIY80175SZZF595HBSNO"
-			},
-			"client_secret_fisiofocus": {
-				"type": "string",
-				"defaultValue": "d3743dfd871d30ac90d12b3e6ac02de1111c51076e"
-			},
-			"refresh_token_fisiofocus": {
-				"type": "string",
-				"defaultValue": "1000.256013fabf162c6a30e7260b66598da2.d706caedd894d618249377cda8b5cf15"
 			}
 		},
 		"variables": {
