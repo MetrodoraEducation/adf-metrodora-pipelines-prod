@@ -159,6 +159,18 @@
 						"dependencyConditions": [
 							"Succeeded"
 						]
+					},
+					{
+						"activity": "If Modified Since Date Leads",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "SetTokenStartTime",
+						"dependencyConditions": [
+							"Succeeded"
+						]
 					}
 				],
 				"policy": {
@@ -377,7 +389,20 @@
 			{
 				"name": "Zoho_38bSilver_Full",
 				"type": "ExecutePipeline",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "If Modified Since Date Leads",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "SetTokenStartTime",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"secureInput": false
 				},
@@ -447,6 +472,40 @@
 					"referenceName": "ls_AzureDatabricks",
 					"type": "LinkedServiceReference"
 				}
+			},
+			{
+				"name": "If Modified Since Date Leads",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "If-Modified-Since",
+					"value": {
+						"value": "@formatDateTime(addDays(utcnow(), if(equals(pipeline().parameters.dayToLoad, ''), -7, sub(0, int(pipeline().parameters.dayToLoad)))), 'yyyy-MM-ddTHH:mm:ssZ')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "SetTokenStartTime",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "TokenStartTime",
+					"value": {
+						"value": "@utcNow()\n",
+						"type": "Expression"
+					}
+				}
 			}
 		],
 		"parameters": {
@@ -469,6 +528,9 @@
 		},
 		"variables": {
 			"If-Modified-Since": {
+				"type": "String"
+			},
+			"TokenStartTime": {
 				"type": "String"
 			}
 		},
