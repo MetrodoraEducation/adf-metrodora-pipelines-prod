@@ -145,7 +145,13 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Zoho Fisiofocus",
+						"activity": "If Modified Since Date Leads",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "SetTokenStartTime",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -206,7 +212,13 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Zoho Fisiofocus",
+						"activity": "If Modified Since Date Leads",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "SetTokenStartTime",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -300,53 +312,6 @@
 						},
 						"refresh_token": {
 							"value": "@pipeline().parameters.refresh_token",
-							"type": "Expression"
-						},
-						"reprocessDate": {
-							"value": "@variables('AccesToken')",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "Zoho Fisiofocus",
-				"type": "ExecutePipeline",
-				"dependsOn": [
-					{
-						"activity": "If Modified Since Date Leads",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "SetTokenStartTime",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "p_Zoho_Fisiofocus",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"client_id": {
-							"value": "@pipeline().parameters.client_id_fisiofocus",
-							"type": "Expression"
-						},
-						"client_secret": {
-							"value": "@pipeline().parameters.client_secret_fisiofocus",
-							"type": "Expression"
-						},
-						"refresh_token": {
-							"value": "@pipeline().parameters.refresh_token_fisiofocus",
 							"type": "Expression"
 						},
 						"reprocessDate": {
