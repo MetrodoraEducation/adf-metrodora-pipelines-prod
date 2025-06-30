@@ -945,6 +945,15 @@
 			},
 			"NextPageToken": {
 				"type": "string"
+			},
+			"IfModifiedSince": {
+				"type": "string"
+			},
+			"TokenStartTime": {
+				"type": "string"
+			},
+			"PageCounter": {
+				"type": "string"
 			}
 		},
 		"variables": {
