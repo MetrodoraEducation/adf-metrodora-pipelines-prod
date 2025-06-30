@@ -792,7 +792,7 @@
 		"parameters": {
 			"dayToLoad": {
 				"type": "string",
-				"defaultValue": "3"
+				"defaultValue": "7"
 			}
 		},
 		"variables": {
