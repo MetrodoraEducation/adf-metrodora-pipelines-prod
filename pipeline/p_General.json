@@ -159,18 +159,6 @@
 						"dependencyConditions": [
 							"Succeeded"
 						]
-					},
-					{
-						"activity": "If Modified Since Date Leads",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "SetTokenStartTime",
-						"dependencyConditions": [
-							"Succeeded"
-						]
 					}
 				],
 				"policy": {
@@ -389,20 +377,7 @@
 			{
 				"name": "Zoho_38bSilver_Full",
 				"type": "ExecutePipeline",
-				"dependsOn": [
-					{
-						"activity": "If Modified Since Date Leads",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "SetTokenStartTime",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"secureInput": false
 				},
@@ -472,40 +447,6 @@
 					"referenceName": "ls_AzureDatabricks",
 					"type": "LinkedServiceReference"
 				}
-			},
-			{
-				"name": "If Modified Since Date Leads",
-				"type": "SetVariable",
-				"dependsOn": [],
-				"policy": {
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "If-Modified-Since",
-					"value": {
-						"value": "@formatDateTime(addDays(utcnow(), if(equals(pipeline().parameters.reprocessDate, ''), -7, sub(0, int(pipeline().parameters.reprocessDate)))), 'yyyy-MM-ddTHH:mm:ssZ')",
-						"type": "Expression"
-					}
-				}
-			},
-			{
-				"name": "SetTokenStartTime",
-				"type": "SetVariable",
-				"dependsOn": [],
-				"policy": {
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "TokenStartTime",
-					"value": {
-						"value": "@utcNow()\n",
-						"type": "Expression"
-					}
-				}
 			}
 		],
 		"parameters": {
@@ -524,6 +465,11 @@
 			"dwh_storage_databricks": {
 				"type": "string",
 				"defaultValue": "/Workspace/Repos/production_repository/notebooks-databricks-prod/Lakehouse/DWH/"
+			}
+		},
+		"variables": {
+			"If-Modified-Since": {
+				"type": "String"
 			}
 		},
 		"folder": {
