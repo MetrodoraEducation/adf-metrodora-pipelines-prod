@@ -80,7 +80,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "p_Child_Leads_38b",
+						"referenceName": "p_Child_Contacts_38b",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
@@ -143,7 +143,7 @@
 						"parameters": {
 							"container": "bronze",
 							"folder": {
-								"value": "@concat('lakehouse/zoho_38b/Leads/', formatDateTime(utcnow(),'yyyy'), '/', formatDateTime(utcnow(),'MM'), '/', formatDateTime(utcnow(),'dd'))",
+								"value": "@concat('lakehouse/zoho_38b/Contacts/', formatDateTime(utcnow(),'yyyy'), '/', formatDateTime(utcnow(),'MM'), '/', formatDateTime(utcnow(),'dd'))",
 								"type": "Expression"
 							}
 						}
@@ -198,7 +198,7 @@
 									"parameters": {
 										"container": "bronze",
 										"folder": {
-											"value": "@concat('lakehouse/zoho_38b/Leads/', formatDateTime(utcnow(),'yyyy'), '/', formatDateTime(utcnow(),'MM'), '/', formatDateTime(utcnow(),'dd'))",
+											"value": "@concat('lakehouse/zoho_38b/Contacts/', formatDateTime(utcnow(),'yyyy'), '/', formatDateTime(utcnow(),'MM'), '/', formatDateTime(utcnow(),'dd'))",
 											"type": "Expression"
 										}
 									}
@@ -393,7 +393,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "p_Child_Leads_38b",
+									"referenceName": "p_Child_Contacts_38b",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
@@ -441,22 +441,6 @@
 				}
 			},
 			{
-				"name": "Wait1",
-				"type": "Wait",
-				"dependsOn": [
-					{
-						"activity": "2 Hour pagination",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"waitTimeInSeconds": 1
-				}
-			},
-			{
 				"name": "1 Hour pagination",
 				"type": "IfCondition",
 				"dependsOn": [
@@ -484,7 +468,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "p_Child_Leads_38b",
+									"referenceName": "p_Child_Contacts_38b",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
