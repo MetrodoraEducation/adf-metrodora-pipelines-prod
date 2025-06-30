@@ -127,7 +127,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "If Modified Since Date Leads",
+						"activity": "If Modified Since",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -343,7 +343,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "If Modified Since Date Leads",
+						"activity": "If Modified Since",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -426,7 +426,7 @@
 				}
 			},
 			{
-				"name": "If Modified Since Date Leads",
+				"name": "If Modified Since",
 				"type": "SetVariable",
 				"dependsOn": [],
 				"policy": {
