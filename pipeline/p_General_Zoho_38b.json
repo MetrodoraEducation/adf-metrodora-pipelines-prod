@@ -54,7 +54,7 @@
 				}
 			},
 			{
-				"name": "P Master Deals",
+				"name": "ExecuteZohoMasterBronze_38b",
 				"type": "ExecutePipeline",
 				"state": "Inactive",
 				"onInactiveMarkAs": "Succeeded",
@@ -65,33 +65,13 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "p_Master_Deals_Zoho_38b",
+						"referenceName": "p_Zoho_38b",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
 					"parameters": {
-						"client_id": {
-							"value": "@pipeline().parameters.client_id",
-							"type": "Expression"
-						},
-						"client_secret": {
-							"value": "@pipeline().parameters.client_secret",
-							"type": "Expression"
-						},
-						"refresh_token": {
-							"value": "@pipeline().parameters.refresh_token",
-							"type": "Expression"
-						},
 						"reprocessDate": {
-							"value": "@variables('AccesToken')",
-							"type": "Expression"
-						},
-						"AccessToken": {
-							"value": "@variables('WebActivityName')",
-							"type": "Expression"
-						},
-						"PageToken": {
-							"value": "@variables('PageCounter')",
+							"value": "@pipeline().parameters.reprocessDate",
 							"type": "Expression"
 						}
 					}

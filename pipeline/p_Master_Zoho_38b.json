@@ -27,6 +27,8 @@
 			{
 				"name": "ExecuteZohoBronzetoSilver_38b",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "ExecuteZohoBronze_38b",
