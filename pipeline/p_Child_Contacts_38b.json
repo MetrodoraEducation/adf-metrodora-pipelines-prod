@@ -63,7 +63,7 @@
 				}
 			},
 			{
-				"name": "UntilLeads",
+				"name": "UntilContacts",
 				"type": "Until",
 				"dependsOn": [
 					{
@@ -389,7 +389,7 @@
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "UntilLeads",
+						"activity": "UntilContacts",
 						"dependencyConditions": [
 							"Succeeded"
 						]
