@@ -2414,8 +2414,6 @@
 					{
 						"name": "Zoho_Fisiofocus_Full",
 						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "If Modified Since",
@@ -2455,8 +2453,6 @@
 					{
 						"name": "Classlife919Bronze_Full",
 						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [],
 						"policy": {
 							"secureInput": false
@@ -2536,7 +2532,7 @@
 						],
 						"userProperties": [],
 						"typeProperties": {
-							"waitTimeInSeconds": 30
+							"waitTimeInSeconds": 15
 						}
 					},
 					{
@@ -2612,8 +2608,6 @@
 					{
 						"name": "Classlife931Bronze_Full",
 						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [],
 						"policy": {
 							"secureInput": false
