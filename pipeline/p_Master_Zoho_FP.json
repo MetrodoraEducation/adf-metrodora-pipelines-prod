@@ -72,8 +72,6 @@
 			{
 				"name": "ExecuteZohoBronzetoSilver_38b",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Execute Contacts 38b",
