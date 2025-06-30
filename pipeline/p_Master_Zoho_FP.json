@@ -70,7 +70,7 @@
 				}
 			},
 			{
-				"name": "ExecuteZohoBronzetoSilver_38b",
+				"name": "ExecuteZohoFPBronzetoSilver_38b",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
@@ -92,7 +92,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "p_Zoho_Fisiofocus_Silver_38b",
+						"referenceName": "p_Zoho_FP_Silver_38b",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
