@@ -80,6 +80,12 @@
 						"dependencyConditions": [
 							"Succeeded"
 						]
+					},
+					{
+						"activity": "Execute Users 38b",
+						"dependencyConditions": [
+							"Succeeded"
+						]
 					}
 				],
 				"policy": {
@@ -95,30 +101,6 @@
 					"parameters": {
 						"silver_storage_databricks": {
 							"value": "@pipeline().parameters.silver_storage_databricks",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "ExecuteZohoMasterBronze_38b",
-				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
-				"dependsOn": [],
-				"policy": {
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "p_Zoho_38b",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"reprocessDate": {
-							"value": "@pipeline().parameters.reprocessDate",
 							"type": "Expression"
 						}
 					}
@@ -163,13 +145,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "If Modified Since Date Leads",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "SetTokenStartTime",
+						"activity": "Zoho Fisiofocus",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -230,13 +206,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "If Modified Since Date Leads",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "SetTokenStartTime",
+						"activity": "Zoho Fisiofocus",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -291,6 +261,100 @@
 						}
 					}
 				}
+			},
+			{
+				"name": "Execute Users 38b",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Execute Deals 38b",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Execute Leads 38b",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "p_Zoho_Users_38b",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"client_id": {
+							"value": "@pipeline().parameters.client_id",
+							"type": "Expression"
+						},
+						"client_secret": {
+							"value": "@pipeline().parameters.client_secret",
+							"type": "Expression"
+						},
+						"refresh_token": {
+							"value": "@pipeline().parameters.refresh_token",
+							"type": "Expression"
+						},
+						"reprocessDate": {
+							"value": "@variables('AccesToken')",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "Zoho Fisiofocus",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "If Modified Since Date Leads",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "SetTokenStartTime",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "p_Zoho_Fisiofocus",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"client_id": {
+							"value": "@pipeline().parameters.client_id_fisiofocus",
+							"type": "Expression"
+						},
+						"client_secret": {
+							"value": "@pipeline().parameters.client_secret_fisiofocus",
+							"type": "Expression"
+						},
+						"refresh_token": {
+							"value": "@pipeline().parameters.refresh_token_fisiofocus",
+							"type": "Expression"
+						},
+						"reprocessDate": {
+							"value": "@variables('AccesToken')",
+							"type": "Expression"
+						}
+					}
+				}
 			}
 		],
 		"parameters": {
@@ -325,6 +389,18 @@
 			},
 			"NextPageToken": {
 				"type": "string"
+			},
+			"client_id_fisiofocus": {
+				"type": "string",
+				"defaultValue": "1000.1F4VDBCZ89HIY80175SZZF595HBSNO"
+			},
+			"client_secret_fisiofocus": {
+				"type": "string",
+				"defaultValue": "d3743dfd871d30ac90d12b3e6ac02de1111c51076e"
+			},
+			"refresh_token_fisiofocus": {
+				"type": "string",
+				"defaultValue": "1000.256013fabf162c6a30e7260b66598da2.d706caedd894d618249377cda8b5cf15"
 			}
 		},
 		"variables": {
@@ -356,7 +432,7 @@
 			}
 		},
 		"folder": {
-			"name": "Lakehouse/General"
+			"name": "Lakehouse/Bronze"
 		},
 		"annotations": [],
 		"lastPublishTime": "2025-06-03T16:56:15Z"
