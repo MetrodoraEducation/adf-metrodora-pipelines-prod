@@ -98,7 +98,7 @@
 							"type": "Expression"
 						},
 						"reprocessDate": {
-							"value": "@variables('AccessToken')",
+							"value": "@pipeline().parameters.reprocessDate",
 							"type": "Expression"
 						},
 						"AccessToken": {
@@ -411,7 +411,7 @@
 										"type": "Expression"
 									},
 									"reprocessDate": {
-										"value": "@variables('AccessToken')",
+										"value": "@pipeline().parameters.reprocessDate",
 										"type": "Expression"
 									},
 									"AccessToken": {
@@ -502,7 +502,7 @@
 										"type": "Expression"
 									},
 									"reprocessDate": {
-										"value": "@variables('AccessToken')",
+										"value": "@pipeline().parameters.reprocessDate",
 										"type": "Expression"
 									},
 									"AccessToken": {
