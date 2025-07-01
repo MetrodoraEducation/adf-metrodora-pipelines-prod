@@ -649,7 +649,7 @@
 							"typeProperties": {
 								"variableName": "NextItem",
 								"value": {
-									"value": "@length(activity('ClasslifeProductos').output.data.items)",
+									"value": "@length(activity('ClasslifeProductos').output.data.items)\n",
 									"type": "Expression"
 								}
 							}
