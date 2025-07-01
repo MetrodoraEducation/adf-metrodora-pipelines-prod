@@ -4,7 +4,7 @@
 	"parameters": {
 		"factoryName": {
 			"type": "string",
-			"metadata": "Data Factory name",
+			"metadata": "Nombre de instancia de Data Factory",
 			"defaultValue": "adf-metrodoralakehouse-pro"
 		}
 	},
@@ -913,7 +913,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"notebookPath": {
-								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'ClasslifeProductos')",
+								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_919/ClasslifeProductos')",
 								"type": "Expression"
 							}
 						},
@@ -943,7 +943,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"notebookPath": {
-								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'ClasslifeStudents')",
+								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_919/ClasslifeStudents')",
 								"type": "Expression"
 							}
 						},
@@ -973,7 +973,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"notebookPath": {
-								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'ClasslifeEnrollments')",
+								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_919/ClasslifeEnrollments')",
 								"type": "Expression"
 							}
 						},
@@ -1003,7 +1003,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"notebookPath": {
-								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'ClasslifeReceipts')",
+								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_919/ClasslifeReceipts')",
 								"type": "Expression"
 							}
 						},
@@ -1033,7 +1033,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"notebookPath": {
-								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'ClasslifeAdmissions')",
+								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_919/ClasslifeAdmissions')",
 								"type": "Expression"
 							}
 						},
