@@ -465,7 +465,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@or(\n    equals(variables('NextItem'), null),\n    equals(trim(variables('NextItem')), '')\n)",
+						"value": "@equals(variables('NextItem'), 0)\n",
 						"type": "Expression"
 					},
 					"activities": [
@@ -558,7 +558,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"relativeUrl": {
-											"value": "@concat('enroll_groups?showMetas=1&limit=', pipeline().parameters.limit,'&page=',variables('PageCounter'))",
+											"value": "@concat('enroll_groups?showMetas=1&limit=', pipeline().parameters.limit, '&page=', variables('PageCounter'))",
 											"type": "Expression"
 										}
 									}
@@ -633,8 +633,6 @@
 						{
 							"name": "Set Items",
 							"type": "SetVariable",
-							"state": "Inactive",
-							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [
 								{
 									"activity": "PageCounter",
@@ -651,7 +649,7 @@
 							"typeProperties": {
 								"variableName": "NextItem",
 								"value": {
-									"value": "@activity('GetNextPageTokenDeals').output.firstRow.info.next_page_token",
+									"value": "@length(activity('ClasslifeProductos').output.data.items)",
 									"type": "Expression"
 								}
 							}
@@ -672,7 +670,7 @@
 			},
 			"limit": {
 				"type": "string",
-				"defaultValue": "1500"
+				"defaultValue": "500"
 			}
 		},
 		"variables": {
@@ -685,7 +683,7 @@
 				"defaultValue": 0
 			},
 			"NextItem": {
-				"type": "String"
+				"type": "Integer"
 			}
 		},
 		"folder": {
