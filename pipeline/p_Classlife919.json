@@ -432,7 +432,7 @@
 				"type": "Until",
 				"dependsOn": [
 					{
-						"activity": "Until Students",
+						"activity": "2 Reboot PageCounter",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -639,7 +639,7 @@
 				"type": "Until",
 				"dependsOn": [
 					{
-						"activity": "Until Enroll groups",
+						"activity": "Reboot PageCounter",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -846,7 +846,7 @@
 				"type": "Until",
 				"dependsOn": [
 					{
-						"activity": "Until Enrollments",
+						"activity": "1 Reboot PageCounter",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1053,7 +1053,7 @@
 				"type": "Until",
 				"dependsOn": [
 					{
-						"activity": "Until Admissions",
+						"activity": "3 Reboot PageCounter",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1253,6 +1253,93 @@
 						}
 					],
 					"timeout": "0.12:00:00"
+				}
+			},
+			{
+				"name": "Reboot PageCounter",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Until Enroll groups",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "PageCounter",
+					"value": {
+						"value": "@int(1)",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "1 Reboot PageCounter",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Until Enrollments",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "PageCounter",
+					"value": "@int(1)"
+				}
+			},
+			{
+				"name": "2 Reboot PageCounter",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Until Students",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "PageCounter",
+					"value": "@int(1)"
+				}
+			},
+			{
+				"name": "3 Reboot PageCounter",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Until Admissions",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "PageCounter",
+					"value": "@int(1)"
 				}
 			}
 		],
