@@ -460,7 +460,19 @@
 				"type": "Until",
 				"dependsOn": [
 					{
-						"activity": "If Condition Delete",
+						"activity": "Until Enroll groups",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Until Enrollments",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Until Students",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1081,7 +1093,19 @@
 				"type": "Until",
 				"dependsOn": [
 					{
-						"activity": "If Condition Delete",
+						"activity": "Until Enroll groups",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Until Enrollments",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Until Students",
 						"dependencyConditions": [
 							"Succeeded"
 						]
