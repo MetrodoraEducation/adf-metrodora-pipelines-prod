@@ -1267,7 +1267,7 @@
 			},
 			"limit": {
 				"type": "string",
-				"defaultValue": "250"
+				"defaultValue": "1000"
 			}
 		},
 		"variables": {
