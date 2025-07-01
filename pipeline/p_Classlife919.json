@@ -461,7 +461,14 @@
 			{
 				"name": "Until_Enroll_groups",
 				"type": "Until",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "If Condition Delete",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
@@ -495,7 +502,7 @@
 									}
 								},
 								"url": {
-									"value": "@concat('https://api.classlife.io/api/v1/enroll_groups')",
+									"value": "@concat('https://api.classlife.io/api/v1/enroll_groups?showMetas=1&limit=', pipeline().parameters.limit, '&page=', variables('PageCounter'))",
 									"type": "Expression"
 								}
 							}
@@ -506,7 +513,7 @@
 							"type": "Copy",
 							"dependsOn": [
 								{
-									"activity": "Web Activity Request",
+									"activity": "WebClasslifeEnroll_groups",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -649,37 +656,103 @@
 							"typeProperties": {
 								"variableName": "NextItem",
 								"value": {
-									"value": "@length(activity('ClasslifeProductos').output.data.items)\n",
-									"type": "Expression"
-								}
-							}
-						},
-						{
-							"name": "Web Activity Request",
-							"type": "SetVariable",
-							"dependsOn": [
-								{
-									"activity": "WebClasslifeEnroll_groups",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"policy": {
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "WebActivityRequest",
-								"value": {
-									"value": "@activity('WebClasslifeEnroll_groups').output",
+									"value": "@length(activity('WebClasslifeEnroll_groups').output.data.items)\n",
 									"type": "Expression"
 								}
 							}
 						}
 					],
 					"timeout": "0.12:00:00"
+				}
+			},
+			{
+				"name": "CheckFolderExists",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "ds_adsl_json_delete",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "bronze",
+							"folder": {
+								"value": "@concat('lakehouse/classlife/enroll_groups/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+								"type": "Expression"
+							}
+						}
+					},
+					"fieldList": [
+						"exists"
+					],
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "JsonReadSettings"
+					}
+				}
+			},
+			{
+				"name": "If Condition Delete",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "CheckFolderExists",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@activity('CheckFolderExists').output.exists",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "Delete Files Enroll Groups",
+							"type": "Delete",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "ds_adsl_json_delete",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "bronze",
+										"folder": {
+											"value": "@concat('lakehouse/classlife/enroll_groups/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+											"type": "Expression"
+										}
+									}
+								},
+								"enableLogging": false,
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							}
+						}
+					]
 				}
 			}
 		],
@@ -694,7 +767,7 @@
 			},
 			"limit": {
 				"type": "string",
-				"defaultValue": "500"
+				"defaultValue": "1500"
 			}
 		},
 		"variables": {
