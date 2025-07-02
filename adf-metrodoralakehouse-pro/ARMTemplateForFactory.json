@@ -4,16 +4,16 @@
 	"parameters": {
 		"factoryName": {
 			"type": "string",
-			"metadata": "Nombre de instancia de Data Factory",
+			"metadata": "Data Factory name",
 			"defaultValue": "adf-metrodoralakehouse-pro"
 		},
 		"HttpSharepointMetrodora_password": {
 			"type": "secureString",
-			"metadata": "Cadena protegida para \"password\"de \"HttpSharepointMetrodora\""
+			"metadata": "Secure string for 'password' of 'HttpSharepointMetrodora'"
 		},
 		"ls_PostgreSql_connectionString": {
 			"type": "secureString",
-			"metadata": "Cadena protegida para \"connectionString\"de \"ls_PostgreSql\"",
+			"metadata": "Secure string for 'connectionString' of 'ls_PostgreSql'",
 			"defaultValue": "Host=psql-metrodoralakehouse-pro.postgres.database.azure.com;Port=5432;Database=lakehouse;UID=sqladminuser;EncryptionMethod=1;ValidateServerCertificate=0"
 		},
 		"HttpSharepointMetrodora_properties_typeProperties_url": {
@@ -3646,7 +3646,7 @@
 							{
 								"activity": "If Condition Delete",
 								"dependencyConditions": [
-									"Succeeded"
+									"Completed"
 								]
 							}
 						],
