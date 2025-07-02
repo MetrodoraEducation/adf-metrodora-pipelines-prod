@@ -9,7 +9,7 @@
 					{
 						"activity": "If Condition Delete",
 						"dependencyConditions": [
-							"Succeeded"
+							"Completed"
 						]
 					}
 				],
@@ -1297,7 +1297,10 @@
 				"userProperties": [],
 				"typeProperties": {
 					"variableName": "PageCounter",
-					"value": "@int(1)"
+					"value": {
+						"value": "@int(1)",
+						"type": "Expression"
+					}
 				}
 			},
 			{
@@ -1318,7 +1321,10 @@
 				"userProperties": [],
 				"typeProperties": {
 					"variableName": "PageCounter",
-					"value": "@int(1)"
+					"value": {
+						"value": "@int(1)",
+						"type": "Expression"
+					}
 				}
 			},
 			{
@@ -1339,7 +1345,10 @@
 				"userProperties": [],
 				"typeProperties": {
 					"variableName": "PageCounter",
-					"value": "@int(1)"
+					"value": {
+						"value": "@int(1)",
+						"type": "Expression"
+					}
 				}
 			}
 		],
