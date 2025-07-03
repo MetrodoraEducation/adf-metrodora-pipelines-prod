@@ -5,6 +5,8 @@
 			{
 				"name": "Until Admissions",
 				"type": "Until",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "1 Reboot PageCounter",
@@ -212,6 +214,8 @@
 			{
 				"name": "1 Reboot PageCounter",
 				"type": "SetVariable",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Until Enrollments",
@@ -236,6 +240,8 @@
 			{
 				"name": "Until Enroll groups",
 				"type": "Until",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "If Condition Delete",
@@ -443,6 +449,8 @@
 			{
 				"name": "CheckFolderExists",
 				"type": "GetMetadata",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -480,6 +488,8 @@
 			{
 				"name": "If Condition Delete",
 				"type": "IfCondition",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "CheckFolderExists",
@@ -700,6 +710,8 @@
 			{
 				"name": "Until Enrollments",
 				"type": "Until",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Reboot PageCounter",
@@ -907,6 +919,8 @@
 			{
 				"name": "Reboot PageCounter",
 				"type": "SetVariable",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Until Enroll groups",
@@ -931,6 +945,8 @@
 			{
 				"name": "Until Receipts",
 				"type": "Until",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "2 Reboot PageCounter",
@@ -1138,6 +1154,8 @@
 			{
 				"name": "2 Reboot PageCounter",
 				"type": "SetVariable",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Until Admissions",
@@ -1502,6 +1520,14 @@
 											"sink": {
 												"path": "direccion"
 											}
+										},
+										{
+											"source": {
+												"path": "['metas']['nacimiento']"
+											},
+											"sink": {
+												"path": "nacimiento"
+											}
 										}
 									],
 									"collectionReference": "$['data']['items']"
@@ -1549,6 +1575,8 @@
 			{
 				"name": "3 Reboot PageCounter",
 				"type": "SetVariable",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Until Receipts",
