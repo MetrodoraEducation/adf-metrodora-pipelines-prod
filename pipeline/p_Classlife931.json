@@ -702,7 +702,7 @@
 				"type": "Until",
 				"dependsOn": [
 					{
-						"activity": "Reboot PageCounter_copy1",
+						"activity": "Reboot PageCounter",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -905,7 +905,7 @@
 				}
 			},
 			{
-				"name": "Reboot PageCounter_copy1",
+				"name": "Reboot PageCounter",
 				"type": "SetVariable",
 				"dependsOn": [
 					{
@@ -1164,7 +1164,7 @@
 				"type": "Until",
 				"dependsOn": [
 					{
-						"activity": "3 Reboot PageCounter_copy1",
+						"activity": "3 Reboot PageCounter",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1547,7 +1547,7 @@
 				}
 			},
 			{
-				"name": "3 Reboot PageCounter_copy1",
+				"name": "3 Reboot PageCounter",
 				"type": "SetVariable",
 				"dependsOn": [
 					{
