@@ -1590,7 +1590,7 @@
 			},
 			"limit": {
 				"type": "string",
-				"defaultValue": "1500"
+				"defaultValue": "500"
 			}
 		},
 		"variables": {
