@@ -145,7 +145,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "p_Master_Zoho_Fisiofocus",
+						"referenceName": "p_General_Zoho_Fisiofocus",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
@@ -361,7 +361,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "p_Master_Zoho_FP",
+						"referenceName": "p_General_Zoho_FP",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
