@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Execute p_General",
+				"name": "Execute p_General_Metrodora",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
@@ -76,7 +76,7 @@
 				"type": "WebActivity",
 				"dependsOn": [
 					{
-						"activity": "Execute p_General",
+						"activity": "Execute p_General_Metrodora",
 						"dependencyConditions": [
 							"Failed"
 						]
@@ -338,7 +338,7 @@
 				"type": "ForEach",
 				"dependsOn": [
 					{
-						"activity": "Execute p_General",
+						"activity": "Execute p_General_Metrodora",
 						"dependencyConditions": [
 							"Succeeded"
 						]
