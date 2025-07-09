@@ -70,7 +70,7 @@
 				}
 			},
 			{
-				"name": "ExecuteZohoFPBronzetoSilver_38b",
+				"name": "FP_Bronze_Silver_38b",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
