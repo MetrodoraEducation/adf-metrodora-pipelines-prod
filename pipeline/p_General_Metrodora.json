@@ -145,7 +145,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "p_Zoho_Master_Fisiofocus",
+						"referenceName": "p_Master_Zoho_Fisiofocus",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
@@ -487,7 +487,7 @@
 			}
 		},
 		"folder": {
-			"name": "Lakehouse/General"
+			"name": "Lakehouse/Master"
 		},
 		"annotations": [],
 		"lastPublishTime": "2025-06-03T16:56:16Z"

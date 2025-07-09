@@ -109,7 +109,7 @@
 			}
 		],
 		"folder": {
-			"name": "Lakehouse/General"
+			"name": "Lakehouse/DWH"
 		},
 		"annotations": [],
 		"lastPublishTime": "2025-05-14T10:11:49Z"
