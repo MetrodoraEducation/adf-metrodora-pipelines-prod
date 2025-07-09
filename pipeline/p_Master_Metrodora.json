@@ -1,5 +1,5 @@
 {
-	"name": "p_Master",
+	"name": "p_Master_Metrodora",
 	"properties": {
 		"activities": [
 			{
@@ -19,7 +19,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "p_General",
+						"referenceName": "p_General_Metrodora",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
