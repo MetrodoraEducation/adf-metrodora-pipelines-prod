@@ -4,7 +4,7 @@
 	"parameters": {
 		"factoryName": {
 			"type": "string",
-			"metadata": "Nombre de instancia de Data Factory",
+			"metadata": "Data Factory name",
 			"defaultValue": "adf-metrodoralakehouse-pro"
 		}
 	},
@@ -317,7 +317,7 @@
 					}
 				},
 				"folder": {
-					"name": "Lakehouse/Bronze"
+					"name": "Lakehouse/Bronze/Old"
 				},
 				"annotations": [],
 				"lastPublishTime": "2025-03-23T10:53:24Z"
@@ -629,7 +629,7 @@
 					}
 				},
 				"folder": {
-					"name": "Lakehouse/Bronze"
+					"name": "Lakehouse/Bronze/Old"
 				},
 				"annotations": [],
 				"lastPublishTime": "2025-03-22T17:50:20Z"
@@ -1511,7 +1511,7 @@
 					"elapsedTimeMetric": {}
 				},
 				"folder": {
-					"name": "Lakehouse/Bronze"
+					"name": "Lakehouse/Bronze/Old"
 				},
 				"annotations": [],
 				"lastPublishTime": "2025-03-22T17:50:20Z"
@@ -1622,7 +1622,7 @@
 					"elapsedTimeMetric": {}
 				},
 				"folder": {
-					"name": "Lakehouse/Bronze"
+					"name": "Lakehouse/Bronze/Old"
 				},
 				"annotations": [],
 				"lastPublishTime": "2025-03-22T23:26:03Z"

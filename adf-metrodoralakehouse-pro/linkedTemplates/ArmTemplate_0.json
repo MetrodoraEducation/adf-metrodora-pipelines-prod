@@ -4,12 +4,12 @@
 	"parameters": {
 		"factoryName": {
 			"type": "string",
-			"metadata": "Nombre de instancia de Data Factory",
+			"metadata": "Data Factory name",
 			"defaultValue": "adf-metrodoralakehouse-pro"
 		},
 		"HttpSharepointMetrodora_password": {
 			"type": "secureString",
-			"metadata": "Cadena protegida para \"password\"de \"HttpSharepointMetrodora\""
+			"metadata": "Secure string for 'password' of 'HttpSharepointMetrodora'"
 		},
 		"HttpSharepointMetrodora_properties_typeProperties_url": {
 			"type": "string",
@@ -319,7 +319,7 @@
 					}
 				},
 				"folder": {
-					"name": "Lakehouse/Gold"
+					"name": "Lakehouse/DWH"
 				},
 				"annotations": [],
 				"lastPublishTime": "2025-05-14T10:11:48Z"

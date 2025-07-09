@@ -4,7 +4,7 @@
 	"parameters": {
 		"factoryName": {
 			"type": "string",
-			"metadata": "Nombre de instancia de Data Factory",
+			"metadata": "Data Factory name",
 			"defaultValue": "adf-metrodoralakehouse-pro"
 		}
 	},
@@ -13,13 +13,13 @@
 	},
 	"resources": [
 		{
-			"name": "[concat(parameters('factoryName'), '/p_Master')]",
+			"name": "[concat(parameters('factoryName'), '/p_Master_Metrodora')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "Execute p_General",
+						"name": "Execute p_General_Metrodora",
 						"type": "ExecutePipeline",
 						"dependsOn": [
 							{
@@ -35,7 +35,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"pipeline": {
-								"referenceName": "p_General",
+								"referenceName": "p_General_Metrodora",
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
@@ -93,7 +93,7 @@
 						"type": "WebActivity",
 						"dependsOn": [
 							{
-								"activity": "Execute p_General",
+								"activity": "Execute p_General_Metrodora",
 								"dependencyConditions": [
 									"Failed"
 								]
@@ -356,7 +356,7 @@
 						"type": "ForEach",
 						"dependsOn": [
 							{
-								"activity": "Execute p_General",
+								"activity": "Execute p_General_Metrodora",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -867,7 +867,7 @@
 					}
 				},
 				"folder": {
-					"name": "Lakehouse/General"
+					"name": "Lakehouse/Master"
 				},
 				"annotations": [],
 				"lastPublishTime": "2025-06-18T12:05:09Z"
@@ -885,7 +885,7 @@
 				"pipelines": [
 					{
 						"pipelineReference": {
-							"referenceName": "p_Master",
+							"referenceName": "p_Master_Metrodora",
 							"type": "PipelineReference"
 						},
 						"parameters": {}
@@ -919,7 +919,7 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/p_Master')]"
+				"[concat(variables('factoryId'), '/pipelines/p_Master_Metrodora')]"
 			]
 		}
 	]
