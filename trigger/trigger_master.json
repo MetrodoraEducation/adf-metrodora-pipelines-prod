@@ -7,7 +7,7 @@
 		"pipelines": [
 			{
 				"pipelineReference": {
-					"referenceName": "p_Master",
+					"referenceName": "p_Master_Metrodora",
 					"type": "PipelineReference"
 				}
 			}
