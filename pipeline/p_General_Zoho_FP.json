@@ -25,7 +25,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "p_Master_Contacts_Zoho_38b",
+						"referenceName": "p_Parent_Contacts_Zoho_38b",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
@@ -161,7 +161,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "p_Master_Deals_Zoho_38b",
+						"referenceName": "p_Parent_Deals_Zoho_38b",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
@@ -228,7 +228,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "p_Master_Leads_Zoho_38b",
+						"referenceName": "p_Parent_Leads_Zoho_38b",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
@@ -295,7 +295,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "p_Zoho_Users_38b",
+						"referenceName": "p_Parent_Users_Zoho_38b",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
