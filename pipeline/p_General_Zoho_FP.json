@@ -318,6 +318,53 @@
 						}
 					}
 				}
+			},
+			{
+				"name": "Execute Ciclos 38b",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Execute Deals 38b",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Execute Leads 38b",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "p_Parent_Ciclos_Zoho_38b",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"client_id": {
+							"value": "@pipeline().parameters.client_id",
+							"type": "Expression"
+						},
+						"client_secret": {
+							"value": "@pipeline().parameters.client_secret",
+							"type": "Expression"
+						},
+						"refresh_token": {
+							"value": "@pipeline().parameters.refresh_token",
+							"type": "Expression"
+						},
+						"reprocessDate": {
+							"value": "@pipeline().parameters.reprocessDate",
+							"type": "Expression"
+						}
+					}
+				}
 			}
 		],
 		"parameters": {
