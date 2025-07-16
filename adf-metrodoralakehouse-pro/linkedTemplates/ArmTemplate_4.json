@@ -1598,7 +1598,7 @@
 							"headers": {
 								"Content-Type": "application/x-www-form-urlencoded"
 							},
-							"url": "https://accounts.zoho.eu/oauth/v2/token",
+							"url": "https://account",
 							"body": {
 								"value": "@concat('client_id=', pipeline().parameters.client_id, \n        '&client_secret=', pipeline().parameters.client_secret,\n        '&refresh_token=', pipeline().parameters.refresh_token,\n        '&grant_type=refresh_token')",
 								"type": "Expression"
