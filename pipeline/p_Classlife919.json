@@ -24,6 +24,8 @@
 							"name": "WebClasslifeEnroll_groups",
 							"description": "Activity web that calls the endpoint enroll_groups",
 							"type": "WebActivity",
+							"state": "Inactive",
+							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [],
 							"policy": {
 								"timeout": "0.12:00:00",
