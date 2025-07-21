@@ -459,7 +459,7 @@
 						"parameters": {
 							"container": "bronze",
 							"folder": {
-								"value": "@concat('lakehouse/classlife_931/')",
+								"value": "@concat('lakehouse/classlife_929/')",
 								"type": "Expression"
 							}
 						}
@@ -514,7 +514,7 @@
 									"parameters": {
 										"container": "bronze",
 										"folder": {
-											"value": "@concat('lakehouse/classlife_931/enroll_groups/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+											"value": "@concat('lakehouse/classlife_929/enroll_groups/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
 											"type": "Expression"
 										}
 									}
@@ -546,7 +546,7 @@
 									"parameters": {
 										"container": "bronze",
 										"folder": {
-											"value": "@concat('lakehouse/classlife_931/enrollments/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+											"value": "@concat('lakehouse/classlife_929/enrollments/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
 											"type": "Expression"
 										}
 									}
@@ -578,7 +578,7 @@
 									"parameters": {
 										"container": "bronze",
 										"folder": {
-											"value": "@concat('lakehouse/classlife_931/admissions/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+											"value": "@concat('lakehouse/classlife_929/admissions/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
 											"type": "Expression"
 										}
 									}
@@ -610,7 +610,7 @@
 									"parameters": {
 										"container": "bronze",
 										"folder": {
-											"value": "@concat('lakehouse/classlife_931/receipts/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+											"value": "@concat('lakehouse/classlife_929/receipts/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
 											"type": "Expression"
 										}
 									}
@@ -642,7 +642,7 @@
 									"parameters": {
 										"container": "bronze",
 										"folder": {
-											"value": "@concat('lakehouse/classlife_931/students/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+											"value": "@concat('lakehouse/classlife_929/students/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
 											"type": "Expression"
 										}
 									}
@@ -681,7 +681,7 @@
 									"parameters": {
 										"container": "bronze",
 										"folder": {
-											"value": "@concat('lakehouse/classlife_931/students/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'),'/','student_cleaned')",
+											"value": "@concat('lakehouse/classlife_929/students/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'),'/','student_cleaned')",
 											"type": "Expression"
 										}
 									}
