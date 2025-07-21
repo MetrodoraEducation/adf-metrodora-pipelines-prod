@@ -1634,7 +1634,7 @@
 			}
 		},
 		"folder": {
-			"name": "Lakehouse/Bronze"
+			"name": "Lakehouse/Bronze/FP"
 		},
 		"annotations": [],
 		"lastPublishTime": "2025-06-09T17:21:05Z"
