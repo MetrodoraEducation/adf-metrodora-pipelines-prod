@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Execute Contacts 38b",
+				"name": "Execute Contacts 34f",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
@@ -13,7 +13,7 @@
 						]
 					},
 					{
-						"activity": "Execute Leads 38b",
+						"activity": "Execute Leads 34f",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -25,7 +25,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "p_Parent_Contacts_Zoho_38b",
+						"referenceName": "p_Parent_Contacts_Zoho_Isep_34f",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
@@ -70,29 +70,31 @@
 				}
 			},
 			{
-				"name": "FP_Bronze_Silver_38b",
+				"name": "ISEP_Bronze_Silver_34f",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
-						"activity": "Execute Contacts 38b",
+						"activity": "Execute Contacts 34f",
 						"dependencyConditions": [
 							"Succeeded"
 						]
 					},
 					{
-						"activity": "Execute Users 38b",
+						"activity": "Execute Users 34f",
 						"dependencyConditions": [
 							"Succeeded"
 						]
 					},
 					{
-						"activity": "Execute Ciclos 38b",
+						"activity": "Execute Ciclos 34f",
 						"dependencyConditions": [
 							"Succeeded"
 						]
 					},
 					{
-						"activity": "Execute Programas 38b",
+						"activity": "Execute Programas 34f",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -218,7 +220,7 @@
 				}
 			},
 			{
-				"name": "Execute Leads 38b",
+				"name": "Execute Leads 34f",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
@@ -285,7 +287,7 @@
 				}
 			},
 			{
-				"name": "Execute Users 38b",
+				"name": "Execute Users 34f",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
@@ -295,7 +297,7 @@
 						]
 					},
 					{
-						"activity": "Execute Leads 38b",
+						"activity": "Execute Leads 34f",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -307,7 +309,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "p_Parent_Users_Zoho_38b",
+						"referenceName": "p_Parent_Users_Zoho_Isep_34f",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
@@ -332,8 +334,10 @@
 				}
 			},
 			{
-				"name": "Execute Ciclos 38b",
+				"name": "Execute Ciclos 34f",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Execute Deals 34f",
@@ -342,7 +346,7 @@
 						]
 					},
 					{
-						"activity": "Execute Leads 38b",
+						"activity": "Execute Leads 34f",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -379,8 +383,10 @@
 				}
 			},
 			{
-				"name": "Execute Programas 38b",
+				"name": "Execute Programas 34f",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Execute Deals 34f",
@@ -389,7 +395,7 @@
 						]
 					},
 					{
-						"activity": "Execute Leads 38b",
+						"activity": "Execute Leads 34f",
 						"dependencyConditions": [
 							"Succeeded"
 						]
