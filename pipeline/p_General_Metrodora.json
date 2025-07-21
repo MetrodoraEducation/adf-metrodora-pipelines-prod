@@ -130,7 +130,7 @@
 				}
 			},
 			{
-				"name": "Classlife919Full",
+				"name": "Classlife_Fisiofocus_919Full",
 				"type": "ExecutePipeline",
 				"dependsOn": [],
 				"policy": {
@@ -139,7 +139,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "p_General919_Classlife",
+						"referenceName": "p_General_Fisiofocus_919_Classlife",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
@@ -285,7 +285,7 @@
 				}
 			},
 			{
-				"name": "Classlife931Full",
+				"name": "Classlife_FP_931Full",
 				"type": "ExecutePipeline",
 				"dependsOn": [],
 				"policy": {
@@ -294,7 +294,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "p_General931_Classlife",
+						"referenceName": "p_General_FP_931_Classlife",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
@@ -356,7 +356,7 @@
 						]
 					},
 					{
-						"activity": "Classlife919Full",
+						"activity": "Classlife_Fisiofocus_919Full",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -368,13 +368,13 @@
 						]
 					},
 					{
-						"activity": "Classlife931Full",
+						"activity": "Classlife_FP_931Full",
 						"dependencyConditions": [
 							"Completed"
 						]
 					},
 					{
-						"activity": "Classlife929Full",
+						"activity": "Classlife_ISEP_929Full",
 						"dependencyConditions": [
 							"Completed"
 						]
@@ -440,7 +440,7 @@
 				}
 			},
 			{
-				"name": "Classlife929Full",
+				"name": "Classlife_ISEP_929Full",
 				"type": "ExecutePipeline",
 				"dependsOn": [],
 				"policy": {
@@ -449,7 +449,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "p_General929_Classlife",
+						"referenceName": "p_General_ISEP_929_Classlife",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
