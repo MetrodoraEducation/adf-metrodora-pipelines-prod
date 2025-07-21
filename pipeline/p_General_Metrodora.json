@@ -378,6 +378,12 @@
 						"dependencyConditions": [
 							"Completed"
 						]
+					},
+					{
+						"activity": "Zoho_ISEP_34f_Full",
+						"dependencyConditions": [
+							"Completed"
+						]
 					}
 				],
 				"policy": {
@@ -448,6 +454,45 @@
 					},
 					"waitOnCompletion": true,
 					"parameters": {
+						"silver_storage_databricks": {
+							"value": "@pipeline().parameters.silver_storage_databricks",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "Zoho_ISEP_34f_Full",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "If Modified Since",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "SetTokenStartTime",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "p_General_Zoho_ISEP",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"reprocessDate": {
+							"value": "@pipeline().parameters.dayToLoad",
+							"type": "Expression"
+						},
 						"silver_storage_databricks": {
 							"value": "@pipeline().parameters.silver_storage_databricks",
 							"type": "Expression"
