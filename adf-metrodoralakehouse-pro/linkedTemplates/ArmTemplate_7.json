@@ -1974,7 +1974,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"pipeline": {
-								"referenceName": "p_General_Fisiofocus_919_Classlife",
+								"referenceName": "p_General_Classlife_Fisiofocus_919",
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
@@ -2129,7 +2129,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"pipeline": {
-								"referenceName": "p_General_FP_931_Classlife",
+								"referenceName": "p_General_Classlife_FP_931",
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
@@ -2284,7 +2284,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"pipeline": {
-								"referenceName": "p_General_ISEP_929_Classlife",
+								"referenceName": "p_General_Classlife_ISEP_929",
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
