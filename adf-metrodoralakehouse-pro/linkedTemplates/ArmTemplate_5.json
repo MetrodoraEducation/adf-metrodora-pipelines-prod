@@ -13,6 +13,108 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/df_BudgetGoldF0_copy1')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "GoldF0"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "ds_adsl_parquet",
+								"type": "DatasetReference"
+							},
+							"name": "sourceBudgetBronzeF0"
+						}
+					],
+					"sinks": [
+						{
+							"linkedService": {
+								"referenceName": "ls_adsl",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sinkBudgetGoldF0"
+						}
+					],
+					"transformations": [
+						{
+							"name": "derivedColumn1"
+						},
+						{
+							"name": "select1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          Fecha as string,",
+						"          Escenario as string,",
+						"          Titulacion as string,",
+						"          Centro as string,",
+						"          Sede as string,",
+						"          Modalidad as string,",
+						"          numLeadsNetos as integer,",
+						"          numLeadsBrutos as integer,",
+						"          NewEnrollment as integer,",
+						"          importeVentaNeta as double,",
+						"          importeVentaBruta as double,",
+						"          importeCaptacion as double",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     rowUrlColumn: 'filepath',",
+						"     format: 'parquet',",
+						"     partitionBy('hash', 1)) ~> sourceBudgetBronzeF0",
+						"select1 derive(processdate = currentUTC(),",
+						"          fecha = toDate(fecha,'dd/MM/yyyy'),",
+						"     partitionBy('hash', 1)) ~> derivedColumn1",
+						"sourceBudgetBronzeF0 select(mapColumn(",
+						"          fecha = Fecha,",
+						"          escenario = Escenario,",
+						"          titulacion = Titulacion,",
+						"          centro = Centro,",
+						"          sede = Sede,",
+						"          modalidad = Modalidad,",
+						"          num_leads_netos = numLeadsNetos,",
+						"          num_leads_brutos = numLeadsBrutos,",
+						"          new_enrollment = NewEnrollment,",
+						"          importe_venta_neta = importeVentaNeta,",
+						"          importe_venta_bruta = importeVentaBruta,",
+						"          importe_captacion = importeCaptacion,",
+						"          filepath",
+						"     ),",
+						"     partitionBy('hash', 1),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"derivedColumn1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'gold',",
+						"     folderPath: 'lakehousef0/budget',",
+						"     deltaTruncate: true,",
+						"     mergeSchema: false,",
+						"     autoCompact: false,",
+						"     optimizedWrite: false,",
+						"     vacuum: 0,",
+						"     deletable: false,",
+						"     insertable: true,",
+						"     updateable: false,",
+						"     upsertable: false,",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sinkBudgetGoldF0"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/df_CallsDWHF0')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -1377,7 +1479,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/p_General919_Classlife')]",
+			"name": "[concat(parameters('factoryName'), '/p_General_Fisiofocus_919_Classlife')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -1572,7 +1674,7 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/p_General929_Classlife')]",
+			"name": "[concat(parameters('factoryName'), '/p_General_ISEP_929_Classlife')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -1587,7 +1689,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"pipeline": {
-								"referenceName": "p_Classlife929",
+								"referenceName": "p_Classlife_Isep_929",
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
@@ -1773,7 +1875,7 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/p_General931_Classlife')]",
+			"name": "[concat(parameters('factoryName'), '/p_General_FP_931_Classlife')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -2206,328 +2308,6 @@
 				},
 				"annotations": [],
 				"lastPublishTime": "2025-03-27T20:32:46Z"
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/p_General_dimFijas_Mapeo')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "ExecutePipelineGeneral_dimEstudio",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "p_General_dimEstudio",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"silver_storage_databricks": {
-									"value": "@pipeline().parameters.silver_storage_databricks",
-									"type": "Expression"
-								},
-								"gold_storage_databricks": {
-									"value": "@pipeline().parameters.gold_storage_databricks",
-									"type": "Expression"
-								},
-								"dwh_storage_databricks": {
-									"value": "@pipeline().parameters.dwh_storage_databricks",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "ExecutePipelineGeneral_dimPais",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "p_General_dimPais",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"silver_storage_databricks": {
-									"value": "@pipeline().parameters.silver_storage_databricks",
-									"type": "Expression"
-								},
-								"gold_storage_databricks": {
-									"value": "@pipeline().parameters.gold_storage_databricks",
-									"type": "Expression"
-								},
-								"dwh_storage_databricks": {
-									"value": "@pipeline().parameters.dwh_storage_databricks",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "ExecutePipelineGeneral_MapeoEstudio",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "p_General_MapeoEstudio",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"silver_storage_databricks": {
-									"value": "@pipeline().parameters.silver_storage_databricks",
-									"type": "Expression"
-								},
-								"gold_storage_databricks": {
-									"value": "@pipeline().parameters.gold_storage_databricks",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "ExecutePipelineGeneral_MapeoModalidad",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "p_General_MapeoModalidad",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"silver_storage_databricks": {
-									"value": "@pipeline().parameters.silver_storage_databricks",
-									"type": "Expression"
-								},
-								"gold_storage_databricks": {
-									"value": "@pipeline().parameters.gold_storage_databricks",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "ExecutePipelineGeneral_MapeoOrigenCampania",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "p_General_MapeoOrigenCampania",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"silver_storage_databricks": {
-									"value": "@pipeline().parameters.silver_storage_databricks",
-									"type": "Expression"
-								},
-								"gold_storage_databricks": {
-									"value": "@pipeline().parameters.gold_storage_databricks",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "ExecutePipelineGeneral_MapeoSede",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "p_General_MapeoSede",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"silver_storage_databricks": {
-									"value": "@pipeline().parameters.silver_storage_databricks",
-									"type": "Expression"
-								},
-								"gold_storage_databricks": {
-									"value": "@pipeline().parameters.gold_storage_databricks",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "Dim_fecha_gold",
-						"type": "DatabricksNotebook",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebookPath": {
-								"value": "@concat(pipeline().parameters.gold_storage_databricks, 'dim_fecha_gold')",
-								"type": "Expression"
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "ls_AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "Dim_fecha_DWH",
-						"type": "DatabricksNotebook",
-						"dependsOn": [
-							{
-								"activity": "Dim_fecha_gold",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebookPath": {
-								"value": "@concat(pipeline().parameters.dwh_storage_databricks, 'dim_fecha')",
-								"type": "Expression"
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "ls_AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "Dim_hora_gold",
-						"type": "DatabricksNotebook",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebookPath": {
-								"value": "@concat(pipeline().parameters.gold_storage_databricks, 'dim_hora_gold')",
-								"type": "Expression"
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "ls_AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "Dim_hora_DWH",
-						"type": "DatabricksNotebook",
-						"dependsOn": [
-							{
-								"activity": "Dim_hora_gold",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebookPath": {
-								"value": "@concat(pipeline().parameters.dwh_storage_databricks, 'dim_hora')",
-								"type": "Expression"
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "ls_AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "Origen_Classlife",
-						"type": "DatabricksNotebook",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebookPath": {
-								"value": "@concat(pipeline().parameters.gold_storage_databricks, 'origen_Classlife')",
-								"type": "Expression"
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "ls_AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"parameters": {
-					"silver_storage_databricks": {
-						"type": "string"
-					},
-					"gold_storage_databricks": {
-						"type": "string"
-					},
-					"dwh_storage_databricks": {
-						"type": "string"
-					}
-				},
-				"folder": {
-					"name": "Lakehouse/General/General_dimFijas_Mapeo"
-				},
-				"annotations": [],
-				"lastPublishTime": "2025-03-22T18:43:46Z"
 			},
 			"dependsOn": []
 		}

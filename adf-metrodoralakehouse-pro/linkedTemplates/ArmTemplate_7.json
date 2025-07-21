@@ -13,7 +13,7 @@
 	},
 	"resources": [
 		{
-			"name": "[concat(parameters('factoryName'), '/p_General_Zoho_ISEP')]",
+			"name": "[concat(parameters('factoryName'), '/p_General_Zoho_FP')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -516,6 +516,653 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/p_General_Zoho_ISEP')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Execute Contacts 34f",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Execute Deals 34f",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Execute Leads 34f",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "p_Parent_Contacts_Zoho_Isep_34f",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"client_id": {
+									"value": "@pipeline().parameters.client_id",
+									"type": "Expression"
+								},
+								"client_secret": {
+									"value": "@pipeline().parameters.client_secret",
+									"type": "Expression"
+								},
+								"refresh_token": {
+									"value": "@pipeline().parameters.refresh_token",
+									"type": "Expression"
+								},
+								"reprocessDate": {
+									"value": "@pipeline().parameters.reprocessDate",
+									"type": "Expression"
+								},
+								"AccessToken": {
+									"value": "@variables('WebActivityName')",
+									"type": "Expression"
+								},
+								"NextPageToken": {
+									"value": "@variables('NextPageToken')",
+									"type": "Expression"
+								},
+								"IfModifiedSince": {
+									"value": "@variables('If-Modified-Since')",
+									"type": "Expression"
+								},
+								"TokenStartTime": {
+									"value": "@variables('TokenStartTime')",
+									"type": "Expression"
+								},
+								"PageCounter": {
+									"value": "@variables('PageCounter')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "ISEP_Bronze_Silver_34f",
+						"type": "ExecutePipeline",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
+						"dependsOn": [
+							{
+								"activity": "Execute Contacts 34f",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Execute Users 34f",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Execute Ciclos 34f",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Execute Programas 34f",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "p_Zoho_FP_Silver_38b",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"silver_storage_databricks": {
+									"value": "@pipeline().parameters.silver_storage_databricks",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "If Modified Since Date Leads",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "If-Modified-Since",
+							"value": {
+								"value": "@formatDateTime(addDays(utcnow(), if(equals(pipeline().parameters.reprocessDate, ''), -7, sub(0, int(pipeline().parameters.reprocessDate)))), 'yyyy-MM-ddTHH:mm:ssZ')",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "SetTokenStartTime",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "TokenStartTime",
+							"value": {
+								"value": "@utcNow()\n",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Execute Deals 34f",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "If Modified Since Date Leads",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "SetTokenStartTime",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "p_Parent_Deals_Zoho_Isep_34f",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"client_id": {
+									"value": "@pipeline().parameters.client_id",
+									"type": "Expression"
+								},
+								"client_secret": {
+									"value": "@pipeline().parameters.client_secret",
+									"type": "Expression"
+								},
+								"refresh_token": {
+									"value": "@pipeline().parameters.refresh_token",
+									"type": "Expression"
+								},
+								"reprocessDate": {
+									"value": "@pipeline().parameters.reprocessDate",
+									"type": "Expression"
+								},
+								"AccessToken": {
+									"value": "@variables('WebActivityName')",
+									"type": "Expression"
+								},
+								"NextPageToken": {
+									"value": "@variables('NextPageToken')",
+									"type": "Expression"
+								},
+								"IfModifiedSince": {
+									"value": "@variables('If-Modified-Since')",
+									"type": "Expression"
+								},
+								"TokenStartTime": {
+									"value": "@variables('TokenStartTime')",
+									"type": "Expression"
+								},
+								"PageCounter": {
+									"value": "@variables('PageCounter')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "Execute Leads 34f",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "If Modified Since Date Leads",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "SetTokenStartTime",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "p_Parent_Leads_Zoho_Isep_34f",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"client_id": {
+									"value": "@pipeline().parameters.client_id",
+									"type": "Expression"
+								},
+								"client_secret": {
+									"value": "@pipeline().parameters.client_secret",
+									"type": "Expression"
+								},
+								"refresh_token": {
+									"value": "@pipeline().parameters.refresh_token",
+									"type": "Expression"
+								},
+								"reprocessDate": {
+									"value": "@pipeline().parameters.reprocessDate",
+									"type": "Expression"
+								},
+								"AccessToken": {
+									"value": "@variables('WebActivityName')",
+									"type": "Expression"
+								},
+								"NextPageToken": {
+									"value": "@variables('NextPageToken')",
+									"type": "Expression"
+								},
+								"IfModifiedSince": {
+									"value": "@variables('If-Modified-Since')",
+									"type": "Expression"
+								},
+								"TokenStartTime": {
+									"value": "@variables('TokenStartTime')",
+									"type": "Expression"
+								},
+								"PageCounter": {
+									"value": "@variables('PageCounter')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "Execute Users 34f",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Execute Deals 34f",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Execute Leads 34f",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "p_Parent_Users_Zoho_Isep_34f",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"client_id": {
+									"value": "@pipeline().parameters.client_id",
+									"type": "Expression"
+								},
+								"client_secret": {
+									"value": "@pipeline().parameters.client_secret",
+									"type": "Expression"
+								},
+								"refresh_token": {
+									"value": "@pipeline().parameters.refresh_token",
+									"type": "Expression"
+								},
+								"reprocessDate": {
+									"value": "@pipeline().parameters.reprocessDate",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "Execute Ciclos 34f",
+						"type": "ExecutePipeline",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
+						"dependsOn": [
+							{
+								"activity": "Execute Deals 34f",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Execute Leads 34f",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "p_Parent_Ciclos_Zoho_38b",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"client_id": {
+									"value": "@pipeline().parameters.client_id",
+									"type": "Expression"
+								},
+								"client_secret": {
+									"value": "@pipeline().parameters.client_secret",
+									"type": "Expression"
+								},
+								"refresh_token": {
+									"value": "@pipeline().parameters.refresh_token",
+									"type": "Expression"
+								},
+								"reprocessDate": {
+									"value": "@pipeline().parameters.reprocessDate",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "Execute Programas 34f",
+						"type": "ExecutePipeline",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
+						"dependsOn": [
+							{
+								"activity": "Execute Deals 34f",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Execute Leads 34f",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "p_Parent_Programas_Zoho_38b",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"client_id": {
+									"value": "@pipeline().parameters.client_id",
+									"type": "Expression"
+								},
+								"client_secret": {
+									"value": "@pipeline().parameters.client_secret",
+									"type": "Expression"
+								},
+								"refresh_token": {
+									"value": "@pipeline().parameters.refresh_token",
+									"type": "Expression"
+								},
+								"reprocessDate": {
+									"value": "@pipeline().parameters.reprocessDate",
+									"type": "Expression"
+								}
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"reprocessDate": {
+						"type": "string",
+						"defaultValue": "7"
+					},
+					"silver_storage_databricks": {
+						"type": "string",
+						"defaultValue": "/Workspace/Repos/production_repository/notebooks-databricks-prod/Lakehouse/Silver/"
+					},
+					"client_id": {
+						"type": "string",
+						"defaultValue": "1000.1F4VDBCZ89HIY80175SZZF595HBSNO"
+					},
+					"client_secret": {
+						"type": "string",
+						"defaultValue": "d3743dfd871d30ac90d12b3e6ac02de1111c51076e"
+					},
+					"refresh_token": {
+						"type": "string",
+						"defaultValue": "1000.34fd15fcfd6362189382a6d9c93e2ac4.306ed77e527f45ace0f33bcf2302eba4"
+					},
+					"AccessToken": {
+						"type": "string"
+					},
+					"PageToken": {
+						"type": "string"
+					},
+					"PageCounter": {
+						"type": "string"
+					},
+					"NextPageToken": {
+						"type": "string"
+					}
+				},
+				"variables": {
+					"WebActivityName": {
+						"type": "String"
+					},
+					"If-Modified-Since": {
+						"type": "String"
+					},
+					"NextPageToken": {
+						"type": "String"
+					},
+					"Log_Token": {
+						"type": "String"
+					},
+					"PageCounter": {
+						"type": "Integer",
+						"defaultValue": 1
+					},
+					"TempCounter": {
+						"type": "Integer",
+						"defaultValue": 0
+					},
+					"TokenStartTime": {
+						"type": "String"
+					},
+					"AccesToken": {
+						"type": "String"
+					}
+				},
+				"folder": {
+					"name": "Lakehouse/General"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-06-03T16:56:15Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_SalesSilverF0')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "ExecutePipelineClientifyDealsSilverF0",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "p_ClientifyDealsSilverF0",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "ExecutePipelineOdooLeadSilverF0",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "p_OdooLeadSilverF0",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "ExecutePipelineClientifyDealsSilverF0_LostReason",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "p_ClientifyDealsSilverF0_LostReason",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "ExecutePipelineClientifyDealsSilverF0_IdForDelete",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "p_ClientifyDealsSilverF0_IdForDelete",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "LakehouseF0/SilverF0"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-22T17:50:22Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_SalesSilverF0_copy1')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "ExecutePipelineClientifyDealsSilverF0",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "p_ClientifyDealsSilverF0",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "ExecutePipelineOdooLeadSilverF0",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "p_OdooLeadSilverF0",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "LakehouseF0/SilverF0"
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-11-25T09:24:51Z"
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/p_GeneralF0')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -790,7 +1437,9 @@
 				"annotations": [],
 				"lastPublishTime": "2025-03-22T17:50:23Z"
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/p_SalesSilverF0')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/p_GeneralF0_Full')]",
@@ -1051,7 +1700,9 @@
 				"annotations": [],
 				"lastPublishTime": "2025-03-22T17:50:23Z"
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/p_SalesSilverF0')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/p_General_Full')]",
@@ -1314,7 +1965,7 @@
 						}
 					},
 					{
-						"name": "Classlife919Full",
+						"name": "Classlife_Fisiofocus_919Full",
 						"type": "ExecutePipeline",
 						"dependsOn": [],
 						"policy": {
@@ -1323,7 +1974,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"pipeline": {
-								"referenceName": "p_General919_Classlife",
+								"referenceName": "p_General_Fisiofocus_919_Classlife",
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
@@ -1469,7 +2120,7 @@
 						}
 					},
 					{
-						"name": "Classlife931Full",
+						"name": "Classlife_FP_931Full",
 						"type": "ExecutePipeline",
 						"dependsOn": [],
 						"policy": {
@@ -1478,7 +2129,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"pipeline": {
-								"referenceName": "p_General931_Classlife",
+								"referenceName": "p_General_FP_931_Classlife",
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
@@ -1540,7 +2191,7 @@
 								]
 							},
 							{
-								"activity": "Classlife919Full",
+								"activity": "Classlife_Fisiofocus_919Full",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -1552,13 +2203,19 @@
 								]
 							},
 							{
-								"activity": "Classlife931Full",
+								"activity": "Classlife_FP_931Full",
 								"dependencyConditions": [
 									"Completed"
 								]
 							},
 							{
-								"activity": "Classlife929Full",
+								"activity": "Classlife_ISEP_929Full",
+								"dependencyConditions": [
+									"Completed"
+								]
+							},
+							{
+								"activity": "Zoho_ISEP_34f_Full",
 								"dependencyConditions": [
 									"Completed"
 								]
@@ -1618,7 +2275,7 @@
 						}
 					},
 					{
-						"name": "Classlife929Full",
+						"name": "Classlife_ISEP_929Full",
 						"type": "ExecutePipeline",
 						"dependsOn": [],
 						"policy": {
@@ -1627,11 +2284,50 @@
 						"userProperties": [],
 						"typeProperties": {
 							"pipeline": {
-								"referenceName": "p_General929_Classlife",
+								"referenceName": "p_General_ISEP_929_Classlife",
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
 							"parameters": {
+								"silver_storage_databricks": {
+									"value": "@pipeline().parameters.silver_storage_databricks",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "Zoho_ISEP_34f_Full",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "If Modified Since",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "SetTokenStartTime",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "p_General_Zoho_ISEP",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"reprocessDate": {
+									"value": "@pipeline().parameters.dayToLoad",
+									"type": "Expression"
+								},
 								"silver_storage_databricks": {
 									"value": "@pipeline().parameters.silver_storage_databricks",
 									"type": "Expression"
@@ -1675,7 +2371,10 @@
 				"annotations": [],
 				"lastPublishTime": "2025-06-03T16:56:16Z"
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/p_General_Zoho_FP')]",
+				"[concat(variables('factoryId'), '/pipelines/p_General_Zoho_ISEP')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/p_Master_Metrodora')]",
