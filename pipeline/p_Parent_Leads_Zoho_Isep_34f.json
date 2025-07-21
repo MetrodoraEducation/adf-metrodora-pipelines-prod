@@ -1,5 +1,5 @@
 {
-	"name": "p_Parent_Leads_Zoho_34f",
+	"name": "p_Parent_Leads_Zoho_Isep_34f",
 	"properties": {
 		"activities": [
 			{
@@ -80,7 +80,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "p_Child_Leads_34f",
+						"referenceName": "p_Child_Leads_Isep_34f",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
@@ -393,7 +393,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "p_Child_Leads_34f",
+									"referenceName": "p_Child_Leads_Isep_34f",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
@@ -468,7 +468,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "p_Child_Leads_34f",
+									"referenceName": "p_Child_Leads_Isep_34f",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,

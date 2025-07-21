@@ -12,7 +12,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "p_Classlife929",
+						"referenceName": "p_Classlife_Isep_929",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true

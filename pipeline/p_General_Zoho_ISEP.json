@@ -173,7 +173,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "p_Parent_Deals_Zoho_34f",
+						"referenceName": "p_Parent_Deals_Zoho_Isep_34f",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
@@ -240,7 +240,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "p_Parent_Leads_Zoho_34f",
+						"referenceName": "p_Parent_Leads_Zoho_Isep_34f",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
