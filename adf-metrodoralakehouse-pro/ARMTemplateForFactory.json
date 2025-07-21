@@ -5035,6 +5035,1658 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/p_Classlife929')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Until Admissions",
+						"type": "Until",
+						"dependsOn": [
+							{
+								"activity": "1 Reboot PageCounter",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@equals(variables('NextItem'), 0)\n",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "1 PageCounter",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "1 TempCounter",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "PageCounter",
+										"value": {
+											"value": "@variables('TempCounter')",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "1 TempCounter",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Admissions",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "TempCounter",
+										"value": {
+											"value": "@add(variables('PageCounter'), 1)",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "1 Set Items",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "1 PageCounter",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "NextItem",
+										"value": {
+											"value": "@length(activity('WebClasslifeAdmissions').output.data.items)\n",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "WebClasslifeAdmissions",
+									"description": "Activity web that calls the endpoint Admissions",
+									"type": "WebActivity",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": true,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"method": "GET",
+										"headers": {
+											"apiKey": {
+												"value": "@pipeline().parameters.API_KEY",
+												"type": "Expression"
+											},
+											"clientId": {
+												"value": "@pipeline().parameters.API_CLIENT",
+												"type": "Expression"
+											}
+										},
+										"url": {
+											"value": "@concat('https://api.classlife.io/api/v1/admissions?showMetas=1&limit=', pipeline().parameters.limit, '&page=', variables('PageCounter'))",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "Admissions",
+									"description": "Admissions",
+									"type": "Copy",
+									"dependsOn": [
+										{
+											"activity": "WebClasslifeAdmissions",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "RestSource",
+											"httpRequestTimeout": "00:01:40",
+											"requestInterval": "00.00:00:00.010",
+											"requestMethod": "GET",
+											"additionalHeaders": {
+												"Content-Type": "application/json",
+												"apiKey": {
+													"value": "@pipeline().parameters.API_KEY",
+													"type": "Expression"
+												},
+												"clientId": {
+													"value": "@pipeline().parameters.API_CLIENT",
+													"type": "Expression"
+												}
+											},
+											"paginationRules": {
+												"supportRFC5988": "true"
+											}
+										},
+										"sink": {
+											"type": "JsonSink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											},
+											"formatSettings": {
+												"type": "JsonWriteSettings"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "ds_Classlife",
+											"type": "DatasetReference",
+											"parameters": {
+												"relativeUrl": {
+													"value": "@concat('admissions?showMetas=1&limit=', pipeline().parameters.limit, '&page=', variables('PageCounter'))",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "ds_adsl_json",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": "bronze",
+												"folder": {
+													"value": "@concat('lakehouse/classlife_929/admissions/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+													"type": "Expression"
+												},
+												"filename": {
+													"value": "@concat('JsaClassLifeAdmissions_', string(variables('PageCounter')), '.json')",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								}
+							],
+							"timeout": "0.12:00:00"
+						}
+					},
+					{
+						"name": "1 Reboot PageCounter",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Until Enrollments",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "PageCounter",
+							"value": {
+								"value": "@int(1)",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Until Enroll groups",
+						"type": "Until",
+						"dependsOn": [
+							{
+								"activity": "If Condition Delete",
+								"dependencyConditions": [
+									"Completed"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@equals(variables('NextItem'), 0)\n",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "WebClasslifeEnroll_groups",
+									"description": "Activity web that calls the endpoint enroll_groups",
+									"type": "WebActivity",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"method": "GET",
+										"headers": {
+											"apiKey": {
+												"value": "@pipeline().parameters.API_KEY",
+												"type": "Expression"
+											},
+											"clientId": {
+												"value": "@pipeline().parameters.API_CLIENT",
+												"type": "Expression"
+											}
+										},
+										"url": {
+											"value": "@concat('https://api.classlife.io/api/v1/enroll_groups?showMetas=1&limit=', pipeline().parameters.limit, '&page=', variables('PageCounter'))",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "ClasslifeProductos",
+									"description": "ClasslifeEnrollGroups",
+									"type": "Copy",
+									"dependsOn": [
+										{
+											"activity": "WebClasslifeEnroll_groups",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "RestSource",
+											"httpRequestTimeout": "00:01:40",
+											"requestInterval": "00.00:00:00.010",
+											"requestMethod": "GET",
+											"additionalHeaders": {
+												"Content-Type": "application/json",
+												"apiKey": {
+													"value": "@pipeline().parameters.API_KEY",
+													"type": "Expression"
+												},
+												"clientId": {
+													"value": "@pipeline().parameters.API_CLIENT",
+													"type": "Expression"
+												}
+											},
+											"paginationRules": {
+												"supportRFC5988": "true"
+											}
+										},
+										"sink": {
+											"type": "JsonSink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											},
+											"formatSettings": {
+												"type": "JsonWriteSettings"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "ds_Classlife",
+											"type": "DatasetReference",
+											"parameters": {
+												"relativeUrl": {
+													"value": "@concat('enroll_groups?showMetas=1&limit=', pipeline().parameters.limit, '&page=', variables('PageCounter'))",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "ds_adsl_json",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": "bronze",
+												"folder": {
+													"value": "@concat('lakehouse/classlife_929/enroll_groups/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+													"type": "Expression"
+												},
+												"filename": {
+													"value": "@concat('JsaClassLifeProductos_', string(variables('PageCounter')), '.json')",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								},
+								{
+									"name": "PageCounter",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "TempCounter",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "PageCounter",
+										"value": {
+											"value": "@variables('TempCounter')",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "TempCounter",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "ClasslifeProductos",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "TempCounter",
+										"value": {
+											"value": "@add(variables('PageCounter'), 1)",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "Set Items",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "PageCounter",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "NextItem",
+										"value": {
+											"value": "@length(activity('WebClasslifeEnroll_groups').output.data.items)\n",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"timeout": "0.12:00:00"
+						}
+					},
+					{
+						"name": "CheckFolderExists",
+						"type": "GetMetadata",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "ds_adsl_json_delete",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "bronze",
+									"folder": {
+										"value": "@concat('lakehouse/classlife_929/')",
+										"type": "Expression"
+									}
+								}
+							},
+							"fieldList": [
+								"exists"
+							],
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							},
+							"formatSettings": {
+								"type": "JsonReadSettings"
+							}
+						}
+					},
+					{
+						"name": "If Condition Delete",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "CheckFolderExists",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@activity('CheckFolderExists').output.exists",
+								"type": "Expression"
+							},
+							"ifTrueActivities": [
+								{
+									"name": "Delete Files Enroll Groups",
+									"type": "Delete",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"dataset": {
+											"referenceName": "ds_adsl_json_delete",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": "bronze",
+												"folder": {
+													"value": "@concat('lakehouse/classlife_929/enroll_groups/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+													"type": "Expression"
+												}
+											}
+										},
+										"enableLogging": false,
+										"storeSettings": {
+											"type": "AzureBlobFSReadSettings",
+											"recursive": false,
+											"enablePartitionDiscovery": false
+										}
+									}
+								},
+								{
+									"name": "Delete Files Enrollments",
+									"type": "Delete",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"dataset": {
+											"referenceName": "ds_adsl_json_delete",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": "bronze",
+												"folder": {
+													"value": "@concat('lakehouse/classlife_929/enrollments/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+													"type": "Expression"
+												}
+											}
+										},
+										"enableLogging": false,
+										"storeSettings": {
+											"type": "AzureBlobFSReadSettings",
+											"recursive": false,
+											"enablePartitionDiscovery": false
+										}
+									}
+								},
+								{
+									"name": "Delete Files Admissions",
+									"type": "Delete",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"dataset": {
+											"referenceName": "ds_adsl_json_delete",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": "bronze",
+												"folder": {
+													"value": "@concat('lakehouse/classlife_929/admissions/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+													"type": "Expression"
+												}
+											}
+										},
+										"enableLogging": false,
+										"storeSettings": {
+											"type": "AzureBlobFSReadSettings",
+											"recursive": false,
+											"enablePartitionDiscovery": false
+										}
+									}
+								},
+								{
+									"name": "Delete Files Receipts",
+									"type": "Delete",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"dataset": {
+											"referenceName": "ds_adsl_json_delete",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": "bronze",
+												"folder": {
+													"value": "@concat('lakehouse/classlife_929/receipts/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+													"type": "Expression"
+												}
+											}
+										},
+										"enableLogging": false,
+										"storeSettings": {
+											"type": "AzureBlobFSReadSettings",
+											"recursive": false,
+											"enablePartitionDiscovery": false
+										}
+									}
+								},
+								{
+									"name": "Delete Files students",
+									"type": "Delete",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"dataset": {
+											"referenceName": "ds_adsl_json_delete",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": "bronze",
+												"folder": {
+													"value": "@concat('lakehouse/classlife_929/students/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+													"type": "Expression"
+												}
+											}
+										},
+										"enableLogging": false,
+										"storeSettings": {
+											"type": "AzureBlobFSReadSettings",
+											"recursive": false,
+											"enablePartitionDiscovery": false
+										}
+									}
+								},
+								{
+									"name": "Delete Files students Cleaned",
+									"type": "Delete",
+									"dependsOn": [
+										{
+											"activity": "Delete Files students",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"dataset": {
+											"referenceName": "ds_adsl_json_delete",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": "bronze",
+												"folder": {
+													"value": "@concat('lakehouse/classlife_929/students/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'),'/','student_cleaned')",
+													"type": "Expression"
+												}
+											}
+										},
+										"enableLogging": false,
+										"storeSettings": {
+											"type": "AzureBlobFSReadSettings",
+											"recursive": false,
+											"enablePartitionDiscovery": false
+										}
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "Until Enrollments",
+						"type": "Until",
+						"dependsOn": [
+							{
+								"activity": "Reboot PageCounter",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@equals(variables('NextItem'), 0)\n",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "2 PageCounter",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "2 TempCounter",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "PageCounter",
+										"value": {
+											"value": "@variables('TempCounter')",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "2 TempCounter",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Enrollments",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "TempCounter",
+										"value": {
+											"value": "@add(variables('PageCounter'), 1)",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "2 Set Items",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "2 PageCounter",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "NextItem",
+										"value": {
+											"value": "@length(activity('WebClasslifeEnrollments').output.data.items)",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "WebClasslifeEnrollments",
+									"description": "Activity web that calls the endpoint Enrollments",
+									"type": "WebActivity",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"method": "GET",
+										"headers": {
+											"apiKey": {
+												"value": "@pipeline().parameters.API_KEY",
+												"type": "Expression"
+											},
+											"clientId": {
+												"value": "@pipeline().parameters.API_CLIENT",
+												"type": "Expression"
+											}
+										},
+										"url": {
+											"value": "@concat('https://api.classlife.io/api/v1/enrollments?showMetas=1&limit=', pipeline().parameters.limit, '&page=', variables('PageCounter'))",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "Enrollments",
+									"description": "Enrollments",
+									"type": "Copy",
+									"dependsOn": [
+										{
+											"activity": "WebClasslifeEnrollments",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "RestSource",
+											"httpRequestTimeout": "00:01:40",
+											"requestInterval": "00.00:00:00.010",
+											"requestMethod": "GET",
+											"additionalHeaders": {
+												"Content-Type": "application/json",
+												"apiKey": {
+													"value": "@pipeline().parameters.API_KEY",
+													"type": "Expression"
+												},
+												"clientId": {
+													"value": "@pipeline().parameters.API_CLIENT",
+													"type": "Expression"
+												}
+											},
+											"paginationRules": {
+												"supportRFC5988": "true"
+											}
+										},
+										"sink": {
+											"type": "JsonSink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											},
+											"formatSettings": {
+												"type": "JsonWriteSettings"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "ds_Classlife",
+											"type": "DatasetReference",
+											"parameters": {
+												"relativeUrl": {
+													"value": "@concat('enrollments?showMetas=1&limit=', pipeline().parameters.limit, '&page=', variables('PageCounter'))",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "ds_adsl_json",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": "bronze",
+												"folder": {
+													"value": "@concat('lakehouse/classlife_929/enrollments/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+													"type": "Expression"
+												},
+												"filename": {
+													"value": "@concat('JsaClassLifeEnrollments_', string(variables('PageCounter')), '.json')",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								}
+							],
+							"timeout": "0.12:00:00"
+						}
+					},
+					{
+						"name": "Reboot PageCounter",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Until Enroll groups",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "PageCounter",
+							"value": {
+								"value": "@int(1)",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Until Receipts",
+						"type": "Until",
+						"dependsOn": [
+							{
+								"activity": "2 Reboot PageCounter",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@equals(variables('NextItem'), 0)\n",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "4 PageCounter",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "4 TempCounter",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "PageCounter",
+										"value": {
+											"value": "@variables('TempCounter')",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "4 TempCounter",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Receipts",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "TempCounter",
+										"value": {
+											"value": "@add(variables('PageCounter'), 1)",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "4 Set Items",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "4 PageCounter",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "NextItem",
+										"value": {
+											"value": "@length(activity('WebClasslifeReceipts').output.data.items)",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "WebClasslifeReceipts",
+									"description": "Activity web that calls the endpoint Receipts",
+									"type": "WebActivity",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"method": "GET",
+										"headers": {
+											"apiKey": {
+												"value": "@pipeline().parameters.API_KEY",
+												"type": "Expression"
+											},
+											"clientId": {
+												"value": "@pipeline().parameters.API_CLIENT",
+												"type": "Expression"
+											}
+										},
+										"url": {
+											"value": "@concat('https://api.classlife.io/api/v1/receipts?showMetas=1&limit=', pipeline().parameters.limit, '&page=', variables('PageCounter'))",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "Receipts",
+									"description": "Receipts",
+									"type": "Copy",
+									"dependsOn": [
+										{
+											"activity": "WebClasslifeReceipts",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "RestSource",
+											"httpRequestTimeout": "00:01:40",
+											"requestInterval": "00.00:00:00.010",
+											"requestMethod": "GET",
+											"additionalHeaders": {
+												"Content-Type": "application/json",
+												"apiKey": {
+													"value": "@pipeline().parameters.API_KEY",
+													"type": "Expression"
+												},
+												"clientId": {
+													"value": "@pipeline().parameters.API_CLIENT",
+													"type": "Expression"
+												}
+											},
+											"paginationRules": {
+												"supportRFC5988": "true"
+											}
+										},
+										"sink": {
+											"type": "JsonSink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											},
+											"formatSettings": {
+												"type": "JsonWriteSettings"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "ds_Classlife",
+											"type": "DatasetReference",
+											"parameters": {
+												"relativeUrl": {
+													"value": "@concat('receipts?showMetas=1&limit=', pipeline().parameters.limit, '&page=', variables('PageCounter'))",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "ds_adsl_json",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": "bronze",
+												"folder": {
+													"value": "@concat('lakehouse/classlife_929/receipts/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+													"type": "Expression"
+												},
+												"filename": {
+													"value": "@concat('JsaClassLifeReceipts_', string(variables('PageCounter')), '.json')",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								}
+							],
+							"timeout": "0.12:00:00"
+						}
+					},
+					{
+						"name": "2 Reboot PageCounter",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Until Admissions",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "PageCounter",
+							"value": {
+								"value": "@int(1)",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Until Students",
+						"type": "Until",
+						"dependsOn": [
+							{
+								"activity": "3 Reboot PageCounter",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@equals(variables('NextItem'), 0)\n",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "3 PageCounter",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "3 TempCounter",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "PageCounter",
+										"value": {
+											"value": "@variables('TempCounter')",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "3 TempCounter",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "ClasslifeStudents_931_cleaned",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "TempCounter",
+										"value": {
+											"value": "@add(variables('PageCounter'), 1)",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "3 Set Items",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "3 PageCounter",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "NextItem",
+										"value": {
+											"value": "@length(activity('WebClasslifeStudents').output.data.items)",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "WebClasslifeStudents",
+									"description": "Activity web that calls the endpoint Students",
+									"type": "WebActivity",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"method": "GET",
+										"headers": {
+											"apiKey": {
+												"value": "@pipeline().parameters.API_KEY",
+												"type": "Expression"
+											},
+											"clientId": {
+												"value": "@pipeline().parameters.API_CLIENT",
+												"type": "Expression"
+											}
+										},
+										"url": {
+											"value": "@concat('https://api.classlife.io/api/v1/students?showMetas=1&limit=', pipeline().parameters.limit, '&page=', variables('PageCounter'))",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "ClasslifeStudents_931",
+									"description": "ClasslifeStudents",
+									"type": "Copy",
+									"dependsOn": [
+										{
+											"activity": "WebClasslifeStudents",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "RestSource",
+											"httpRequestTimeout": "00:01:40",
+											"requestInterval": "00.00:00:00.010",
+											"requestMethod": "GET",
+											"additionalHeaders": {
+												"Content-Type": "application/json",
+												"apiKey": {
+													"value": "@pipeline().parameters.API_KEY",
+													"type": "Expression"
+												},
+												"clientId": {
+													"value": "@pipeline().parameters.API_CLIENT",
+													"type": "Expression"
+												}
+											},
+											"paginationRules": {
+												"supportRFC5988": "true"
+											}
+										},
+										"sink": {
+											"type": "JsonSink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											},
+											"formatSettings": {
+												"type": "JsonWriteSettings"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "ds_Classlife",
+											"type": "DatasetReference",
+											"parameters": {
+												"relativeUrl": {
+													"value": "@concat('students?showMetas=1&limit=', pipeline().parameters.limit, '&page=', variables('PageCounter'))",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "ds_adsl_json",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": "bronze",
+												"folder": {
+													"value": "@concat('lakehouse/classlife_929/students/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+													"type": "Expression"
+												},
+												"filename": {
+													"value": "@concat('JsaClassLifeStudents_', string(variables('PageCounter')), '.json')",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								},
+								{
+									"name": "ClasslifeStudents_931_cleaned",
+									"description": "ClasslifeStudents",
+									"type": "Copy",
+									"dependsOn": [
+										{
+											"activity": "ClasslifeStudents_931",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "JsonSource",
+											"storeSettings": {
+												"type": "AzureBlobFSReadSettings",
+												"recursive": true,
+												"enablePartitionDiscovery": false
+											},
+											"formatSettings": {
+												"type": "JsonReadSettings"
+											}
+										},
+										"sink": {
+											"type": "JsonSink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											},
+											"formatSettings": {
+												"type": "JsonWriteSettings"
+											}
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"mappings": [
+												{
+													"source": {
+														"path": "[['student_id']"
+													},
+													"sink": {
+														"path": "student_id"
+													}
+												},
+												{
+													"source": {
+														"path": "[['student_full_name']"
+													},
+													"sink": {
+														"path": "student_full_name"
+													}
+												},
+												{
+													"source": {
+														"path": "[['student_email']"
+													},
+													"sink": {
+														"path": "student_email"
+													}
+												},
+												{
+													"source": {
+														"path": "[['student_phone']"
+													},
+													"sink": {
+														"path": "student_phone"
+													}
+												},
+												{
+													"source": {
+														"path": "[['student_registration_date']"
+													},
+													"sink": {
+														"path": "student_registration_date"
+													}
+												},
+												{
+													"source": {
+														"path": "[['student_active']"
+													},
+													"sink": {
+														"path": "student_active"
+													}
+												},
+												{
+													"source": {
+														"path": "[['metas']['zoho_id']"
+													},
+													"sink": {
+														"path": "zoho_id"
+													}
+												},
+												{
+													"source": {
+														"path": "[['metas']['ciudad']"
+													},
+													"sink": {
+														"path": "ciudad"
+													}
+												},
+												{
+													"source": {
+														"path": "[['metas']['codigo']"
+													},
+													"sink": {
+														"path": "codigo"
+													}
+												},
+												{
+													"source": {
+														"path": "[['metas']['pais']"
+													},
+													"sink": {
+														"path": "pais"
+													}
+												},
+												{
+													"source": {
+														"path": "[['metas']['edad']"
+													},
+													"sink": {
+														"path": "edad"
+													}
+												},
+												{
+													"source": {
+														"path": "[['metas']['direccion']"
+													},
+													"sink": {
+														"path": "direccion"
+													}
+												},
+												{
+													"source": {
+														"path": "[['metas']['nacimiento']"
+													},
+													"sink": {
+														"path": "nacimiento"
+													}
+												},
+												{
+													"source": {
+														"path": "[['metas']['libres_expediente_alexia']"
+													},
+													"sink": {
+														"path": "libres_expediente_alexia"
+													}
+												},
+												{
+													"source": {
+														"path": "[['metas']['libres_grupo_curso_anterior']"
+													},
+													"sink": {
+														"path": "libres_grupo_curso_anterior"
+													}
+												},
+												{
+													"source": {
+														"path": "[['metas']['libres_titulacion_curso_anterior']"
+													},
+													"sink": {
+														"path": "libres_titulacion_curso_anterior"
+													}
+												}
+											],
+											"collectionReference": "$['data']['items']"
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "ds_adsl_json",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": "bronze",
+												"folder": {
+													"value": "@concat('lakehouse/classlife_931/students/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+													"type": "Expression"
+												},
+												"filename": {
+													"value": "@concat('JsaClassLifeStudents_', string(variables('PageCounter')), '.json')",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "ds_adsl_json",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": "bronze",
+												"folder": {
+													"value": "@concat('lakehouse/classlife_929/students/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'),'/','student_cleaned')",
+													"type": "Expression"
+												},
+												"filename": {
+													"value": "@concat('JsaClassLifeStudents_', string(variables('PageCounter')), '.json')",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								}
+							],
+							"timeout": "0.12:00:00"
+						}
+					},
+					{
+						"name": "3 Reboot PageCounter",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Until Receipts",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "PageCounter",
+							"value": {
+								"value": "@int(1)",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"API_CLIENT": {
+						"type": "string",
+						"defaultValue": "929"
+					},
+					"API_KEY": {
+						"type": "string",
+						"defaultValue": "C!Fc0d63176713558"
+					},
+					"limit": {
+						"type": "string",
+						"defaultValue": "500"
+					}
+				},
+				"variables": {
+					"PageCounter": {
+						"type": "Integer",
+						"defaultValue": 1
+					},
+					"TempCounter": {
+						"type": "Integer",
+						"defaultValue": 0
+					},
+					"NextItem": {
+						"type": "Integer"
+					},
+					"WebActivityRequest": {
+						"type": "String"
+					}
+				},
+				"folder": {
+					"name": "Lakehouse/Bronze"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-06-09T17:21:05Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/ds_adsl_json_delete')]",
+				"[concat(variables('factoryId'), '/datasets/ds_Classlife')]",
+				"[concat(variables('factoryId'), '/datasets/ds_adsl_json')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/p_Classlife931')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -9197,6 +10849,210 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/p_General929_Classlife')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "ExecuteClasslife929",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "p_Classlife929",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "ClasslifeProductos_931",
+						"type": "DatabricksNotebook",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
+						"dependsOn": [
+							{
+								"activity": "ExecuteClasslife929",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": {
+								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_931/ClasslifeProductos_931')",
+								"type": "Expression"
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "ClasslifeStudents_931",
+						"type": "DatabricksNotebook",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
+						"dependsOn": [
+							{
+								"activity": "ExecuteClasslife929",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": {
+								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_931/ClasslifeStudents_931')",
+								"type": "Expression"
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "ClasslifeEnrollments_931",
+						"type": "DatabricksNotebook",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
+						"dependsOn": [
+							{
+								"activity": "ExecuteClasslife929",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": {
+								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_931/ClasslifeEnrollments_931')",
+								"type": "Expression"
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "ClasslifeReceipts_931",
+						"type": "DatabricksNotebook",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
+						"dependsOn": [
+							{
+								"activity": "ExecuteClasslife929",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": {
+								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_931/ClasslifeReceipts_931')",
+								"type": "Expression"
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "ClasslifeAdmissions_931",
+						"type": "DatabricksNotebook",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
+						"dependsOn": [
+							{
+								"activity": "ExecuteClasslife929",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": {
+								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_931/ClasslifeAdmissions_931')",
+								"type": "Expression"
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"silver_storage_databricks": {
+						"type": "string",
+						"defaultValue": "/Workspace/Repos/production_repository/notebooks-databricks-prod/Lakehouse/Silver/"
+					}
+				},
+				"folder": {
+					"name": "Lakehouse/General"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-06-09T17:21:05Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/p_Classlife929')]",
+				"[concat(variables('factoryId'), '/linkedServices/ls_AzureDatabricks')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/p_General931_Classlife')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -12051,6 +13907,12 @@
 								"dependencyConditions": [
 									"Completed"
 								]
+							},
+							{
+								"activity": "Classlife929Full",
+								"dependencyConditions": [
+									"Completed"
+								]
 							}
 						],
 						"policy": {
@@ -12105,6 +13967,28 @@
 								"type": "Expression"
 							}
 						}
+					},
+					{
+						"name": "Classlife929Full",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "p_General929_Classlife",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"silver_storage_databricks": {
+									"value": "@pipeline().parameters.silver_storage_databricks",
+									"type": "Expression"
+								}
+							}
+						}
 					}
 				],
 				"policy": {
@@ -12152,7 +14036,8 @@
 				"[concat(variables('factoryId'), '/pipelines/p_Auxiliar_periodificacion')]",
 				"[concat(variables('factoryId'), '/pipelines/p_General_Budget_FF')]",
 				"[concat(variables('factoryId'), '/pipelines/p_General931_Classlife')]",
-				"[concat(variables('factoryId'), '/pipelines/p_General_Zoho_FP')]"
+				"[concat(variables('factoryId'), '/pipelines/p_General_Zoho_FP')]",
+				"[concat(variables('factoryId'), '/pipelines/p_General929_Classlife')]"
 			]
 		},
 		{
@@ -14499,7 +16384,7 @@
 					}
 				},
 				"folder": {
-					"name": "Lakehouse/Bronze"
+					"name": "Lakehouse/Bronze/Old"
 				},
 				"annotations": [],
 				"lastPublishTime": "2025-03-22T17:50:20Z"
@@ -30925,6 +32810,517 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/ls_adsl')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_General_Zoho_ISEP')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Execute Contacts 38b",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Execute Deals 38b",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Execute Leads 38b",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "p_Parent_Contacts_Zoho_38b",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"client_id": {
+									"value": "@pipeline().parameters.client_id",
+									"type": "Expression"
+								},
+								"client_secret": {
+									"value": "@pipeline().parameters.client_secret",
+									"type": "Expression"
+								},
+								"refresh_token": {
+									"value": "@pipeline().parameters.refresh_token",
+									"type": "Expression"
+								},
+								"reprocessDate": {
+									"value": "@pipeline().parameters.reprocessDate",
+									"type": "Expression"
+								},
+								"AccessToken": {
+									"value": "@variables('WebActivityName')",
+									"type": "Expression"
+								},
+								"NextPageToken": {
+									"value": "@variables('NextPageToken')",
+									"type": "Expression"
+								},
+								"IfModifiedSince": {
+									"value": "@variables('If-Modified-Since')",
+									"type": "Expression"
+								},
+								"TokenStartTime": {
+									"value": "@variables('TokenStartTime')",
+									"type": "Expression"
+								},
+								"PageCounter": {
+									"value": "@variables('PageCounter')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "FP_Bronze_Silver_38b",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Execute Contacts 38b",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Execute Users 38b",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Execute Ciclos 38b",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Execute Programas 38b",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "p_Zoho_FP_Silver_38b",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"silver_storage_databricks": {
+									"value": "@pipeline().parameters.silver_storage_databricks",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "If Modified Since Date Leads",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "If-Modified-Since",
+							"value": {
+								"value": "@formatDateTime(addDays(utcnow(), if(equals(pipeline().parameters.reprocessDate, ''), -7, sub(0, int(pipeline().parameters.reprocessDate)))), 'yyyy-MM-ddTHH:mm:ssZ')",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "SetTokenStartTime",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "TokenStartTime",
+							"value": {
+								"value": "@utcNow()\n",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Execute Deals 38b",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "If Modified Since Date Leads",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "SetTokenStartTime",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "p_Parent_Deals_Zoho_38b",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"client_id": {
+									"value": "@pipeline().parameters.client_id",
+									"type": "Expression"
+								},
+								"client_secret": {
+									"value": "@pipeline().parameters.client_secret",
+									"type": "Expression"
+								},
+								"refresh_token": {
+									"value": "@pipeline().parameters.refresh_token",
+									"type": "Expression"
+								},
+								"reprocessDate": {
+									"value": "@pipeline().parameters.reprocessDate",
+									"type": "Expression"
+								},
+								"AccessToken": {
+									"value": "@variables('WebActivityName')",
+									"type": "Expression"
+								},
+								"NextPageToken": {
+									"value": "@variables('NextPageToken')",
+									"type": "Expression"
+								},
+								"IfModifiedSince": {
+									"value": "@variables('If-Modified-Since')",
+									"type": "Expression"
+								},
+								"TokenStartTime": {
+									"value": "@variables('TokenStartTime')",
+									"type": "Expression"
+								},
+								"PageCounter": {
+									"value": "@variables('PageCounter')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "Execute Leads 38b",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "If Modified Since Date Leads",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "SetTokenStartTime",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "p_Parent_Leads_Zoho_38b",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"client_id": {
+									"value": "@pipeline().parameters.client_id",
+									"type": "Expression"
+								},
+								"client_secret": {
+									"value": "@pipeline().parameters.client_secret",
+									"type": "Expression"
+								},
+								"refresh_token": {
+									"value": "@pipeline().parameters.refresh_token",
+									"type": "Expression"
+								},
+								"reprocessDate": {
+									"value": "@pipeline().parameters.reprocessDate",
+									"type": "Expression"
+								},
+								"AccessToken": {
+									"value": "@variables('WebActivityName')",
+									"type": "Expression"
+								},
+								"NextPageToken": {
+									"value": "@variables('NextPageToken')",
+									"type": "Expression"
+								},
+								"IfModifiedSince": {
+									"value": "@variables('If-Modified-Since')",
+									"type": "Expression"
+								},
+								"TokenStartTime": {
+									"value": "@variables('TokenStartTime')",
+									"type": "Expression"
+								},
+								"PageCounter": {
+									"value": "@variables('PageCounter')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "Execute Users 38b",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Execute Deals 38b",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Execute Leads 38b",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "p_Parent_Users_Zoho_38b",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"client_id": {
+									"value": "@pipeline().parameters.client_id",
+									"type": "Expression"
+								},
+								"client_secret": {
+									"value": "@pipeline().parameters.client_secret",
+									"type": "Expression"
+								},
+								"refresh_token": {
+									"value": "@pipeline().parameters.refresh_token",
+									"type": "Expression"
+								},
+								"reprocessDate": {
+									"value": "@pipeline().parameters.reprocessDate",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "Execute Ciclos 38b",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Execute Deals 38b",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Execute Leads 38b",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "p_Parent_Ciclos_Zoho_38b",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"client_id": {
+									"value": "@pipeline().parameters.client_id",
+									"type": "Expression"
+								},
+								"client_secret": {
+									"value": "@pipeline().parameters.client_secret",
+									"type": "Expression"
+								},
+								"refresh_token": {
+									"value": "@pipeline().parameters.refresh_token",
+									"type": "Expression"
+								},
+								"reprocessDate": {
+									"value": "@pipeline().parameters.reprocessDate",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "Execute Programas 38b",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Execute Deals 38b",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Execute Leads 38b",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "p_Parent_Programas_Zoho_38b",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"client_id": {
+									"value": "@pipeline().parameters.client_id",
+									"type": "Expression"
+								},
+								"client_secret": {
+									"value": "@pipeline().parameters.client_secret",
+									"type": "Expression"
+								},
+								"refresh_token": {
+									"value": "@pipeline().parameters.refresh_token",
+									"type": "Expression"
+								},
+								"reprocessDate": {
+									"value": "@pipeline().parameters.reprocessDate",
+									"type": "Expression"
+								}
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"reprocessDate": {
+						"type": "string",
+						"defaultValue": "7"
+					},
+					"silver_storage_databricks": {
+						"type": "string",
+						"defaultValue": "/Workspace/Repos/production_repository/notebooks-databricks-prod/Lakehouse/Silver/"
+					},
+					"client_id": {
+						"type": "string",
+						"defaultValue": "1000.1F4VDBCZ89HIY80175SZZF595HBSNO"
+					},
+					"client_secret": {
+						"type": "string",
+						"defaultValue": "d3743dfd871d30ac90d12b3e6ac02de1111c51076e"
+					},
+					"refresh_token": {
+						"type": "string",
+						"defaultValue": "1000.38b38aaaa19f9e17d7228903a78f2220.44022c9409dbc53987bcc273e18eb666"
+					},
+					"AccessToken": {
+						"type": "string"
+					},
+					"PageToken": {
+						"type": "string"
+					},
+					"PageCounter": {
+						"type": "string"
+					},
+					"NextPageToken": {
+						"type": "string"
+					}
+				},
+				"variables": {
+					"WebActivityName": {
+						"type": "String"
+					},
+					"If-Modified-Since": {
+						"type": "String"
+					},
+					"NextPageToken": {
+						"type": "String"
+					},
+					"Log_Token": {
+						"type": "String"
+					},
+					"PageCounter": {
+						"type": "Integer",
+						"defaultValue": 1
+					},
+					"TempCounter": {
+						"type": "Integer",
+						"defaultValue": 0
+					},
+					"TokenStartTime": {
+						"type": "String"
+					},
+					"AccesToken": {
+						"type": "String"
+					}
+				},
+				"folder": {
+					"name": "Lakehouse/General"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-06-03T16:56:15Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/p_Parent_Contacts_Zoho_38b')]",
+				"[concat(variables('factoryId'), '/pipelines/p_Zoho_FP_Silver_38b')]",
+				"[concat(variables('factoryId'), '/pipelines/p_Parent_Deals_Zoho_38b')]",
+				"[concat(variables('factoryId'), '/pipelines/p_Parent_Leads_Zoho_38b')]",
+				"[concat(variables('factoryId'), '/pipelines/p_Parent_Users_Zoho_38b')]",
+				"[concat(variables('factoryId'), '/pipelines/p_Parent_Ciclos_Zoho_38b')]",
+				"[concat(variables('factoryId'), '/pipelines/p_Parent_Programas_Zoho_38b')]"
 			]
 		}
 	]
