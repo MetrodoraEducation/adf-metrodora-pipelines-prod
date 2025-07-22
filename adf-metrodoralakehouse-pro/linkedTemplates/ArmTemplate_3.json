@@ -4267,7 +4267,7 @@
 									"type": "SetVariable",
 									"dependsOn": [
 										{
-											"activity": "ClasslifeStudents_931_cleaned",
+											"activity": "ClasslifeStudents_929_cleaned",
 											"dependencyConditions": [
 												"Succeeded"
 											]
@@ -4342,7 +4342,7 @@
 									}
 								},
 								{
-									"name": "ClasslifeStudents_931",
+									"name": "ClasslifeStudents_929",
 									"description": "ClasslifeStudents",
 									"type": "Copy",
 									"dependsOn": [
@@ -4424,12 +4424,12 @@
 									]
 								},
 								{
-									"name": "ClasslifeStudents_931_cleaned",
+									"name": "ClasslifeStudents_929_cleaned",
 									"description": "ClasslifeStudents",
 									"type": "Copy",
 									"dependsOn": [
 										{
-											"activity": "ClasslifeStudents_931",
+											"activity": "ClasslifeStudents_929",
 											"dependencyConditions": [
 												"Succeeded"
 											]
@@ -4607,7 +4607,7 @@
 											"parameters": {
 												"container": "bronze",
 												"folder": {
-													"value": "@concat('lakehouse/classlife_931/students/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+													"value": "@concat('lakehouse/classlife_929/students/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
 													"type": "Expression"
 												},
 												"filename": {
