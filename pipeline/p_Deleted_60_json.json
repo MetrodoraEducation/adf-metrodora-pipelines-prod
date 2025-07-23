@@ -1,0 +1,130 @@
+{
+	"name": "p_Deleted_60_json",
+	"properties": {
+		"activities": [
+			{
+				"name": "Delete -60 days",
+				"type": "Until",
+				"dependsOn": [
+					{
+						"activity": "Current date",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Target date",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Iter date",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"activities": [
+						{
+							"name": "Delete1",
+							"type": "Delete",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "ds_adsl_json",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "bronze"
+									}
+								},
+								"enableLogging": true,
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							}
+						}
+					],
+					"timeout": "0.12:00:00"
+				}
+			},
+			{
+				"name": "Current date",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "currentDate",
+					"value": "@utcNow()"
+				}
+			},
+			{
+				"name": "Target date",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "targetDate",
+					"value": {
+						"value": "@addDays(utcNow(), -60)",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Iter date",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "iterDate",
+					"value": {
+						"value": "@formatDateTime(variables('targetDate'), 'yyyy-MM-01')",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"variables": {
+			"currentDate": {
+				"type": "String"
+			},
+			"targetDate": {
+				"type": "String"
+			},
+			"iterDate": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Lakehouse/Bronze"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-03-22T17:50:20Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
