@@ -111,9 +111,17 @@
 			{
 				"name": "ZohoCampaignsSilver",
 				"type": "DatabricksNotebook",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "ZohoContactsSilver",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "ZohoUsersSilver",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -137,49 +145,12 @@
 					"referenceName": "ls_AzureDatabricks",
 					"type": "LinkedServiceReference"
 				}
-			},
-			{
-				"name": "Tablon_Leads_and_DealsSilver",
-				"type": "DatabricksNotebook",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
-				"dependsOn": [
-					{
-						"activity": "ZohoCampaignsSilver",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "ZohoUsersSilver",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"notebookPath": {
-						"value": "@concat(pipeline().parameters.silver_storage_databricks, 'Tablon_Leads_and_Deals')",
-						"type": "Expression"
-					}
-				},
-				"linkedServiceName": {
-					"referenceName": "ls_AzureDatabricks",
-					"type": "LinkedServiceReference"
-				}
 			}
 		],
 		"parameters": {
 			"silver_storage_databricks": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "/Workspace/Repos/production_repository/notebooks-databricks-prod/Lakehouse/Silver/"
 			}
 		},
 		"folder": {
