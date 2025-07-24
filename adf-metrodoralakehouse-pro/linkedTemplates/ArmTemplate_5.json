@@ -13,6 +13,115 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/df_BudgetGoldF0')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "GoldF0"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "ds_adsl_parquet",
+								"type": "DatasetReference"
+							},
+							"name": "sourceBudgetBronzeF0"
+						}
+					],
+					"sinks": [
+						{
+							"linkedService": {
+								"referenceName": "ls_adsl",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sinkBudgetGoldF0"
+						}
+					],
+					"transformations": [
+						{
+							"name": "derivedColumn1"
+						},
+						{
+							"name": "select1"
+						},
+						{
+							"name": "derivedColumnImportes"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          Fecha as string,",
+						"          Escenario as string,",
+						"          Titulacion as string,",
+						"          Centro as string,",
+						"          Sede as string,",
+						"          Modalidad as string,",
+						"          numLeadsNetos as integer,",
+						"          numLeadsBrutos as integer,",
+						"          NewEnrollment as integer,",
+						"          importeVentaNeta as string,",
+						"          importeVentaBruta as string,",
+						"          importeCaptacion as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     rowUrlColumn: 'filepath',",
+						"     format: 'parquet',",
+						"     partitionBy('hash', 1)) ~> sourceBudgetBronzeF0",
+						"select1 derive(processdate = currentUTC(),",
+						"          fecha = toDate(fecha,'dd/MM/yyyy'),",
+						"     partitionBy('hash', 1)) ~> derivedColumn1",
+						"derivedColumnImportes select(mapColumn(",
+						"          fecha = Fecha,",
+						"          escenario = Escenario,",
+						"          titulacion = Titulacion,",
+						"          centro = Centro,",
+						"          sede = Sede,",
+						"          modalidad = Modalidad,",
+						"          num_leads_netos = numLeadsNetos,",
+						"          num_leads_brutos = numLeadsBrutos,",
+						"          new_enrollment = NewEnrollment,",
+						"          importe_venta_neta = importeVentaNeta,",
+						"          importe_venta_bruta = importeVentaBruta,",
+						"          importe_captacion = importeCaptacion,",
+						"          filepath",
+						"     ),",
+						"     partitionBy('hash', 1),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"sourceBudgetBronzeF0 derive(importeVentaNeta = toDouble(replace(importeVentaNeta,',','.')),",
+						"          importeVentaBruta = toDouble(replace(importeVentaBruta,',','.')),",
+						"          importeCaptacion = toDouble(replace(importeCaptacion,',','.')),",
+						"     partitionBy('hash', 1)) ~> derivedColumnImportes",
+						"derivedColumn1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'gold',",
+						"     folderPath: 'lakehousef0/budget',",
+						"     deltaTruncate: true,",
+						"     mergeSchema: false,",
+						"     autoCompact: false,",
+						"     optimizedWrite: false,",
+						"     vacuum: 0,",
+						"     deletable: false,",
+						"     insertable: true,",
+						"     updateable: false,",
+						"     upsertable: false,",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sinkBudgetGoldF0"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/df_BudgetGoldF0_copy1')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -1166,7 +1275,9 @@
 				"annotations": [],
 				"lastPublishTime": "2025-03-22T17:50:20Z"
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/df_BudgetGoldF0')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/p_CallsDWHF0')]",
@@ -2229,85 +2340,6 @@
 				},
 				"annotations": [],
 				"lastPublishTime": "2025-06-09T17:21:05Z"
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/p_General_Zoho_Fisiofocus')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "ExecuteZohoFisiofocus",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "p_Parent_Zoho_Fisiofocus",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"reprocessDate": {
-									"value": "@pipeline().parameters.reprocessDate",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "ExecuteZohoFisiofocusBronzetoSilver",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "ExecuteZohoFisiofocus",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "p_ZohoFisiofocusSilver",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"silver_storage_databricks": {
-									"value": "@pipeline().parameters.silver_storage_databricks",
-									"type": "Expression"
-								}
-							}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"parameters": {
-					"reprocessDate": {
-						"type": "string",
-						"defaultValue": "7"
-					},
-					"silver_storage_databricks": {
-						"type": "string",
-						"defaultValue": "/Workspace/Repos/production_repository/notebooks-databricks-prod/Lakehouse/Silver/"
-					}
-				},
-				"folder": {
-					"name": "Lakehouse/General"
-				},
-				"annotations": [],
-				"lastPublishTime": "2025-03-27T20:32:46Z"
 			},
 			"dependsOn": []
 		}

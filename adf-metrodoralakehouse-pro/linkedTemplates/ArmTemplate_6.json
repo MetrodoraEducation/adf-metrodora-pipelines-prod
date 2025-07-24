@@ -13,6 +13,85 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/p_General_Zoho_Fisiofocus')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "ExecuteZohoFisiofocus",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "p_Parent_Zoho_Fisiofocus",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"reprocessDate": {
+									"value": "@pipeline().parameters.reprocessDate",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "ExecuteZohoFisiofocusBronzetoSilver",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "ExecuteZohoFisiofocus",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "p_ZohoFisiofocusSilver",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"silver_storage_databricks": {
+									"value": "@pipeline().parameters.silver_storage_databricks",
+									"type": "Expression"
+								}
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"reprocessDate": {
+						"type": "string",
+						"defaultValue": "7"
+					},
+					"silver_storage_databricks": {
+						"type": "string",
+						"defaultValue": "/Workspace/Repos/production_repository/notebooks-databricks-prod/Lakehouse/Silver/"
+					}
+				},
+				"folder": {
+					"name": "Lakehouse/General"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-27T20:32:46Z"
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/p_General_dimFijas_Mapeo')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -6069,108 +6148,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/p_SalesBronze')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/p_CallsSalesBronzeSilver_Full')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "ExecutePipelineSalesBronze_Full",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "p_SalesBronze_Full",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "ExecutePipelineAircallCallsBronzeSilver_Full",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "p_AircallCallsBronzeSilver_Full",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "ExecutePipelineClienitfyOdooSilver",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "ExecutePipelineSalesBronze_Full",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "p_ClienitfyOdooSilver",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "ExecutePipelineSalesSilver",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "ExecutePipelineClienitfyOdooSilver",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "p_SalesSilver",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"folder": {
-					"name": "Lakehouse/Bronze/Old"
-				},
-				"annotations": [],
-				"lastPublishTime": "2025-03-22T17:50:22Z"
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/p_SalesBronze_Full')]"
 			]
 		}
 	]

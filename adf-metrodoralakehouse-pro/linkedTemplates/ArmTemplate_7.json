@@ -13,6 +13,106 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/p_CallsSalesBronzeSilver_Full')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "ExecutePipelineSalesBronze_Full",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "p_SalesBronze_Full",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "ExecutePipelineAircallCallsBronzeSilver_Full",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "p_AircallCallsBronzeSilver_Full",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "ExecutePipelineClienitfyOdooSilver",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "ExecutePipelineSalesBronze_Full",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "p_ClienitfyOdooSilver",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "ExecutePipelineSalesSilver",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "ExecutePipelineClienitfyOdooSilver",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "p_SalesSilver",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "Lakehouse/Bronze/Old"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-03-22T17:50:22Z"
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/p_General_Zoho_FP')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -1829,7 +1929,9 @@
 				"annotations": [],
 				"lastPublishTime": "2025-05-14T10:11:49Z"
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/p_CallsSalesBronzeSilver_Full')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/p_General_Metrodora')]",
@@ -1930,6 +2032,12 @@
 						"type": "ExecutePipeline",
 						"dependsOn": [
 							{
+								"activity": "Deleted -60 json",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
 								"activity": "If Modified Since",
 								"dependencyConditions": [
 									"Succeeded"
@@ -1967,7 +2075,14 @@
 					{
 						"name": "Classlife_Fisiofocus_919Full",
 						"type": "ExecutePipeline",
-						"dependsOn": [],
+						"dependsOn": [
+							{
+								"activity": "Deleted -60 json",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
 						"policy": {
 							"secureInput": false
 						},
@@ -1993,6 +2108,8 @@
 					{
 						"name": "Dim Fijas",
 						"type": "ExecutePipeline",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Tablon_Leads_and_DealsSilver",
@@ -2122,7 +2239,14 @@
 					{
 						"name": "Classlife_FP_931Full",
 						"type": "ExecutePipeline",
-						"dependsOn": [],
+						"dependsOn": [
+							{
+								"activity": "Deleted -60 json",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
 						"policy": {
 							"secureInput": false
 						},
@@ -2145,6 +2269,12 @@
 						"name": "Zoho_FP_38b_Full",
 						"type": "ExecutePipeline",
 						"dependsOn": [
+							{
+								"activity": "Deleted -60 json",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
 							{
 								"activity": "If Modified Since",
 								"dependencyConditions": [
@@ -2277,7 +2407,14 @@
 					{
 						"name": "Classlife_ISEP_929Full",
 						"type": "ExecutePipeline",
-						"dependsOn": [],
+						"dependsOn": [
+							{
+								"activity": "Deleted -60 json",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
 						"policy": {
 							"secureInput": false
 						},
@@ -2301,13 +2438,7 @@
 						"type": "ExecutePipeline",
 						"dependsOn": [
 							{
-								"activity": "If Modified Since",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							},
-							{
-								"activity": "SetTokenStartTime",
+								"activity": "Deleted -60 json",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -2334,6 +2465,23 @@
 								}
 							}
 						}
+					},
+					{
+						"name": "Deleted -60 json",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "p_Deleted_60_json",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
 					}
 				],
 				"policy": {
@@ -2342,7 +2490,7 @@
 				"parameters": {
 					"dayToLoad": {
 						"type": "string",
-						"defaultValue": "7"
+						"defaultValue": "3"
 					},
 					"silver_storage_databricks": {
 						"type": "string",
