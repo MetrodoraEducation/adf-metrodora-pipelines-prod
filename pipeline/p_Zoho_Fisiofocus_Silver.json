@@ -1,5 +1,5 @@
 {
-	"name": "p_ZohoFisiofocusSilver",
+	"name": "p_Zoho_Fisiofocus_Silver",
 	"properties": {
 		"activities": [
 			{
@@ -23,7 +23,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"notebookPath": {
-						"value": "@concat(pipeline().parameters.silver_storage_databricks, 'zoho_25/ZohoContacts')",
+						"value": "@concat(pipeline().parameters.silver_storage_databricks, 'zoho_fisiofocus_25/ZohoContacts')",
 						"type": "Expression"
 					}
 				},
@@ -46,7 +46,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"notebookPath": {
-						"value": "@concat(pipeline().parameters.silver_storage_databricks, 'zoho_25/ZohoDeals')",
+						"value": "@concat(pipeline().parameters.silver_storage_databricks, 'zoho_fisiofocus_25/ZohoDeals')",
 						"type": "Expression"
 					}
 				},
@@ -69,7 +69,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"notebookPath": {
-						"value": "@concat(pipeline().parameters.silver_storage_databricks, 'zoho_25/ZohoLeads')",
+						"value": "@concat(pipeline().parameters.silver_storage_databricks, 'zoho_fisiofocus_25/ZohoLeads')",
 						"type": "Expression"
 					}
 				},
@@ -99,7 +99,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"notebookPath": {
-						"value": "@concat(pipeline().parameters.silver_storage_databricks, 'zoho_25/ZohoUsers')",
+						"value": "@concat(pipeline().parameters.silver_storage_databricks, 'zoho_fisiofocus_25/ZohoUsers')",
 						"type": "Expression"
 					}
 				},
