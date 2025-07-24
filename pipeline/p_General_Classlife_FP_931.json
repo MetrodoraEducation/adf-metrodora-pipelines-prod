@@ -43,7 +43,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"notebookPath": {
-						"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_931/ClasslifeProductos_931')",
+						"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_fp_931/ClasslifeProductos_931')",
 						"type": "Expression"
 					}
 				},
@@ -73,7 +73,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"notebookPath": {
-						"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_931/ClasslifeStudents_931')",
+						"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_fp_931/ClasslifeStudents_931')",
 						"type": "Expression"
 					}
 				},
@@ -103,7 +103,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"notebookPath": {
-						"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_931/ClasslifeEnrollments_931')",
+						"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_fp_931/ClasslifeEnrollments_931')",
 						"type": "Expression"
 					}
 				},
@@ -133,7 +133,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"notebookPath": {
-						"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_931/ClasslifeReceipts_931')",
+						"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_fp_931/ClasslifeReceipts_931')",
 						"type": "Expression"
 					}
 				},
@@ -163,7 +163,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"notebookPath": {
-						"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_931/ClasslifeAdmissions_931')",
+						"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_fp_931/ClasslifeAdmissions_931')",
 						"type": "Expression"
 					}
 				},
