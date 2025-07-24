@@ -39,7 +39,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"notebookPath": {
-						"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_919/ClasslifeProductos')",
+						"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_fisiofocus_919/ClasslifeProductos')",
 						"type": "Expression"
 					}
 				},
@@ -69,7 +69,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"notebookPath": {
-						"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_919/ClasslifeStudents')",
+						"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_fisiofocus_919/ClasslifeStudents')",
 						"type": "Expression"
 					}
 				},
@@ -99,7 +99,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"notebookPath": {
-						"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_919/ClasslifeEnrollments')",
+						"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_fisiofocus_919/ClasslifeEnrollments')",
 						"type": "Expression"
 					}
 				},
@@ -129,7 +129,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"notebookPath": {
-						"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_919/ClasslifeReceipts')",
+						"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_fisiofocus_919/ClasslifeReceipts')",
 						"type": "Expression"
 					}
 				},
@@ -159,7 +159,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"notebookPath": {
-						"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_919/ClasslifeAdmissions')",
+						"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_fisiofocus_919/ClasslifeAdmissions')",
 						"type": "Expression"
 					}
 				},
