@@ -95,6 +95,12 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
+						"activity": "Deleted -60 json",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
 						"activity": "If Modified Since",
 						"dependencyConditions": [
 							"Succeeded"
@@ -132,7 +138,14 @@
 			{
 				"name": "Classlife_Fisiofocus_919Full",
 				"type": "ExecutePipeline",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Deleted -60 json",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"secureInput": false
 				},
@@ -289,7 +302,14 @@
 			{
 				"name": "Classlife_FP_931Full",
 				"type": "ExecutePipeline",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Deleted -60 json",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"secureInput": false
 				},
@@ -312,6 +332,12 @@
 				"name": "Zoho_FP_38b_Full",
 				"type": "ExecutePipeline",
 				"dependsOn": [
+					{
+						"activity": "Deleted -60 json",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
 					{
 						"activity": "If Modified Since",
 						"dependencyConditions": [
@@ -444,7 +470,14 @@
 			{
 				"name": "Classlife_ISEP_929Full",
 				"type": "ExecutePipeline",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Deleted -60 json",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"secureInput": false
 				},
@@ -468,13 +501,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "If Modified Since",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "SetTokenStartTime",
+						"activity": "Deleted -60 json",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -500,6 +527,22 @@
 							"type": "Expression"
 						}
 					}
+				}
+			},
+			{
+				"name": "Deleted -60 json",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "p_Deleted_60_json",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
 				}
 			}
 		],
