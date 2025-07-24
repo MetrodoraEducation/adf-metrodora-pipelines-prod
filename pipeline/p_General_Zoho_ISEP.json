@@ -72,8 +72,6 @@
 			{
 				"name": "ISEP_Bronze_Silver_34f",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Execute Contacts 34f",
@@ -106,7 +104,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "p_Zoho_FP_Silver_38b",
+						"referenceName": "p_Zoho_ISEP_Silver_34f",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
