@@ -41,7 +41,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "p_ZohoFisiofocusSilver",
+						"referenceName": "p_Zoho_Fisiofocus_Silver",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
