@@ -28,7 +28,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@lessOrEquals(variables('Iter date'), variables('Target date'))\n",
+						"value": "@lessOrEquals(variables('iterDate'), variables('targetDate'))\n",
 						"type": "Expression"
 					},
 					"activities": [
@@ -46,15 +46,22 @@
 							"userProperties": [],
 							"typeProperties": {
 								"dataset": {
-									"referenceName": "ds_adsl_json",
+									"referenceName": "ds_adsl_json_delete",
 									"type": "DatasetReference",
 									"parameters": {
 										"container": "bronze",
 										"folder": {
-											"value": "@concat('bronze/lakehouse/classlife/admissions/', formatDateTime(variables('iterDate'), 'yyyy/MM'), '/')\n",
+											"value": "@concat('lakehouse/classlife/admissions/', formatDateTime(variables('iterDate'), 'yyyy/MM'), '/')",
 											"type": "Expression"
 										}
 									}
+								},
+								"logStorageSettings": {
+									"linkedServiceName": {
+										"referenceName": "ls_adsl",
+										"type": "LinkedServiceReference"
+									},
+									"path": "bronze/lakehouse/temp_json_deteled"
 								},
 								"enableLogging": true,
 								"storeSettings": {
