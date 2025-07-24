@@ -729,7 +729,7 @@
 							}
 						},
 						{
-							"name": "Zoho FP 38b",
+							"name": "Zoho Contacts FP 38b",
 							"type": "Delete",
 							"dependsOn": [
 								{
@@ -754,7 +754,7 @@
 									"parameters": {
 										"container": "bronze",
 										"folder": {
-											"value": "@concat('lakehouse/zoho_38b/', formatDateTime(variables('iterDate'), 'yyyy/MM/dd'), '/')",
+											"value": "@concat('lakehouse/zoho_38b/Contacts/', formatDateTime(variables('iterDate'), 'yyyy/MM/dd'), '/')",
 											"type": "Expression"
 										}
 									}
@@ -775,11 +775,11 @@
 							}
 						},
 						{
-							"name": "Zoho ISEP 34f",
+							"name": "Zoho Contacts ISEP 34f",
 							"type": "Delete",
 							"dependsOn": [
 								{
-									"activity": "Zoho FP 38b",
+									"activity": "Zoho Contacts FP 38b",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -800,7 +800,375 @@
 									"parameters": {
 										"container": "bronze",
 										"folder": {
-											"value": "@concat('lakehouse/zoho_34f/', formatDateTime(variables('iterDate'), 'yyyy/MM/dd'), '/')",
+											"value": "@concat('lakehouse/zoho_34f/Contacts/', formatDateTime(variables('iterDate'), 'yyyy/MM/dd'), '/')",
+											"type": "Expression"
+										}
+									}
+								},
+								"logStorageSettings": {
+									"linkedServiceName": {
+										"referenceName": "ls_adsl",
+										"type": "LinkedServiceReference"
+									},
+									"path": "bronze/lakehouse/temp_json_deteled"
+								},
+								"enableLogging": true,
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							}
+						},
+						{
+							"name": "Zoho Deals FP 38b",
+							"type": "Delete",
+							"dependsOn": [
+								{
+									"activity": "Zoho Fisiofocus",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "ds_adsl_json_delete",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "bronze",
+										"folder": {
+											"value": "@concat('lakehouse/zoho_38b/Deals/', formatDateTime(variables('iterDate'), 'yyyy/MM/dd'), '/')",
+											"type": "Expression"
+										}
+									}
+								},
+								"logStorageSettings": {
+									"linkedServiceName": {
+										"referenceName": "ls_adsl",
+										"type": "LinkedServiceReference"
+									},
+									"path": "bronze/lakehouse/temp_json_deteled"
+								},
+								"enableLogging": true,
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							}
+						},
+						{
+							"name": "Zoho Leads FP 38b",
+							"type": "Delete",
+							"dependsOn": [
+								{
+									"activity": "Zoho Fisiofocus",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "ds_adsl_json_delete",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "bronze",
+										"folder": {
+											"value": "@concat('lakehouse/zoho_38b/Leads/', formatDateTime(variables('iterDate'), 'yyyy/MM/dd'), '/')",
+											"type": "Expression"
+										}
+									}
+								},
+								"logStorageSettings": {
+									"linkedServiceName": {
+										"referenceName": "ls_adsl",
+										"type": "LinkedServiceReference"
+									},
+									"path": "bronze/lakehouse/temp_json_deteled"
+								},
+								"enableLogging": true,
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							}
+						},
+						{
+							"name": "Zoho Ciclos FP 38b",
+							"type": "Delete",
+							"dependsOn": [
+								{
+									"activity": "Zoho Fisiofocus",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "ds_adsl_json_delete",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "bronze",
+										"folder": {
+											"value": "@concat('lakehouse/zoho_38b/Ciclos/', formatDateTime(variables('iterDate'), 'yyyy/MM/dd'), '/')",
+											"type": "Expression"
+										}
+									}
+								},
+								"logStorageSettings": {
+									"linkedServiceName": {
+										"referenceName": "ls_adsl",
+										"type": "LinkedServiceReference"
+									},
+									"path": "bronze/lakehouse/temp_json_deteled"
+								},
+								"enableLogging": true,
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							}
+						},
+						{
+							"name": "Zoho Programas FP 38b",
+							"type": "Delete",
+							"dependsOn": [
+								{
+									"activity": "Zoho Fisiofocus",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "ds_adsl_json_delete",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "bronze",
+										"folder": {
+											"value": "@concat('lakehouse/zoho_38b/Programas/', formatDateTime(variables('iterDate'), 'yyyy/MM/dd'), '/')",
+											"type": "Expression"
+										}
+									}
+								},
+								"logStorageSettings": {
+									"linkedServiceName": {
+										"referenceName": "ls_adsl",
+										"type": "LinkedServiceReference"
+									},
+									"path": "bronze/lakehouse/temp_json_deteled"
+								},
+								"enableLogging": true,
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							}
+						},
+						{
+							"name": "Zoho Users FP 38b",
+							"type": "Delete",
+							"dependsOn": [
+								{
+									"activity": "Zoho Fisiofocus",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "ds_adsl_json_delete",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "bronze",
+										"folder": {
+											"value": "@concat('lakehouse/zoho_38b/Users/', formatDateTime(variables('iterDate'), 'yyyy/MM/dd'), '/')",
+											"type": "Expression"
+										}
+									}
+								},
+								"logStorageSettings": {
+									"linkedServiceName": {
+										"referenceName": "ls_adsl",
+										"type": "LinkedServiceReference"
+									},
+									"path": "bronze/lakehouse/temp_json_deteled"
+								},
+								"enableLogging": true,
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							}
+						},
+						{
+							"name": "Zoho Deals ISEP 34f",
+							"type": "Delete",
+							"dependsOn": [
+								{
+									"activity": "Zoho Deals FP 38b",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "ds_adsl_json_delete",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "bronze",
+										"folder": {
+											"value": "@concat('lakehouse/zoho_34f/Deals/', formatDateTime(variables('iterDate'), 'yyyy/MM/dd'), '/')",
+											"type": "Expression"
+										}
+									}
+								},
+								"logStorageSettings": {
+									"linkedServiceName": {
+										"referenceName": "ls_adsl",
+										"type": "LinkedServiceReference"
+									},
+									"path": "bronze/lakehouse/temp_json_deteled"
+								},
+								"enableLogging": true,
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							}
+						},
+						{
+							"name": "Zoho Leads ISEP 34f",
+							"type": "Delete",
+							"dependsOn": [
+								{
+									"activity": "Zoho Leads FP 38b",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "ds_adsl_json_delete",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "bronze",
+										"folder": {
+											"value": "@concat('lakehouse/zoho_34f/Leads/', formatDateTime(variables('iterDate'), 'yyyy/MM/dd'), '/')",
+											"type": "Expression"
+										}
+									}
+								},
+								"logStorageSettings": {
+									"linkedServiceName": {
+										"referenceName": "ls_adsl",
+										"type": "LinkedServiceReference"
+									},
+									"path": "bronze/lakehouse/temp_json_deteled"
+								},
+								"enableLogging": true,
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							}
+						},
+						{
+							"name": "Zoho Users ISEP 34f",
+							"type": "Delete",
+							"dependsOn": [
+								{
+									"activity": "Zoho Users FP 38b",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "ds_adsl_json_delete",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "bronze",
+										"folder": {
+											"value": "@concat('lakehouse/zoho_34f/Users/', formatDateTime(variables('iterDate'), 'yyyy/MM/dd'), '/')",
 											"type": "Expression"
 										}
 									}
