@@ -7,18 +7,6 @@
 				"type": "Until",
 				"dependsOn": [
 					{
-						"activity": "Current date",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "Target date",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
 						"activity": "Iter date",
 						"dependencyConditions": [
 							"Succeeded"
@@ -33,7 +21,7 @@
 					},
 					"activities": [
 						{
-							"name": "Delete1",
+							"name": "Classlife admissions",
 							"type": "Delete",
 							"dependsOn": [],
 							"policy": {
@@ -51,7 +39,637 @@
 									"parameters": {
 										"container": "bronze",
 										"folder": {
-											"value": "@concat('lakehouse/classlife/admissions/', formatDateTime(variables('iterDate'), 'yyyy/MM'), '/')",
+											"value": "@concat('lakehouse/classlife/admissions/', formatDateTime(variables('iterDate'), 'yyyy/MM/dd'), '/')",
+											"type": "Expression"
+										}
+									}
+								},
+								"logStorageSettings": {
+									"linkedServiceName": {
+										"referenceName": "ls_adsl",
+										"type": "LinkedServiceReference"
+									},
+									"path": "bronze/lakehouse/temp_json_deteled"
+								},
+								"enableLogging": true,
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							}
+						},
+						{
+							"name": "Classlife enroll_groups",
+							"type": "Delete",
+							"dependsOn": [
+								{
+									"activity": "Classlife admissions",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "ds_adsl_json_delete",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "bronze",
+										"folder": {
+											"value": "@concat('lakehouse/classlife/enroll_groups/', formatDateTime(variables('iterDate'), 'yyyy/MM/dd'), '/')",
+											"type": "Expression"
+										}
+									}
+								},
+								"logStorageSettings": {
+									"linkedServiceName": {
+										"referenceName": "ls_adsl",
+										"type": "LinkedServiceReference"
+									},
+									"path": "bronze/lakehouse/temp_json_deteled"
+								},
+								"enableLogging": true,
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							}
+						},
+						{
+							"name": "Classlife enrollments",
+							"type": "Delete",
+							"dependsOn": [
+								{
+									"activity": "Classlife enroll_groups",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "ds_adsl_json_delete",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "bronze",
+										"folder": {
+											"value": "@concat('lakehouse/classlife/enrollments/', formatDateTime(variables('iterDate'), 'yyyy/MM/dd'), '/')",
+											"type": "Expression"
+										}
+									}
+								},
+								"logStorageSettings": {
+									"linkedServiceName": {
+										"referenceName": "ls_adsl",
+										"type": "LinkedServiceReference"
+									},
+									"path": "bronze/lakehouse/temp_json_deteled"
+								},
+								"enableLogging": true,
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							}
+						},
+						{
+							"name": "Classlife receipts",
+							"type": "Delete",
+							"dependsOn": [
+								{
+									"activity": "Classlife enrollments",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "ds_adsl_json_delete",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "bronze",
+										"folder": {
+											"value": "@concat('lakehouse/classlife/receipts/', formatDateTime(variables('iterDate'), 'yyyy/MM/dd'), '/')",
+											"type": "Expression"
+										}
+									}
+								},
+								"logStorageSettings": {
+									"linkedServiceName": {
+										"referenceName": "ls_adsl",
+										"type": "LinkedServiceReference"
+									},
+									"path": "bronze/lakehouse/temp_json_deteled"
+								},
+								"enableLogging": true,
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							}
+						},
+						{
+							"name": "Classlife students",
+							"type": "Delete",
+							"dependsOn": [
+								{
+									"activity": "Classlife receipts",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "ds_adsl_json_delete",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "bronze",
+										"folder": {
+											"value": "@concat('lakehouse/classlife/students/', formatDateTime(variables('iterDate'), 'yyyy/MM/dd'), '/')",
+											"type": "Expression"
+										}
+									}
+								},
+								"logStorageSettings": {
+									"linkedServiceName": {
+										"referenceName": "ls_adsl",
+										"type": "LinkedServiceReference"
+									},
+									"path": "bronze/lakehouse/temp_json_deteled"
+								},
+								"enableLogging": true,
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							}
+						},
+						{
+							"name": "Classlife 929 admissions",
+							"type": "Delete",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "ds_adsl_json_delete",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "bronze",
+										"folder": {
+											"value": "@concat('lakehouse/classlife_929/admissions/', formatDateTime(variables('iterDate'), 'yyyy/MM/dd'), '/')",
+											"type": "Expression"
+										}
+									}
+								},
+								"logStorageSettings": {
+									"linkedServiceName": {
+										"referenceName": "ls_adsl",
+										"type": "LinkedServiceReference"
+									},
+									"path": "bronze/lakehouse/temp_json_deteled"
+								},
+								"enableLogging": true,
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							}
+						},
+						{
+							"name": "Classlife 929 enroll_groups",
+							"type": "Delete",
+							"dependsOn": [
+								{
+									"activity": "Classlife 929 admissions",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "ds_adsl_json_delete",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "bronze",
+										"folder": {
+											"value": "@concat('lakehouse/classlife_929/enroll_groups/', formatDateTime(variables('iterDate'), 'yyyy/MM/dd'), '/')",
+											"type": "Expression"
+										}
+									}
+								},
+								"logStorageSettings": {
+									"linkedServiceName": {
+										"referenceName": "ls_adsl",
+										"type": "LinkedServiceReference"
+									},
+									"path": "bronze/lakehouse/temp_json_deteled"
+								},
+								"enableLogging": true,
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							}
+						},
+						{
+							"name": "Classlife 929 enrollments",
+							"type": "Delete",
+							"dependsOn": [
+								{
+									"activity": "Classlife 929 enroll_groups",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "ds_adsl_json_delete",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "bronze",
+										"folder": {
+											"value": "@concat('lakehouse/classlife_929/enrollments/', formatDateTime(variables('iterDate'), 'yyyy/MM/dd'), '/')",
+											"type": "Expression"
+										}
+									}
+								},
+								"logStorageSettings": {
+									"linkedServiceName": {
+										"referenceName": "ls_adsl",
+										"type": "LinkedServiceReference"
+									},
+									"path": "bronze/lakehouse/temp_json_deteled"
+								},
+								"enableLogging": true,
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							}
+						},
+						{
+							"name": "Classlife 929 receipts",
+							"type": "Delete",
+							"dependsOn": [
+								{
+									"activity": "Classlife 929 enrollments",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "ds_adsl_json_delete",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "bronze",
+										"folder": {
+											"value": "@concat('lakehouse/classlife_929/receipts/', formatDateTime(variables('iterDate'), 'yyyy/MM/dd'), '/')",
+											"type": "Expression"
+										}
+									}
+								},
+								"logStorageSettings": {
+									"linkedServiceName": {
+										"referenceName": "ls_adsl",
+										"type": "LinkedServiceReference"
+									},
+									"path": "bronze/lakehouse/temp_json_deteled"
+								},
+								"enableLogging": true,
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							}
+						},
+						{
+							"name": "Classlife 929 students",
+							"type": "Delete",
+							"dependsOn": [
+								{
+									"activity": "Classlife 929 receipts",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "ds_adsl_json_delete",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "bronze",
+										"folder": {
+											"value": "@concat('lakehouse/classlife_929/students/', formatDateTime(variables('iterDate'), 'yyyy/MM/dd'), '/')",
+											"type": "Expression"
+										}
+									}
+								},
+								"logStorageSettings": {
+									"linkedServiceName": {
+										"referenceName": "ls_adsl",
+										"type": "LinkedServiceReference"
+									},
+									"path": "bronze/lakehouse/temp_json_deteled"
+								},
+								"enableLogging": true,
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							}
+						},
+						{
+							"name": "Classlife 931 admissions",
+							"type": "Delete",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "ds_adsl_json_delete",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "bronze",
+										"folder": {
+											"value": "@concat('lakehouse/classlife_931/admissions/', formatDateTime(variables('iterDate'), 'yyyy/MM/dd'), '/')",
+											"type": "Expression"
+										}
+									}
+								},
+								"logStorageSettings": {
+									"linkedServiceName": {
+										"referenceName": "ls_adsl",
+										"type": "LinkedServiceReference"
+									},
+									"path": "bronze/lakehouse/temp_json_deteled"
+								},
+								"enableLogging": true,
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							}
+						},
+						{
+							"name": "Classlife 931 enroll_groups",
+							"type": "Delete",
+							"dependsOn": [
+								{
+									"activity": "Classlife 931 admissions",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "ds_adsl_json_delete",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "bronze",
+										"folder": {
+											"value": "@concat('lakehouse/classlife_931/enroll_groups/', formatDateTime(variables('iterDate'), 'yyyy/MM/dd'), '/')",
+											"type": "Expression"
+										}
+									}
+								},
+								"logStorageSettings": {
+									"linkedServiceName": {
+										"referenceName": "ls_adsl",
+										"type": "LinkedServiceReference"
+									},
+									"path": "bronze/lakehouse/temp_json_deteled"
+								},
+								"enableLogging": true,
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							}
+						},
+						{
+							"name": "Classlife 931 enrollments",
+							"type": "Delete",
+							"dependsOn": [
+								{
+									"activity": "Classlife 931 enroll_groups",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "ds_adsl_json_delete",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "bronze",
+										"folder": {
+											"value": "@concat('lakehouse/classlife_931/enrollments/', formatDateTime(variables('iterDate'), 'yyyy/MM/dd'), '/')",
+											"type": "Expression"
+										}
+									}
+								},
+								"logStorageSettings": {
+									"linkedServiceName": {
+										"referenceName": "ls_adsl",
+										"type": "LinkedServiceReference"
+									},
+									"path": "bronze/lakehouse/temp_json_deteled"
+								},
+								"enableLogging": true,
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							}
+						},
+						{
+							"name": "Classlife 931 receipts",
+							"type": "Delete",
+							"dependsOn": [
+								{
+									"activity": "Classlife 931 enrollments",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "ds_adsl_json_delete",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "bronze",
+										"folder": {
+											"value": "@concat('lakehouse/classlife_931/receipts/', formatDateTime(variables('iterDate'), 'yyyy/MM/dd'), '/')",
+											"type": "Expression"
+										}
+									}
+								},
+								"logStorageSettings": {
+									"linkedServiceName": {
+										"referenceName": "ls_adsl",
+										"type": "LinkedServiceReference"
+									},
+									"path": "bronze/lakehouse/temp_json_deteled"
+								},
+								"enableLogging": true,
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							}
+						},
+						{
+							"name": "Classlife 931 students",
+							"type": "Delete",
+							"dependsOn": [
+								{
+									"activity": "Classlife 931 receipts",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "ds_adsl_json_delete",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "bronze",
+										"folder": {
+											"value": "@concat('lakehouse/classlife_931/students/', formatDateTime(variables('iterDate'), 'yyyy/MM/dd'), '/')",
 											"type": "Expression"
 										}
 									}
@@ -104,7 +722,7 @@
 				"typeProperties": {
 					"variableName": "targetDate",
 					"value": {
-						"value": "@addDays(utcNow(), -60)",
+						"value": "@formatDateTime(addToTime(utcNow(), -2, 'Month'), 'yyyy-MM-dd')",
 						"type": "Expression"
 					}
 				}
@@ -112,7 +730,20 @@
 			{
 				"name": "Iter date",
 				"type": "SetVariable",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Current date",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Target date",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"secureOutput": false,
 					"secureInput": false
@@ -121,7 +752,7 @@
 				"typeProperties": {
 					"variableName": "iterDate",
 					"value": {
-						"value": "@formatDateTime(variables('targetDate'), 'yyyy-MM-01')",
+						"value": "@variables('targetDate')",
 						"type": "Expression"
 					}
 				}
