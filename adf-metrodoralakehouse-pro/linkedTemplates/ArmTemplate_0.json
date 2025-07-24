@@ -643,7 +643,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/p_ZohoFisiofocusSilver')]",
+			"name": "[concat(parameters('factoryName'), '/p_Zoho_Fisiofocus_Silver')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -669,7 +669,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"notebookPath": {
-								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'ZohoContacts')",
+								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'zoho_fisiofocus_25/ZohoContacts')",
 								"type": "Expression"
 							}
 						},
@@ -692,7 +692,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"notebookPath": {
-								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'ZohoDeals')",
+								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'zoho_fisiofocus_25/ZohoDeals')",
 								"type": "Expression"
 							}
 						},
@@ -715,7 +715,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"notebookPath": {
-								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'ZohoLeads')",
+								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'zoho_fisiofocus_25/ZohoLeads')",
 								"type": "Expression"
 							}
 						},
@@ -745,7 +745,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"notebookPath": {
-								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'ZohoUsers')",
+								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'zoho_fisiofocus_25/ZohoUsers')",
 								"type": "Expression"
 							}
 						},
@@ -757,41 +757,11 @@
 					{
 						"name": "ZohoCampaignsSilver",
 						"type": "DatabricksNotebook",
-						"dependsOn": [
-							{
-								"activity": "ZohoContactsSilver",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebookPath": {
-								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'ZohoCampaigns')",
-								"type": "Expression"
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "ls_AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "Tablon_Leads_and_DealsSilver",
-						"type": "DatabricksNotebook",
 						"state": "Inactive",
 						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
-								"activity": "ZohoCampaignsSilver",
+								"activity": "ZohoContactsSilver",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -813,7 +783,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"notebookPath": {
-								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'Tablon_Leads_and_Deals')",
+								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'zoho_25/ZohoCampaigns')",
 								"type": "Expression"
 							}
 						},
@@ -828,7 +798,8 @@
 				},
 				"parameters": {
 					"silver_storage_databricks": {
-						"type": "string"
+						"type": "string",
+						"defaultValue": "/Workspace/Repos/production_repository/notebooks-databricks-prod/Lakehouse/Silver/"
 					}
 				},
 				"folder": {
@@ -868,7 +839,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"notebookPath": {
-								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'zoho_38b/ZohoContacts_38b')",
+								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'zoho_fp_38b/ZohoContacts_38b')",
 								"type": "Expression"
 							}
 						},
@@ -891,7 +862,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"notebookPath": {
-								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'zoho_38b/ZohoDeals_38b')",
+								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'zoho_fp_38b/ZohoDeals_38b')",
 								"type": "Expression"
 							}
 						},
@@ -914,7 +885,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"notebookPath": {
-								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'zoho_38b/ZohoLeads_38b')",
+								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'zoho_fp_38b/ZohoLeads_38b')",
 								"type": "Expression"
 							}
 						},
@@ -944,7 +915,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"notebookPath": {
-								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'zoho_38b/ZohoUsers_38b')",
+								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'zoho_fp_38b/ZohoUsers_38b')",
 								"type": "Expression"
 							}
 						},
@@ -974,7 +945,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"notebookPath": {
-								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'zoho_38b/ZohoCiclos_38b')",
+								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'zoho_fp_38b/ZohoCiclos_38b')",
 								"type": "Expression"
 							}
 						},
@@ -1004,7 +975,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"notebookPath": {
-								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'zoho_38b/ZohoProgramas_38b')",
+								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'zoho_fp_38b/ZohoProgramas_38b')",
 								"type": "Expression"
 							}
 						},
@@ -1019,7 +990,8 @@
 				},
 				"parameters": {
 					"silver_storage_databricks": {
-						"type": "string"
+						"type": "string",
+						"defaultValue": "/Workspace/Repos/production_repository/notebooks-databricks-prod/Lakehouse/Silver/"
 					}
 				},
 				"folder": {

@@ -13,6 +13,197 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/p_General_Classlife_ISEP_929')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "ExecuteClasslife929",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "p_Classlife_Isep_929",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "ClasslifeProductos_929",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "ExecuteClasslife929",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": {
+								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_isep_929/ClasslifeProductos_929')",
+								"type": "Expression"
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "ClasslifeStudents_929",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "ExecuteClasslife929",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": {
+								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_isep_929/ClasslifeStudents_929')",
+								"type": "Expression"
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "ClasslifeEnrollments_929",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "ExecuteClasslife929",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": {
+								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_isep_929/ClasslifeEnrollments_929')",
+								"type": "Expression"
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "ClasslifeReceipts_929",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "ExecuteClasslife929",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": {
+								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_isep_929/ClasslifeReceipts_929')",
+								"type": "Expression"
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "ClasslifeAdmissions_929",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "ExecuteClasslife929",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": {
+								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_isep_929/ClasslifeAdmissions_929')",
+								"type": "Expression"
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"silver_storage_databricks": {
+						"type": "string",
+						"defaultValue": "/Workspace/Repos/production_repository/notebooks-databricks-prod/Lakehouse/Silver/"
+					}
+				},
+				"folder": {
+					"name": "Lakehouse/General"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-06-09T17:21:05Z"
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/p_General_Zoho_Fisiofocus')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -57,7 +248,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"pipeline": {
-								"referenceName": "p_ZohoFisiofocusSilver",
+								"referenceName": "p_Zoho_Fisiofocus_Silver",
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
@@ -5988,167 +6179,6 @@
 				"lastPublishTime": "2025-03-22T17:50:21Z"
 			},
 			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/p_CallsSalesBronzeSilver')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "ExecutePipelineSalesBronze_Full",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "p_SalesBronze",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"dayToLoad": {
-									"value": "@pipeline().parameters.dayToLoad",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "ExecutePipelineClienitfyOdooSilver",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "ExecutePipelineSalesBronze_Full",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "p_ClienitfyOdooSilver",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"silver_storage_databricks": {
-									"value": "@pipeline().parameters.silver_storage_databricks",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "ExecutePipelineSalesSilver",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "ExecutePipelineClienitfyOdooSilver",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "p_SalesSilver",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"silver_storage_databricks": {
-									"value": "@pipeline().parameters.silver_storage_databricks",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "ExecutePipelineAircallCallsBronze",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "p_AircallCallsBronze",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"dayToLoad": {
-									"value": "@pipeline().parameters.dayToLoad",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "AircallCallsSilver",
-						"type": "DatabricksNotebook",
-						"dependsOn": [
-							{
-								"activity": "ExecutePipelineAircallCallsBronze",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebookPath": {
-								"value": "@concat(pipeline().parameters.silver_storage_databricks,'AircallCallsSilver')",
-								"type": "Expression"
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "ls_AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"parameters": {
-					"dayToLoad": {
-						"type": "string",
-						"defaultValue": "7"
-					},
-					"silver_storage_databricks": {
-						"type": "string"
-					}
-				},
-				"folder": {
-					"name": "Lakehouse/Bronze/Old"
-				},
-				"annotations": [],
-				"lastPublishTime": "2025-03-22T18:43:46Z"
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/p_SalesBronze')]"
-			]
 		}
 	]
 }

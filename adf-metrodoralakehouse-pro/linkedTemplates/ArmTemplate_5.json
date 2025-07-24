@@ -13,6 +13,83 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/df_BudgetDWHF0')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "DWHF0"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"linkedService": {
+								"referenceName": "ls_adsl",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sourceBudgetGoldF0"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "ds_PostgreSql",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "alterRow1"
+						},
+						{
+							"name": "MapDrifted2",
+							"description": "Crea una asignación explícita para cada columna de desfase."
+						}
+					],
+					"scriptLines": [
+						"source(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'gold',",
+						"     folderPath: 'lakehousef0/budget') ~> sourceBudgetGoldF0",
+						"MapDrifted2 alterRow(insertIf(true()),",
+						"     partitionBy('hash', 1)) ~> alterRow1",
+						"sourceBudgetGoldF0 derive(fecha = toDate(byName('fecha')),",
+						"          escenario = toString(byName('escenario')),",
+						"          titulacion = toString(byName('titulacion')),",
+						"          centro = toString(byName('centro')),",
+						"          sede = toString(byName('sede')),",
+						"          modalidad = toString(byName('modalidad')),",
+						"          num_leads_netos = toInteger(byName('num_leads_netos')),",
+						"          num_leads_brutos = toInteger(byName('num_leads_brutos')),",
+						"          new_enrollment = toInteger(byName('new_enrollment')),",
+						"          importe_venta_neta = toDouble(byName('importe_venta_neta')),",
+						"          importe_venta_bruta = toDouble(byName('importe_venta_bruta')),",
+						"          importe_captacion = toDouble(byName('importe_captacion')),",
+						"          filepath = toString(byName('filepath')),",
+						"          processdate = toTimestamp(byName('processdate')),",
+						"     partitionBy('hash', 1)) ~> MapDrifted2",
+						"alterRow1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     recreate:true,",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> sink1"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/df_BudgetGoldF0')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -1220,7 +1297,9 @@
 				"annotations": [],
 				"lastPublishTime": "2025-03-22T17:50:20Z"
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/df_BudgetDWHF0')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/p_BudgetGoldF0')]",
@@ -1800,7 +1879,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"notebookPath": {
-								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_931/ClasslifeProductos_931')",
+								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_fp_931/ClasslifeProductos_931')",
 								"type": "Expression"
 							}
 						},
@@ -1830,7 +1909,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"notebookPath": {
-								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_931/ClasslifeStudents_931')",
+								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_fp_931/ClasslifeStudents_931')",
 								"type": "Expression"
 							}
 						},
@@ -1860,7 +1939,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"notebookPath": {
-								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_931/ClasslifeEnrollments_931')",
+								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_fp_931/ClasslifeEnrollments_931')",
 								"type": "Expression"
 							}
 						},
@@ -1890,7 +1969,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"notebookPath": {
-								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_931/ClasslifeReceipts_931')",
+								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_fp_931/ClasslifeReceipts_931')",
 								"type": "Expression"
 							}
 						},
@@ -1920,7 +1999,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"notebookPath": {
-								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_931/ClasslifeAdmissions_931')",
+								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_fp_931/ClasslifeAdmissions_931')",
 								"type": "Expression"
 							}
 						},
@@ -1991,7 +2070,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"notebookPath": {
-								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_919/ClasslifeProductos')",
+								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_fisiofocus_919/ClasslifeProductos')",
 								"type": "Expression"
 							}
 						},
@@ -2021,7 +2100,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"notebookPath": {
-								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_919/ClasslifeStudents')",
+								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_fisiofocus_919/ClasslifeStudents')",
 								"type": "Expression"
 							}
 						},
@@ -2051,7 +2130,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"notebookPath": {
-								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_919/ClasslifeEnrollments')",
+								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_fisiofocus_919/ClasslifeEnrollments')",
 								"type": "Expression"
 							}
 						},
@@ -2081,7 +2160,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"notebookPath": {
-								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_919/ClasslifeReceipts')",
+								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_fisiofocus_919/ClasslifeReceipts')",
 								"type": "Expression"
 							}
 						},
@@ -2111,7 +2190,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"notebookPath": {
-								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_919/ClasslifeAdmissions')",
+								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_fisiofocus_919/ClasslifeAdmissions')",
 								"type": "Expression"
 							}
 						},
@@ -2139,207 +2218,6 @@
 				},
 				"annotations": [],
 				"lastPublishTime": "2025-06-03T16:56:15Z"
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/p_General_Classlife_ISEP_929')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "ExecuteClasslife929",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "p_Classlife_Isep_929",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "ClasslifeProductos_931",
-						"type": "DatabricksNotebook",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
-						"dependsOn": [
-							{
-								"activity": "ExecuteClasslife929",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebookPath": {
-								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_931/ClasslifeProductos_931')",
-								"type": "Expression"
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "ls_AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "ClasslifeStudents_931",
-						"type": "DatabricksNotebook",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
-						"dependsOn": [
-							{
-								"activity": "ExecuteClasslife929",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebookPath": {
-								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_931/ClasslifeStudents_931')",
-								"type": "Expression"
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "ls_AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "ClasslifeEnrollments_931",
-						"type": "DatabricksNotebook",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
-						"dependsOn": [
-							{
-								"activity": "ExecuteClasslife929",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebookPath": {
-								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_931/ClasslifeEnrollments_931')",
-								"type": "Expression"
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "ls_AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "ClasslifeReceipts_931",
-						"type": "DatabricksNotebook",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
-						"dependsOn": [
-							{
-								"activity": "ExecuteClasslife929",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebookPath": {
-								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_931/ClasslifeReceipts_931')",
-								"type": "Expression"
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "ls_AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "ClasslifeAdmissions_931",
-						"type": "DatabricksNotebook",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
-						"dependsOn": [
-							{
-								"activity": "ExecuteClasslife929",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebookPath": {
-								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_931/ClasslifeAdmissions_931')",
-								"type": "Expression"
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "ls_AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"parameters": {
-					"silver_storage_databricks": {
-						"type": "string",
-						"defaultValue": "/Workspace/Repos/production_repository/notebooks-databricks-prod/Lakehouse/Silver/"
-					}
-				},
-				"folder": {
-					"name": "Lakehouse/General"
-				},
-				"annotations": [],
-				"lastPublishTime": "2025-06-09T17:21:05Z"
 			},
 			"dependsOn": []
 		}
