@@ -19,10 +19,8 @@
 				}
 			},
 			{
-				"name": "ClasslifeProductos_931",
+				"name": "ClasslifeProductos_929",
 				"type": "DatabricksNotebook",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "ExecuteClasslife929",
@@ -41,7 +39,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"notebookPath": {
-						"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_931/ClasslifeProductos_931')",
+						"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_isep_929/ClasslifeProductos_929')",
 						"type": "Expression"
 					}
 				},
@@ -51,10 +49,8 @@
 				}
 			},
 			{
-				"name": "ClasslifeStudents_931",
+				"name": "ClasslifeStudents_929",
 				"type": "DatabricksNotebook",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "ExecuteClasslife929",
@@ -73,7 +69,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"notebookPath": {
-						"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_931/ClasslifeStudents_931')",
+						"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_isep_929/ClasslifeStudents_929')",
 						"type": "Expression"
 					}
 				},
@@ -83,10 +79,8 @@
 				}
 			},
 			{
-				"name": "ClasslifeEnrollments_931",
+				"name": "ClasslifeEnrollments_929",
 				"type": "DatabricksNotebook",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "ExecuteClasslife929",
@@ -105,7 +99,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"notebookPath": {
-						"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_931/ClasslifeEnrollments_931')",
+						"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_isep_929/ClasslifeEnrollments_929')",
 						"type": "Expression"
 					}
 				},
@@ -115,10 +109,8 @@
 				}
 			},
 			{
-				"name": "ClasslifeReceipts_931",
+				"name": "ClasslifeReceipts_929",
 				"type": "DatabricksNotebook",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "ExecuteClasslife929",
@@ -137,7 +129,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"notebookPath": {
-						"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_931/ClasslifeReceipts_931')",
+						"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_isep_929/ClasslifeReceipts_929')",
 						"type": "Expression"
 					}
 				},
@@ -147,10 +139,8 @@
 				}
 			},
 			{
-				"name": "ClasslifeAdmissions_931",
+				"name": "ClasslifeAdmissions_929",
 				"type": "DatabricksNotebook",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "ExecuteClasslife929",
@@ -169,7 +159,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"notebookPath": {
-						"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_931/ClasslifeAdmissions_931')",
+						"value": "@concat(pipeline().parameters.silver_storage_databricks, 'classlife_isep_929/ClasslifeAdmissions_929')",
 						"type": "Expression"
 					}
 				},
