@@ -27,6 +27,10 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
+					"expression": {
+						"value": "@lessOrEquals(variables('Iter date'), variables('Target date'))\n",
+						"type": "Expression"
+					},
 					"activities": [
 						{
 							"name": "Delete1",
@@ -45,7 +49,11 @@
 									"referenceName": "ds_adsl_json",
 									"type": "DatasetReference",
 									"parameters": {
-										"container": "bronze"
+										"container": "bronze",
+										"folder": {
+											"value": "@concat('bronze/lakehouse/classlife/admissions/', formatDateTime(variables('iterDate'), 'yyyy/MM'), '/')\n",
+											"type": "Expression"
+										}
 									}
 								},
 								"enableLogging": true,
@@ -71,7 +79,10 @@
 				"userProperties": [],
 				"typeProperties": {
 					"variableName": "currentDate",
-					"value": "@utcNow()"
+					"value": {
+						"value": "@utcNow()",
+						"type": "Expression"
+					}
 				}
 			},
 			{
