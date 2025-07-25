@@ -16371,6 +16371,8 @@
 					{
 						"name": "Classlife_ISEP_929Full",
 						"type": "ExecutePipeline",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Deleted -60 json",
@@ -16400,6 +16402,8 @@
 					{
 						"name": "Zoho_ISEP_34f_Full",
 						"type": "ExecutePipeline",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Deleted -60 json",
@@ -28309,6 +28313,198 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/p_Zoho_FP_Silver_38b')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "ZohoContactsSilver_38b",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "ZohoDealsSilver_38b",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": {
+								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'zoho_fp_38b/ZohoContacts_38b')",
+								"type": "Expression"
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "ZohoDealsSilver_38b",
+						"type": "DatabricksNotebook",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": {
+								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'zoho_fp_38b/ZohoDeals_38b')",
+								"type": "Expression"
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "ZohoLeadsSilver_38b",
+						"type": "DatabricksNotebook",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": {
+								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'zoho_fp_38b/ZohoLeads_38b')",
+								"type": "Expression"
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "ZohoUsersSilver_38b",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "ZohoLeadsSilver_38b",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": {
+								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'zoho_fp_38b/ZohoUsers_38b')",
+								"type": "Expression"
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "ZohoCiclosSilver_38b",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "ZohoContactsSilver_38b",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": {
+								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'zoho_fp_38b/ZohoCiclos_38b')",
+								"type": "Expression"
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "ZohoProgramasSilver_38b",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "ZohoUsersSilver_38b",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": {
+								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'zoho_fp_38b/ZohoProgramas_38b')",
+								"type": "Expression"
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_AzureDatabricks",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"silver_storage_databricks": {
+						"type": "string",
+						"defaultValue": "/Workspace/Repos/production_repository/notebooks-databricks-prod/Lakehouse/Silver/"
+					}
+				},
+				"folder": {
+					"name": "Lakehouse/Silver"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-06-03T16:56:15Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_AzureDatabricks')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/p_Zoho_Fisiofocus_Silver')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -28479,17 +28675,17 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/p_Zoho_FP_Silver_38b')]",
+			"name": "[concat(parameters('factoryName'), '/p_Zoho_ISEP_Silver_34f')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "ZohoContactsSilver_38b",
+						"name": "ZohoContactsSilver_34f",
 						"type": "DatabricksNotebook",
 						"dependsOn": [
 							{
-								"activity": "ZohoDealsSilver_38b",
+								"activity": "ZohoDealsSilver_34f",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -28505,7 +28701,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"notebookPath": {
-								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'zoho_fp_38b/ZohoContacts_38b')",
+								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'zoho_isep_34f/ZohoContacts_34f')",
 								"type": "Expression"
 							}
 						},
@@ -28515,7 +28711,7 @@
 						}
 					},
 					{
-						"name": "ZohoDealsSilver_38b",
+						"name": "ZohoDealsSilver_34f",
 						"type": "DatabricksNotebook",
 						"dependsOn": [],
 						"policy": {
@@ -28528,7 +28724,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"notebookPath": {
-								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'zoho_fp_38b/ZohoDeals_38b')",
+								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'zoho_isep_34f/ZohoDeals_34f')",
 								"type": "Expression"
 							}
 						},
@@ -28538,7 +28734,7 @@
 						}
 					},
 					{
-						"name": "ZohoLeadsSilver_38b",
+						"name": "ZohoLeadsSilver_34f",
 						"type": "DatabricksNotebook",
 						"dependsOn": [],
 						"policy": {
@@ -28551,7 +28747,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"notebookPath": {
-								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'zoho_fp_38b/ZohoLeads_38b')",
+								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'zoho_isep_34f/ZohoLeads_34f')",
 								"type": "Expression"
 							}
 						},
@@ -28561,11 +28757,11 @@
 						}
 					},
 					{
-						"name": "ZohoUsersSilver_38b",
+						"name": "ZohoUsersSilver_34f",
 						"type": "DatabricksNotebook",
 						"dependsOn": [
 							{
-								"activity": "ZohoLeadsSilver_38b",
+								"activity": "ZohoLeadsSilver_34f",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -28581,7 +28777,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"notebookPath": {
-								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'zoho_fp_38b/ZohoUsers_38b')",
+								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'zoho_isep_34f/ZohoUsers_34f')",
 								"type": "Expression"
 							}
 						},
@@ -28593,9 +28789,11 @@
 					{
 						"name": "ZohoCiclosSilver_38b",
 						"type": "DatabricksNotebook",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
-								"activity": "ZohoContactsSilver_38b",
+								"activity": "ZohoContactsSilver_34f",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -28611,7 +28809,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"notebookPath": {
-								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'zoho_fp_38b/ZohoCiclos_38b')",
+								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'zoho_38b/ZohoCiclos_38b')",
 								"type": "Expression"
 							}
 						},
@@ -28623,9 +28821,11 @@
 					{
 						"name": "ZohoProgramasSilver_38b",
 						"type": "DatabricksNotebook",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
-								"activity": "ZohoUsersSilver_38b",
+								"activity": "ZohoUsersSilver_34f",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -28641,7 +28841,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"notebookPath": {
-								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'zoho_fp_38b/ZohoProgramas_38b')",
+								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'zoho_38b/ZohoProgramas_38b')",
 								"type": "Expression"
 							}
 						},
@@ -35602,202 +35802,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/ls_adsl')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/p_Zoho_ISEP_Silver_34f')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "ZohoContactsSilver_34f",
-						"type": "DatabricksNotebook",
-						"dependsOn": [
-							{
-								"activity": "ZohoDealsSilver_34f",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebookPath": {
-								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'zoho_isep_34f/ZohoContacts_34f')",
-								"type": "Expression"
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "ls_AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "ZohoDealsSilver_34f",
-						"type": "DatabricksNotebook",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebookPath": {
-								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'zoho_isep_34f/ZohoDeals_34f')",
-								"type": "Expression"
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "ls_AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "ZohoLeadsSilver_34f",
-						"type": "DatabricksNotebook",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebookPath": {
-								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'zoho_isep_34f/ZohoLeads_34f')",
-								"type": "Expression"
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "ls_AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "ZohoUsersSilver_34f",
-						"type": "DatabricksNotebook",
-						"dependsOn": [
-							{
-								"activity": "ZohoLeadsSilver_34f",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebookPath": {
-								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'zoho_isep_34f/ZohoUsers_34f')",
-								"type": "Expression"
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "ls_AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "ZohoCiclosSilver_38b",
-						"type": "DatabricksNotebook",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
-						"dependsOn": [
-							{
-								"activity": "ZohoContactsSilver_34f",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebookPath": {
-								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'zoho_38b/ZohoCiclos_38b')",
-								"type": "Expression"
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "ls_AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "ZohoProgramasSilver_38b",
-						"type": "DatabricksNotebook",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
-						"dependsOn": [
-							{
-								"activity": "ZohoUsersSilver_34f",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebookPath": {
-								"value": "@concat(pipeline().parameters.silver_storage_databricks, 'zoho_38b/ZohoProgramas_38b')",
-								"type": "Expression"
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "ls_AzureDatabricks",
-							"type": "LinkedServiceReference"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"parameters": {
-					"silver_storage_databricks": {
-						"type": "string",
-						"defaultValue": "/Workspace/Repos/production_repository/notebooks-databricks-prod/Lakehouse/Silver/"
-					}
-				},
-				"folder": {
-					"name": "Lakehouse/Silver"
-				},
-				"annotations": [],
-				"lastPublishTime": "2025-06-03T16:56:15Z"
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/ls_AzureDatabricks')]"
 			]
 		}
 	]
