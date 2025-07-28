@@ -138,6 +138,8 @@
 			{
 				"name": "Classlife_Fisiofocus_919Full",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Deleted -60 json",
@@ -171,8 +173,6 @@
 			{
 				"name": "Dim Fijas",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Tablon_Leads_and_DealsSilver",
@@ -302,6 +302,8 @@
 			{
 				"name": "Classlife_FP_931Full",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Deleted -60 json",
