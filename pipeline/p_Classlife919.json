@@ -1429,7 +1429,7 @@
 			},
 			"limit": {
 				"type": "string",
-				"defaultValue": "200"
+				"defaultValue": "1500"
 			}
 		},
 		"variables": {
