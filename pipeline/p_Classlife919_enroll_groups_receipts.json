@@ -1,12 +1,10 @@
 {
-	"name": "p_Classlife919",
+	"name": "p_Classlife919_enroll_groups_receipts",
 	"properties": {
 		"activities": [
 			{
 				"name": "Until Enroll groups",
 				"type": "Until",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "If Condition Delete",
