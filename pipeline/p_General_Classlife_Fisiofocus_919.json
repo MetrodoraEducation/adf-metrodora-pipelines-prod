@@ -218,10 +218,6 @@
 			}
 		],
 		"parameters": {
-			"reprocessDate": {
-				"type": "string",
-				"defaultValue": "7"
-			},
 			"silver_storage_databricks": {
 				"type": "string",
 				"defaultValue": "/Workspace/Repos/production_repository/notebooks-databricks-prod/Lakehouse/Silver/"
