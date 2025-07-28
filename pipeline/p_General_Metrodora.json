@@ -138,8 +138,6 @@
 			{
 				"name": "Classlife_Fisiofocus_919Full",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Deleted -60 json",
@@ -159,10 +157,6 @@
 					},
 					"waitOnCompletion": true,
 					"parameters": {
-						"reprocessDate": {
-							"value": "@pipeline().parameters.dayToLoad",
-							"type": "Expression"
-						},
 						"silver_storage_databricks": {
 							"value": "@pipeline().parameters.silver_storage_databricks",
 							"type": "Expression"
