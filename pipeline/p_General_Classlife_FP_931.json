@@ -12,7 +12,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "p_Classlife931",
+						"referenceName": "p_Classlife931_productos_admissions",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
