@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "ExecuteClasslife931",
+				"name": "ExecuteClasslife931_productos_admissions",
 				"type": "ExecutePipeline",
 				"dependsOn": [],
 				"policy": {
@@ -27,7 +27,7 @@
 				"type": "DatabricksNotebook",
 				"dependsOn": [
 					{
-						"activity": "ExecuteClasslife931",
+						"activity": "ExecuteClasslife931_productos_admissions",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -147,7 +147,7 @@
 				"type": "DatabricksNotebook",
 				"dependsOn": [
 					{
-						"activity": "ExecuteClasslife931",
+						"activity": "ExecuteClasslife931_productos_admissions",
 						"dependencyConditions": [
 							"Succeeded"
 						]
