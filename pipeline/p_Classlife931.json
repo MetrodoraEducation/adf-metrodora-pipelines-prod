@@ -5,6 +5,8 @@
 			{
 				"name": "Until Admissions",
 				"type": "Until",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "1 Reboot PageCounter",
@@ -212,6 +214,8 @@
 			{
 				"name": "1 Reboot PageCounter",
 				"type": "SetVariable",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Until Enroll groups",

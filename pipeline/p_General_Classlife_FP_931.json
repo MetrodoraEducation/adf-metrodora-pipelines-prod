@@ -87,7 +87,7 @@
 				"type": "DatabricksNotebook",
 				"dependsOn": [
 					{
-						"activity": "ExecuteClasslife931",
+						"activity": "ExecuteClasslife931_enrollments",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -170,6 +170,26 @@
 				"linkedServiceName": {
 					"referenceName": "ls_AzureDatabricks",
 					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "ExecuteClasslife931_enrollments",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "p_Classlife931_enrollments",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"API_CLIENT": "931",
+						"API_KEY": "C!F5ec7888d40c7e8"
+					}
 				}
 			}
 		],
