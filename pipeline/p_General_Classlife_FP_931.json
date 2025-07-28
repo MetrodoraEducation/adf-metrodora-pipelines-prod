@@ -57,7 +57,7 @@
 				"type": "DatabricksNotebook",
 				"dependsOn": [
 					{
-						"activity": "ExecuteClasslife931",
+						"activity": "ExecuteClasslife931_students",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -203,6 +203,26 @@
 				"typeProperties": {
 					"pipeline": {
 						"referenceName": "p_Classlife931_receipts",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"API_CLIENT": "931",
+						"API_KEY": "C!F5ec7888d40c7e8"
+					}
+				}
+			},
+			{
+				"name": "ExecuteClasslife931_students",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "p_Classlife931_students",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
