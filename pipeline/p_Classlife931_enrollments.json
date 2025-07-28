@@ -311,7 +311,7 @@
 			},
 			"limit": {
 				"type": "string",
-				"defaultValue": "1500"
+				"defaultValue": "1200"
 			}
 		},
 		"variables": {
