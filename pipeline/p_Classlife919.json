@@ -430,6 +430,8 @@
 			{
 				"name": "Until Admissions",
 				"type": "Until",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "2 Reboot PageCounter",
@@ -637,6 +639,8 @@
 			{
 				"name": "Until Enrollments",
 				"type": "Until",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Reboot PageCounter",
@@ -844,6 +848,8 @@
 			{
 				"name": "Until Students",
 				"type": "Until",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "1 Reboot PageCounter",
@@ -1051,6 +1057,8 @@
 			{
 				"name": "Until Receipts",
 				"type": "Until",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "3 Reboot PageCounter",
@@ -1258,6 +1266,8 @@
 			{
 				"name": "Reboot PageCounter",
 				"type": "SetVariable",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Until Enroll groups",
@@ -1282,6 +1292,8 @@
 			{
 				"name": "1 Reboot PageCounter",
 				"type": "SetVariable",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Until Enrollments",
@@ -1306,6 +1318,8 @@
 			{
 				"name": "2 Reboot PageCounter",
 				"type": "SetVariable",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Until Students",
@@ -1330,6 +1344,8 @@
 			{
 				"name": "3 Reboot PageCounter",
 				"type": "SetVariable",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Until Admissions",
