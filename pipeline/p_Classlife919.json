@@ -24,6 +24,8 @@
 							"name": "WebClasslifeEnroll_groups",
 							"description": "Activity web that calls the endpoint enroll_groups",
 							"type": "WebActivity",
+							"state": "Inactive",
+							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [],
 							"policy": {
 								"timeout": "0.12:00:00",
@@ -162,7 +164,7 @@
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "ClasslifeProductos",
+									"activity": "GetItems",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -200,8 +202,56 @@
 							"typeProperties": {
 								"variableName": "NextItem",
 								"value": {
-									"value": "@length(activity('WebClasslifeEnroll_groups').output.data.items)\n",
+									"value": "@length(activity('GetItems').output.data.items)\n",
 									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "GetItems",
+							"type": "Lookup",
+							"dependsOn": [
+								{
+									"activity": "ClasslifeProductos",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "JsonSource",
+									"storeSettings": {
+										"type": "AzureBlobFSReadSettings",
+										"recursive": true,
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "JsonReadSettings"
+									}
+								},
+								"dataset": {
+									"referenceName": "ds_adsl_json",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "bronze",
+										"folder": {
+											"value": "@concat('lakehouse/classlife/enroll_groups/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+											"type": "Expression"
+										},
+										"filename": {
+											"value": "@concat('JsaClassLifeProductos_', string(variables('PageCounter')), '.json')",
+											"type": "Expression"
+										}
+									}
 								}
 							}
 						}
