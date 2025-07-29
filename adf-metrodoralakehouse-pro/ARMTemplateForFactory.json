@@ -4826,7 +4826,7 @@
 							{
 								"activity": "If Condition Delete",
 								"dependencyConditions": [
-									"Succeeded"
+									"Completed"
 								]
 							}
 						],
@@ -5787,7 +5787,7 @@
 							{
 								"activity": "If Condition Delete",
 								"dependencyConditions": [
-									"Succeeded"
+									"Completed"
 								]
 							}
 						],
@@ -7553,7 +7553,7 @@
 							{
 								"activity": "If Condition Delete",
 								"dependencyConditions": [
-									"Succeeded"
+									"Completed"
 								]
 							}
 						],
@@ -7902,7 +7902,7 @@
 							{
 								"activity": "If Condition Delete",
 								"dependencyConditions": [
-									"Succeeded"
+									"Completed"
 								]
 							}
 						],
@@ -8863,7 +8863,7 @@
 							{
 								"activity": "If Condition Delete",
 								"dependencyConditions": [
-									"Succeeded"
+									"Completed"
 								]
 							}
 						],
@@ -9251,7 +9251,7 @@
 							{
 								"activity": "If Condition Delete",
 								"dependencyConditions": [
-									"Succeeded"
+									"Completed"
 								]
 							}
 						],
@@ -20501,7 +20501,7 @@
 							"headers": {},
 							"url": "https://prod-40.westeurope.logic.azure.com:443/workflows/2bb0d801093b433a99faf68a321f80fb/triggers/When_a_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_a_HTTP_request_is_received%2Frun&sv=1.0&sig=XkPD-LLEMVO2gpxBWggav7Z1z9XUNdXndtJTos6uWLc",
 							"body": {
-								"value": "{\n  \"title\": \"PIPELINE RUN METRODORA MASTER FAILED\",\n  \"message\": \"El pipeline 'p_General_Metrodora' ha fallado. \n  Actividad con error: @{activity('Execute p_General_Metrodora').error.message}. \n  Revisa los logs en ADF.\",\n  \"color\": \"Red\",\n  \"dataFactoryName\": \"@{pipeline().DataFactory}\",\n  \"pipelineName\": \"@{pipeline().Pipeline}\",\n  \"pipelineRunId\": \"@{pipeline().RunId}\",\n  \"time\": \"@{utcNow()}\"\n}",
+								"value": "{\n  \"title\": \"PIPELINE RUN METRODORA MASTER FAILED\",\n  \"message\": \"El pipeline 'p_General_Metrodora' ha fallado. \n  Actividad con error: @{activity('Execute p_General_Metrodora').error.message}\n  Revisa los logs en ADF.\",\n  \"color\": \"Red\",\n  \"dataFactoryName\": \"@{pipeline().DataFactory}\",\n  \"pipelineName\": \"@{pipeline().Pipeline}\",\n  \"pipelineRunId\": \"@{pipeline().RunId}\",\n  \"time\": \"@{utcNow()}\"\n}",
 								"type": "Expression"
 							}
 						}
