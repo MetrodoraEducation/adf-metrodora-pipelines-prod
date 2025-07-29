@@ -99,7 +99,7 @@
 					{
 						"activity": "If Condition Delete",
 						"dependencyConditions": [
-							"Succeeded"
+							"Completed"
 						]
 					}
 				],
