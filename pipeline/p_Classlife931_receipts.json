@@ -46,7 +46,7 @@
 					{
 						"activity": "CheckFolderExists",
 						"dependencyConditions": [
-							"Completed"
+							"Succeeded"
 						]
 					}
 				],
@@ -99,7 +99,7 @@
 					{
 						"activity": "If Condition Delete",
 						"dependencyConditions": [
-							"Succeeded"
+							"Completed"
 						]
 					}
 				],
