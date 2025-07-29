@@ -46,7 +46,7 @@
 					{
 						"activity": "CheckFolderExists",
 						"dependencyConditions": [
-							"Succeeded"
+							"Completed"
 						]
 					}
 				],
