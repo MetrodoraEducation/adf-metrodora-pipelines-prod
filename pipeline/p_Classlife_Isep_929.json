@@ -642,8 +642,6 @@
 			{
 				"name": "Until Students",
 				"type": "Until",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "3 Reboot PageCounter",
