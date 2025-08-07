@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "ExecuteClasslife929",
+				"name": "ExecuteClasslife929_enroll_groups_enrollments",
 				"type": "ExecutePipeline",
 				"dependsOn": [],
 				"policy": {
@@ -12,7 +12,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "p_Classlife_Isep_929",
+						"referenceName": "p_Classlife_Isep_929_enroll_groups_enrollments",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
@@ -23,7 +23,7 @@
 				"type": "DatabricksNotebook",
 				"dependsOn": [
 					{
-						"activity": "ExecuteClasslife929",
+						"activity": "ExecuteClasslife929_enroll_groups_enrollments",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -83,7 +83,7 @@
 				"type": "DatabricksNotebook",
 				"dependsOn": [
 					{
-						"activity": "ExecuteClasslife929",
+						"activity": "ExecuteClasslife929_enroll_groups_enrollments",
 						"dependencyConditions": [
 							"Succeeded"
 						]
