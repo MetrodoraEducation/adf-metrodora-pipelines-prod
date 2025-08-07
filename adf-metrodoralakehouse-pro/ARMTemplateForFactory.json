@@ -9710,242 +9710,11 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/p_Classlife_Isep_929')]",
+			"name": "[concat(parameters('factoryName'), '/p_Classlife_Isep_929_enroll_groups_enrollments')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
-					{
-						"name": "Until Admissions",
-						"type": "Until",
-						"dependsOn": [
-							{
-								"activity": "1 Reboot PageCounter",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"expression": {
-								"value": "@equals(variables('NextItem'), 0)\n",
-								"type": "Expression"
-							},
-							"activities": [
-								{
-									"name": "1 PageCounter",
-									"type": "SetVariable",
-									"dependsOn": [
-										{
-											"activity": "1 TempCounter",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "PageCounter",
-										"value": {
-											"value": "@variables('TempCounter')",
-											"type": "Expression"
-										}
-									}
-								},
-								{
-									"name": "1 TempCounter",
-									"type": "SetVariable",
-									"dependsOn": [
-										{
-											"activity": "Admissions",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "TempCounter",
-										"value": {
-											"value": "@add(variables('PageCounter'), 1)",
-											"type": "Expression"
-										}
-									}
-								},
-								{
-									"name": "1 Set Items",
-									"type": "SetVariable",
-									"dependsOn": [
-										{
-											"activity": "1 PageCounter",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "NextItem",
-										"value": {
-											"value": "@length(activity('WebClasslifeAdmissions').output.data.items)\n",
-											"type": "Expression"
-										}
-									}
-								},
-								{
-									"name": "WebClasslifeAdmissions",
-									"description": "Activity web that calls the endpoint Admissions",
-									"type": "WebActivity",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": true,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"method": "GET",
-										"headers": {
-											"apiKey": {
-												"value": "@pipeline().parameters.API_KEY",
-												"type": "Expression"
-											},
-											"clientId": {
-												"value": "@pipeline().parameters.API_CLIENT",
-												"type": "Expression"
-											}
-										},
-										"url": {
-											"value": "@concat('https://api.classlife.io/api/v1/admissions?showMetas=1&limit=', pipeline().parameters.limit, '&page=', variables('PageCounter'))",
-											"type": "Expression"
-										}
-									}
-								},
-								{
-									"name": "Admissions",
-									"description": "Admissions",
-									"type": "Copy",
-									"dependsOn": [
-										{
-											"activity": "WebClasslifeAdmissions",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"source": {
-											"type": "RestSource",
-											"httpRequestTimeout": "00:01:40",
-											"requestInterval": "00.00:00:00.010",
-											"requestMethod": "GET",
-											"additionalHeaders": {
-												"Content-Type": "application/json",
-												"apiKey": {
-													"value": "@pipeline().parameters.API_KEY",
-													"type": "Expression"
-												},
-												"clientId": {
-													"value": "@pipeline().parameters.API_CLIENT",
-													"type": "Expression"
-												}
-											},
-											"paginationRules": {
-												"supportRFC5988": "true"
-											}
-										},
-										"sink": {
-											"type": "JsonSink",
-											"storeSettings": {
-												"type": "AzureBlobFSWriteSettings"
-											},
-											"formatSettings": {
-												"type": "JsonWriteSettings"
-											}
-										},
-										"enableStaging": false
-									},
-									"inputs": [
-										{
-											"referenceName": "ds_Classlife",
-											"type": "DatasetReference",
-											"parameters": {
-												"relativeUrl": {
-													"value": "@concat('admissions?showMetas=1&limit=', pipeline().parameters.limit, '&page=', variables('PageCounter'))",
-													"type": "Expression"
-												}
-											}
-										}
-									],
-									"outputs": [
-										{
-											"referenceName": "ds_adsl_json",
-											"type": "DatasetReference",
-											"parameters": {
-												"container": "bronze",
-												"folder": {
-													"value": "@concat('lakehouse/classlife_929/admissions/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
-													"type": "Expression"
-												},
-												"filename": {
-													"value": "@concat('JsaClassLifeAdmissions_', string(variables('PageCounter')), '.json')",
-													"type": "Expression"
-												}
-											}
-										}
-									]
-								}
-							],
-							"timeout": "0.12:00:00"
-						}
-					},
-					{
-						"name": "1 Reboot PageCounter",
-						"type": "SetVariable",
-						"dependsOn": [
-							{
-								"activity": "Until Enrollments",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"variableName": "PageCounter",
-							"value": {
-								"value": "@int(1)",
-								"type": "Expression"
-							}
-						}
-					},
 					{
 						"name": "Until Enroll groups",
 						"type": "Until",
@@ -10271,141 +10040,6 @@
 											"enablePartitionDiscovery": false
 										}
 									}
-								},
-								{
-									"name": "Delete Files Admissions",
-									"type": "Delete",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"dataset": {
-											"referenceName": "ds_adsl_json_delete",
-											"type": "DatasetReference",
-											"parameters": {
-												"container": "bronze",
-												"folder": {
-													"value": "@concat('lakehouse/classlife_929/admissions/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
-													"type": "Expression"
-												}
-											}
-										},
-										"enableLogging": false,
-										"storeSettings": {
-											"type": "AzureBlobFSReadSettings",
-											"recursive": false,
-											"enablePartitionDiscovery": false
-										}
-									}
-								},
-								{
-									"name": "Delete Files Receipts",
-									"type": "Delete",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"dataset": {
-											"referenceName": "ds_adsl_json_delete",
-											"type": "DatasetReference",
-											"parameters": {
-												"container": "bronze",
-												"folder": {
-													"value": "@concat('lakehouse/classlife_929/receipts/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
-													"type": "Expression"
-												}
-											}
-										},
-										"enableLogging": false,
-										"storeSettings": {
-											"type": "AzureBlobFSReadSettings",
-											"recursive": false,
-											"enablePartitionDiscovery": false
-										}
-									}
-								},
-								{
-									"name": "Delete Files students",
-									"type": "Delete",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"dataset": {
-											"referenceName": "ds_adsl_json_delete",
-											"type": "DatasetReference",
-											"parameters": {
-												"container": "bronze",
-												"folder": {
-													"value": "@concat('lakehouse/classlife_929/students/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
-													"type": "Expression"
-												}
-											}
-										},
-										"enableLogging": false,
-										"storeSettings": {
-											"type": "AzureBlobFSReadSettings",
-											"recursive": false,
-											"enablePartitionDiscovery": false
-										}
-									}
-								},
-								{
-									"name": "Delete Files students Cleaned",
-									"type": "Delete",
-									"dependsOn": [
-										{
-											"activity": "Delete Files students",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"dataset": {
-											"referenceName": "ds_adsl_json_delete",
-											"type": "DatasetReference",
-											"parameters": {
-												"container": "bronze",
-												"folder": {
-													"value": "@concat('lakehouse/classlife_929/students/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'),'/','student_cleaned')",
-													"type": "Expression"
-												}
-											}
-										},
-										"enableLogging": false,
-										"storeSettings": {
-											"type": "AzureBlobFSReadSettings",
-											"recursive": false,
-											"enablePartitionDiscovery": false
-										}
-									}
 								}
 							]
 						}
@@ -10640,680 +10274,6 @@
 								"type": "Expression"
 							}
 						}
-					},
-					{
-						"name": "Until Receipts",
-						"type": "Until",
-						"dependsOn": [
-							{
-								"activity": "2 Reboot PageCounter",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"expression": {
-								"value": "@equals(variables('NextItem'), 0)\n",
-								"type": "Expression"
-							},
-							"activities": [
-								{
-									"name": "4 PageCounter",
-									"type": "SetVariable",
-									"dependsOn": [
-										{
-											"activity": "4 TempCounter",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "PageCounter",
-										"value": {
-											"value": "@variables('TempCounter')",
-											"type": "Expression"
-										}
-									}
-								},
-								{
-									"name": "4 TempCounter",
-									"type": "SetVariable",
-									"dependsOn": [
-										{
-											"activity": "Receipts",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "TempCounter",
-										"value": {
-											"value": "@add(variables('PageCounter'), 1)",
-											"type": "Expression"
-										}
-									}
-								},
-								{
-									"name": "4 Set Items",
-									"type": "SetVariable",
-									"dependsOn": [
-										{
-											"activity": "4 PageCounter",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "NextItem",
-										"value": {
-											"value": "@length(activity('WebClasslifeReceipts').output.data.items)",
-											"type": "Expression"
-										}
-									}
-								},
-								{
-									"name": "WebClasslifeReceipts",
-									"description": "Activity web that calls the endpoint Receipts",
-									"type": "WebActivity",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"method": "GET",
-										"headers": {
-											"apiKey": {
-												"value": "@pipeline().parameters.API_KEY",
-												"type": "Expression"
-											},
-											"clientId": {
-												"value": "@pipeline().parameters.API_CLIENT",
-												"type": "Expression"
-											}
-										},
-										"url": {
-											"value": "@concat('https://api.classlife.io/api/v1/receipts?showMetas=1&limit=', pipeline().parameters.limit, '&page=', variables('PageCounter'))",
-											"type": "Expression"
-										}
-									}
-								},
-								{
-									"name": "Receipts",
-									"description": "Receipts",
-									"type": "Copy",
-									"dependsOn": [
-										{
-											"activity": "WebClasslifeReceipts",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"source": {
-											"type": "RestSource",
-											"httpRequestTimeout": "00:01:40",
-											"requestInterval": "00.00:00:00.010",
-											"requestMethod": "GET",
-											"additionalHeaders": {
-												"Content-Type": "application/json",
-												"apiKey": {
-													"value": "@pipeline().parameters.API_KEY",
-													"type": "Expression"
-												},
-												"clientId": {
-													"value": "@pipeline().parameters.API_CLIENT",
-													"type": "Expression"
-												}
-											},
-											"paginationRules": {
-												"supportRFC5988": "true"
-											}
-										},
-										"sink": {
-											"type": "JsonSink",
-											"storeSettings": {
-												"type": "AzureBlobFSWriteSettings"
-											},
-											"formatSettings": {
-												"type": "JsonWriteSettings"
-											}
-										},
-										"enableStaging": false
-									},
-									"inputs": [
-										{
-											"referenceName": "ds_Classlife",
-											"type": "DatasetReference",
-											"parameters": {
-												"relativeUrl": {
-													"value": "@concat('receipts?showMetas=1&limit=', pipeline().parameters.limit, '&page=', variables('PageCounter'))",
-													"type": "Expression"
-												}
-											}
-										}
-									],
-									"outputs": [
-										{
-											"referenceName": "ds_adsl_json",
-											"type": "DatasetReference",
-											"parameters": {
-												"container": "bronze",
-												"folder": {
-													"value": "@concat('lakehouse/classlife_929/receipts/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
-													"type": "Expression"
-												},
-												"filename": {
-													"value": "@concat('JsaClassLifeReceipts_', string(variables('PageCounter')), '.json')",
-													"type": "Expression"
-												}
-											}
-										}
-									]
-								}
-							],
-							"timeout": "0.12:00:00"
-						}
-					},
-					{
-						"name": "2 Reboot PageCounter",
-						"type": "SetVariable",
-						"dependsOn": [
-							{
-								"activity": "Until Admissions",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"variableName": "PageCounter",
-							"value": {
-								"value": "@int(1)",
-								"type": "Expression"
-							}
-						}
-					},
-					{
-						"name": "Until Students",
-						"type": "Until",
-						"dependsOn": [
-							{
-								"activity": "3 Reboot PageCounter",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"expression": {
-								"value": "@equals(variables('NextItem'), 0)\n",
-								"type": "Expression"
-							},
-							"activities": [
-								{
-									"name": "3 PageCounter",
-									"type": "SetVariable",
-									"dependsOn": [
-										{
-											"activity": "3 TempCounter",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "PageCounter",
-										"value": {
-											"value": "@variables('TempCounter')",
-											"type": "Expression"
-										}
-									}
-								},
-								{
-									"name": "3 TempCounter",
-									"type": "SetVariable",
-									"dependsOn": [
-										{
-											"activity": "ClasslifeStudents_929_cleaned",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "TempCounter",
-										"value": {
-											"value": "@add(variables('PageCounter'), 1)",
-											"type": "Expression"
-										}
-									}
-								},
-								{
-									"name": "3 Set Items",
-									"type": "SetVariable",
-									"dependsOn": [
-										{
-											"activity": "3 PageCounter",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "NextItem",
-										"value": {
-											"value": "@length(activity('WebClasslifeStudents').output.data.items)",
-											"type": "Expression"
-										}
-									}
-								},
-								{
-									"name": "WebClasslifeStudents",
-									"description": "Activity web that calls the endpoint Students",
-									"type": "WebActivity",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"method": "GET",
-										"headers": {
-											"apiKey": {
-												"value": "@pipeline().parameters.API_KEY",
-												"type": "Expression"
-											},
-											"clientId": {
-												"value": "@pipeline().parameters.API_CLIENT",
-												"type": "Expression"
-											}
-										},
-										"url": {
-											"value": "@concat('https://api.classlife.io/api/v1/students?showMetas=1&limit=', pipeline().parameters.limit, '&page=', variables('PageCounter'))",
-											"type": "Expression"
-										}
-									}
-								},
-								{
-									"name": "ClasslifeStudents_929",
-									"description": "ClasslifeStudents",
-									"type": "Copy",
-									"dependsOn": [
-										{
-											"activity": "WebClasslifeStudents",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"source": {
-											"type": "RestSource",
-											"httpRequestTimeout": "00:01:40",
-											"requestInterval": "00.00:00:00.010",
-											"requestMethod": "GET",
-											"additionalHeaders": {
-												"Content-Type": "application/json",
-												"apiKey": {
-													"value": "@pipeline().parameters.API_KEY",
-													"type": "Expression"
-												},
-												"clientId": {
-													"value": "@pipeline().parameters.API_CLIENT",
-													"type": "Expression"
-												}
-											},
-											"paginationRules": {
-												"supportRFC5988": "true"
-											}
-										},
-										"sink": {
-											"type": "JsonSink",
-											"storeSettings": {
-												"type": "AzureBlobFSWriteSettings"
-											},
-											"formatSettings": {
-												"type": "JsonWriteSettings"
-											}
-										},
-										"enableStaging": false
-									},
-									"inputs": [
-										{
-											"referenceName": "ds_Classlife",
-											"type": "DatasetReference",
-											"parameters": {
-												"relativeUrl": {
-													"value": "@concat('students?showMetas=1&limit=', pipeline().parameters.limit, '&page=', variables('PageCounter'))",
-													"type": "Expression"
-												}
-											}
-										}
-									],
-									"outputs": [
-										{
-											"referenceName": "ds_adsl_json",
-											"type": "DatasetReference",
-											"parameters": {
-												"container": "bronze",
-												"folder": {
-													"value": "@concat('lakehouse/classlife_929/students/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
-													"type": "Expression"
-												},
-												"filename": {
-													"value": "@concat('JsaClassLifeStudents_', string(variables('PageCounter')), '.json')",
-													"type": "Expression"
-												}
-											}
-										}
-									]
-								},
-								{
-									"name": "ClasslifeStudents_929_cleaned",
-									"description": "ClasslifeStudents",
-									"type": "Copy",
-									"dependsOn": [
-										{
-											"activity": "ClasslifeStudents_929",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"source": {
-											"type": "JsonSource",
-											"storeSettings": {
-												"type": "AzureBlobFSReadSettings",
-												"recursive": true,
-												"enablePartitionDiscovery": false
-											},
-											"formatSettings": {
-												"type": "JsonReadSettings"
-											}
-										},
-										"sink": {
-											"type": "JsonSink",
-											"storeSettings": {
-												"type": "AzureBlobFSWriteSettings"
-											},
-											"formatSettings": {
-												"type": "JsonWriteSettings"
-											}
-										},
-										"enableStaging": false,
-										"translator": {
-											"type": "TabularTranslator",
-											"mappings": [
-												{
-													"source": {
-														"path": "[['student_id']"
-													},
-													"sink": {
-														"path": "student_id"
-													}
-												},
-												{
-													"source": {
-														"path": "[['student_full_name']"
-													},
-													"sink": {
-														"path": "student_full_name"
-													}
-												},
-												{
-													"source": {
-														"path": "[['student_email']"
-													},
-													"sink": {
-														"path": "student_email"
-													}
-												},
-												{
-													"source": {
-														"path": "[['student_phone']"
-													},
-													"sink": {
-														"path": "student_phone"
-													}
-												},
-												{
-													"source": {
-														"path": "[['student_registration_date']"
-													},
-													"sink": {
-														"path": "student_registration_date"
-													}
-												},
-												{
-													"source": {
-														"path": "[['student_active']"
-													},
-													"sink": {
-														"path": "student_active"
-													}
-												},
-												{
-													"source": {
-														"path": "[['metas']['zoho_id']"
-													},
-													"sink": {
-														"path": "zoho_id"
-													}
-												},
-												{
-													"source": {
-														"path": "[['metas']['ciudad']"
-													},
-													"sink": {
-														"path": "ciudad"
-													}
-												},
-												{
-													"source": {
-														"path": "[['metas']['codigo']"
-													},
-													"sink": {
-														"path": "codigo"
-													}
-												},
-												{
-													"source": {
-														"path": "[['metas']['pais']"
-													},
-													"sink": {
-														"path": "pais"
-													}
-												},
-												{
-													"source": {
-														"path": "[['metas']['edad']"
-													},
-													"sink": {
-														"path": "edad"
-													}
-												},
-												{
-													"source": {
-														"path": "[['metas']['direccion']"
-													},
-													"sink": {
-														"path": "direccion"
-													}
-												},
-												{
-													"source": {
-														"path": "[['metas']['nacimiento']"
-													},
-													"sink": {
-														"path": "nacimiento"
-													}
-												},
-												{
-													"source": {
-														"path": "[['metas']['libres_expediente_alexia']"
-													},
-													"sink": {
-														"path": "libres_expediente_alexia"
-													}
-												},
-												{
-													"source": {
-														"path": "[['metas']['libres_grupo_curso_anterior']"
-													},
-													"sink": {
-														"path": "libres_grupo_curso_anterior"
-													}
-												},
-												{
-													"source": {
-														"path": "[['metas']['libres_titulacion_curso_anterior']"
-													},
-													"sink": {
-														"path": "libres_titulacion_curso_anterior"
-													}
-												}
-											],
-											"collectionReference": "$['data']['items']"
-										}
-									},
-									"inputs": [
-										{
-											"referenceName": "ds_adsl_json",
-											"type": "DatasetReference",
-											"parameters": {
-												"container": "bronze",
-												"folder": {
-													"value": "@concat('lakehouse/classlife_929/students/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
-													"type": "Expression"
-												},
-												"filename": {
-													"value": "@concat('JsaClassLifeStudents_', string(variables('PageCounter')), '.json')",
-													"type": "Expression"
-												}
-											}
-										}
-									],
-									"outputs": [
-										{
-											"referenceName": "ds_adsl_json",
-											"type": "DatasetReference",
-											"parameters": {
-												"container": "bronze",
-												"folder": {
-													"value": "@concat('lakehouse/classlife_929/students/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'),'/','student_cleaned')",
-													"type": "Expression"
-												},
-												"filename": {
-													"value": "@concat('JsaClassLifeStudents_', string(variables('PageCounter')), '.json')",
-													"type": "Expression"
-												}
-											}
-										}
-									]
-								}
-							],
-							"timeout": "0.12:00:00"
-						}
-					},
-					{
-						"name": "3 Reboot PageCounter",
-						"type": "SetVariable",
-						"dependsOn": [
-							{
-								"activity": "Until Receipts",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"variableName": "PageCounter",
-							"value": {
-								"value": "@int(1)",
-								"type": "Expression"
-							}
-						}
 					}
 				],
 				"policy": {
@@ -11330,7 +10290,7 @@
 					},
 					"limit": {
 						"type": "string",
-						"defaultValue": "500"
+						"defaultValue": "1500"
 					}
 				},
 				"variables": {
@@ -16458,7 +15418,7 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "ExecuteClasslife929",
+						"name": "ExecuteClasslife929_enroll_groups_enrollments",
 						"type": "ExecutePipeline",
 						"dependsOn": [],
 						"policy": {
@@ -16467,7 +15427,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"pipeline": {
-								"referenceName": "p_Classlife_Isep_929",
+								"referenceName": "p_Classlife_Isep_929_enroll_groups_enrollments",
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
@@ -16479,7 +15439,7 @@
 						"type": "DatabricksNotebook",
 						"dependsOn": [
 							{
-								"activity": "ExecuteClasslife929",
+								"activity": "ExecuteClasslife929_enroll_groups_enrollments",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -16509,7 +15469,7 @@
 						"type": "DatabricksNotebook",
 						"dependsOn": [
 							{
-								"activity": "ExecuteClasslife929",
+								"activity": "ExecuteClasslife929_Students",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -16539,7 +15499,7 @@
 						"type": "DatabricksNotebook",
 						"dependsOn": [
 							{
-								"activity": "ExecuteClasslife929",
+								"activity": "ExecuteClasslife929_enroll_groups_enrollments",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -16569,7 +15529,7 @@
 						"type": "DatabricksNotebook",
 						"dependsOn": [
 							{
-								"activity": "ExecuteClasslife929",
+								"activity": "ExecuteClasslife929_Receipts",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -16599,7 +15559,7 @@
 						"type": "DatabricksNotebook",
 						"dependsOn": [
 							{
-								"activity": "ExecuteClasslife929",
+								"activity": "ExecuteClasslife929_Admissions",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -16623,6 +15583,57 @@
 							"referenceName": "ls_AzureDatabricks",
 							"type": "LinkedServiceReference"
 						}
+					},
+					{
+						"name": "ExecuteClasslife929_Admissions",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "p_Classlife_Isep_929_admissions",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "ExecuteClasslife929_Receipts",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "p_Classlife_Isep_929_Receipts",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "ExecuteClasslife929_Students",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "p_Classlife_Isep_929_Students",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
 					}
 				],
 				"policy": {
@@ -16641,8 +15652,11 @@
 				"lastPublishTime": "2025-06-09T17:21:05Z"
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/p_Classlife_Isep_929')]",
-				"[concat(variables('factoryId'), '/linkedServices/ls_AzureDatabricks')]"
+				"[concat(variables('factoryId'), '/pipelines/p_Classlife_Isep_929_enroll_groups_enrollments')]",
+				"[concat(variables('factoryId'), '/linkedServices/ls_AzureDatabricks')]",
+				"[concat(variables('factoryId'), '/pipelines/p_Classlife_Isep_929_admissions')]",
+				"[concat(variables('factoryId'), '/pipelines/p_Classlife_Isep_929_Receipts')]",
+				"[concat(variables('factoryId'), '/pipelines/p_Classlife_Isep_929_Students')]"
 			]
 		},
 		{
@@ -18012,7 +17026,13 @@
 						"type": "DatabricksNotebook",
 						"dependsOn": [
 							{
-								"activity": "Wait",
+								"activity": "Fct gold",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Budget General_FF",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -18146,28 +17166,6 @@
 									"type": "Expression"
 								}
 							}
-						}
-					},
-					{
-						"name": "Wait",
-						"type": "Wait",
-						"dependsOn": [
-							{
-								"activity": "Fct gold",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							},
-							{
-								"activity": "Budget General_FF",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"waitTimeInSeconds": 15
 						}
 					},
 					{
@@ -18343,15 +17341,15 @@
 								]
 							},
 							{
-								"activity": "Classlife_ISEP_929Full",
+								"activity": "Zoho_ISEP_34f_Full",
 								"dependencyConditions": [
 									"Completed"
 								]
 							},
 							{
-								"activity": "Zoho_ISEP_34f_Full",
+								"activity": "Classlife_ISEP_929Full",
 								"dependencyConditions": [
-									"Completed"
+									"Succeeded"
 								]
 							}
 						],
@@ -18411,8 +17409,6 @@
 					{
 						"name": "Classlife_ISEP_929Full",
 						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Deleted -60 json",
@@ -19224,18 +18220,6 @@
 								"dependencyConditions": [
 									"Succeeded"
 								]
-							},
-							{
-								"activity": "Execute Ciclos 34f",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							},
-							{
-								"activity": "Execute Programas 34f",
-								"dependencyConditions": [
-									"Succeeded"
-								]
 							}
 						],
 						"policy": {
@@ -19470,104 +18454,6 @@
 								}
 							}
 						}
-					},
-					{
-						"name": "Execute Ciclos 34f",
-						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
-						"dependsOn": [
-							{
-								"activity": "Execute Deals 34f",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							},
-							{
-								"activity": "Execute Leads 34f",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "p_Parent_Ciclos_Zoho_38b",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"client_id": {
-									"value": "@pipeline().parameters.client_id",
-									"type": "Expression"
-								},
-								"client_secret": {
-									"value": "@pipeline().parameters.client_secret",
-									"type": "Expression"
-								},
-								"refresh_token": {
-									"value": "@pipeline().parameters.refresh_token",
-									"type": "Expression"
-								},
-								"reprocessDate": {
-									"value": "@pipeline().parameters.reprocessDate",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "Execute Programas 34f",
-						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
-						"dependsOn": [
-							{
-								"activity": "Execute Deals 34f",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							},
-							{
-								"activity": "Execute Leads 34f",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "p_Parent_Programas_Zoho_38b",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"client_id": {
-									"value": "@pipeline().parameters.client_id",
-									"type": "Expression"
-								},
-								"client_secret": {
-									"value": "@pipeline().parameters.client_secret",
-									"type": "Expression"
-								},
-								"refresh_token": {
-									"value": "@pipeline().parameters.refresh_token",
-									"type": "Expression"
-								},
-								"reprocessDate": {
-									"value": "@pipeline().parameters.reprocessDate",
-									"type": "Expression"
-								}
-							}
-						}
 					}
 				],
 				"policy": {
@@ -19646,9 +18532,7 @@
 				"[concat(variables('factoryId'), '/pipelines/p_Zoho_ISEP_Silver_34f')]",
 				"[concat(variables('factoryId'), '/pipelines/p_Parent_Deals_Zoho_Isep_34f')]",
 				"[concat(variables('factoryId'), '/pipelines/p_Parent_Leads_Zoho_Isep_34f')]",
-				"[concat(variables('factoryId'), '/pipelines/p_Parent_Users_Zoho_Isep_34f')]",
-				"[concat(variables('factoryId'), '/pipelines/p_Parent_Ciclos_Zoho_38b')]",
-				"[concat(variables('factoryId'), '/pipelines/p_Parent_Programas_Zoho_38b')]"
+				"[concat(variables('factoryId'), '/pipelines/p_Parent_Users_Zoho_Isep_34f')]"
 			]
 		},
 		{
@@ -37842,6 +36726,1304 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/ls_adsl')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_Classlife_Isep_929_admissions')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Until Admissions",
+						"type": "Until",
+						"dependsOn": [
+							{
+								"activity": "If Condition Delete",
+								"dependencyConditions": [
+									"Completed"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@equals(variables('NextItem'), 0)\n",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "1 PageCounter",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "1 TempCounter",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "PageCounter",
+										"value": {
+											"value": "@variables('TempCounter')",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "1 TempCounter",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Admissions",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "TempCounter",
+										"value": {
+											"value": "@add(variables('PageCounter'), 1)",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "1 Set Items",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "1 PageCounter",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "NextItem",
+										"value": {
+											"value": "@length(activity('WebClasslifeAdmissions').output.data.items)\n",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "WebClasslifeAdmissions",
+									"description": "Activity web that calls the endpoint Admissions",
+									"type": "WebActivity",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": true,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"method": "GET",
+										"headers": {
+											"apiKey": {
+												"value": "@pipeline().parameters.API_KEY",
+												"type": "Expression"
+											},
+											"clientId": {
+												"value": "@pipeline().parameters.API_CLIENT",
+												"type": "Expression"
+											}
+										},
+										"url": {
+											"value": "@concat('https://api.classlife.io/api/v1/admissions?showMetas=1&limit=', pipeline().parameters.limit, '&page=', variables('PageCounter'))",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "Admissions",
+									"description": "Admissions",
+									"type": "Copy",
+									"dependsOn": [
+										{
+											"activity": "WebClasslifeAdmissions",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "RestSource",
+											"httpRequestTimeout": "00:01:40",
+											"requestInterval": "00.00:00:00.010",
+											"requestMethod": "GET",
+											"additionalHeaders": {
+												"Content-Type": "application/json",
+												"apiKey": {
+													"value": "@pipeline().parameters.API_KEY",
+													"type": "Expression"
+												},
+												"clientId": {
+													"value": "@pipeline().parameters.API_CLIENT",
+													"type": "Expression"
+												}
+											},
+											"paginationRules": {
+												"supportRFC5988": "true"
+											}
+										},
+										"sink": {
+											"type": "JsonSink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											},
+											"formatSettings": {
+												"type": "JsonWriteSettings"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "ds_Classlife",
+											"type": "DatasetReference",
+											"parameters": {
+												"relativeUrl": {
+													"value": "@concat('admissions?showMetas=1&limit=', pipeline().parameters.limit, '&page=', variables('PageCounter'))",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "ds_adsl_json",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": "bronze",
+												"folder": {
+													"value": "@concat('lakehouse/classlife_929/admissions/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+													"type": "Expression"
+												},
+												"filename": {
+													"value": "@concat('JsaClassLifeAdmissions_', string(variables('PageCounter')), '.json')",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								}
+							],
+							"timeout": "0.12:00:00"
+						}
+					},
+					{
+						"name": "CheckFolderExists",
+						"type": "GetMetadata",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "ds_adsl_json_delete",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "bronze",
+									"folder": {
+										"value": "@concat('lakehouse/classlife_929/')",
+										"type": "Expression"
+									}
+								}
+							},
+							"fieldList": [
+								"exists"
+							],
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							},
+							"formatSettings": {
+								"type": "JsonReadSettings"
+							}
+						}
+					},
+					{
+						"name": "If Condition Delete",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "CheckFolderExists",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@activity('CheckFolderExists').output.exists",
+								"type": "Expression"
+							},
+							"ifTrueActivities": [
+								{
+									"name": "Delete Files Admissions",
+									"type": "Delete",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"dataset": {
+											"referenceName": "ds_adsl_json_delete",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": "bronze",
+												"folder": {
+													"value": "@concat('lakehouse/classlife_929/admissions/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+													"type": "Expression"
+												}
+											}
+										},
+										"enableLogging": false,
+										"storeSettings": {
+											"type": "AzureBlobFSReadSettings",
+											"recursive": false,
+											"enablePartitionDiscovery": false
+										}
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"API_CLIENT": {
+						"type": "string",
+						"defaultValue": "929"
+					},
+					"API_KEY": {
+						"type": "string",
+						"defaultValue": "C!Fc0d63176713558"
+					},
+					"limit": {
+						"type": "string",
+						"defaultValue": "1500"
+					}
+				},
+				"variables": {
+					"PageCounter": {
+						"type": "Integer",
+						"defaultValue": 1
+					},
+					"TempCounter": {
+						"type": "Integer",
+						"defaultValue": 0
+					},
+					"NextItem": {
+						"type": "Integer"
+					},
+					"WebActivityRequest": {
+						"type": "String"
+					}
+				},
+				"folder": {
+					"name": "Lakehouse/Bronze/ISEP"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-06-09T17:21:05Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/ds_adsl_json_delete')]",
+				"[concat(variables('factoryId'), '/datasets/ds_Classlife')]",
+				"[concat(variables('factoryId'), '/datasets/ds_adsl_json')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_Classlife_Isep_929_Receipts')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "CheckFolderExists",
+						"type": "GetMetadata",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "ds_adsl_json_delete",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "bronze",
+									"folder": {
+										"value": "@concat('lakehouse/classlife_929/')",
+										"type": "Expression"
+									}
+								}
+							},
+							"fieldList": [
+								"exists"
+							],
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							},
+							"formatSettings": {
+								"type": "JsonReadSettings"
+							}
+						}
+					},
+					{
+						"name": "If Condition Delete",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "CheckFolderExists",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@activity('CheckFolderExists').output.exists",
+								"type": "Expression"
+							},
+							"ifTrueActivities": [
+								{
+									"name": "Delete Files Receipts",
+									"type": "Delete",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"dataset": {
+											"referenceName": "ds_adsl_json_delete",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": "bronze",
+												"folder": {
+													"value": "@concat('lakehouse/classlife_929/receipts/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+													"type": "Expression"
+												}
+											}
+										},
+										"enableLogging": false,
+										"storeSettings": {
+											"type": "AzureBlobFSReadSettings",
+											"recursive": false,
+											"enablePartitionDiscovery": false
+										}
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "Until Receipts",
+						"type": "Until",
+						"dependsOn": [
+							{
+								"activity": "If Condition Delete",
+								"dependencyConditions": [
+									"Completed"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@equals(variables('NextItem'), 0)\n",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "4 PageCounter",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "4 TempCounter",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "PageCounter",
+										"value": {
+											"value": "@variables('TempCounter')",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "4 TempCounter",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Receipts",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "TempCounter",
+										"value": {
+											"value": "@add(variables('PageCounter'), 1)",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "4 Set Items",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "4 PageCounter",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "NextItem",
+										"value": {
+											"value": "@length(activity('WebClasslifeReceipts').output.data.items)",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "WebClasslifeReceipts",
+									"description": "Activity web that calls the endpoint Receipts",
+									"type": "WebActivity",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"method": "GET",
+										"headers": {
+											"apiKey": {
+												"value": "@pipeline().parameters.API_KEY",
+												"type": "Expression"
+											},
+											"clientId": {
+												"value": "@pipeline().parameters.API_CLIENT",
+												"type": "Expression"
+											}
+										},
+										"url": {
+											"value": "@concat('https://api.classlife.io/api/v1/receipts?showMetas=1&limit=', pipeline().parameters.limit, '&page=', variables('PageCounter'))",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "Receipts",
+									"description": "Receipts",
+									"type": "Copy",
+									"dependsOn": [
+										{
+											"activity": "WebClasslifeReceipts",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "RestSource",
+											"httpRequestTimeout": "00:01:40",
+											"requestInterval": "00.00:00:00.010",
+											"requestMethod": "GET",
+											"additionalHeaders": {
+												"Content-Type": "application/json",
+												"apiKey": {
+													"value": "@pipeline().parameters.API_KEY",
+													"type": "Expression"
+												},
+												"clientId": {
+													"value": "@pipeline().parameters.API_CLIENT",
+													"type": "Expression"
+												}
+											},
+											"paginationRules": {
+												"supportRFC5988": "true"
+											}
+										},
+										"sink": {
+											"type": "JsonSink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											},
+											"formatSettings": {
+												"type": "JsonWriteSettings"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "ds_Classlife",
+											"type": "DatasetReference",
+											"parameters": {
+												"relativeUrl": {
+													"value": "@concat('receipts?showMetas=1&limit=', pipeline().parameters.limit, '&page=', variables('PageCounter'))",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "ds_adsl_json",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": "bronze",
+												"folder": {
+													"value": "@concat('lakehouse/classlife_929/receipts/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+													"type": "Expression"
+												},
+												"filename": {
+													"value": "@concat('JsaClassLifeReceipts_', string(variables('PageCounter')), '.json')",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								}
+							],
+							"timeout": "0.12:00:00"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"API_CLIENT": {
+						"type": "string",
+						"defaultValue": "929"
+					},
+					"API_KEY": {
+						"type": "string",
+						"defaultValue": "C!Fc0d63176713558"
+					},
+					"limit": {
+						"type": "string",
+						"defaultValue": "1500"
+					}
+				},
+				"variables": {
+					"PageCounter": {
+						"type": "Integer",
+						"defaultValue": 1
+					},
+					"TempCounter": {
+						"type": "Integer",
+						"defaultValue": 0
+					},
+					"NextItem": {
+						"type": "Integer"
+					},
+					"WebActivityRequest": {
+						"type": "String"
+					}
+				},
+				"folder": {
+					"name": "Lakehouse/Bronze/ISEP"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-06-09T17:21:05Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/ds_adsl_json_delete')]",
+				"[concat(variables('factoryId'), '/datasets/ds_Classlife')]",
+				"[concat(variables('factoryId'), '/datasets/ds_adsl_json')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_Classlife_Isep_929_Students')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "CheckFolderExists",
+						"type": "GetMetadata",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "ds_adsl_json_delete",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "bronze",
+									"folder": {
+										"value": "@concat('lakehouse/classlife_929/')",
+										"type": "Expression"
+									}
+								}
+							},
+							"fieldList": [
+								"exists"
+							],
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							},
+							"formatSettings": {
+								"type": "JsonReadSettings"
+							}
+						}
+					},
+					{
+						"name": "If Condition Delete",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "CheckFolderExists",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@activity('CheckFolderExists').output.exists",
+								"type": "Expression"
+							},
+							"ifTrueActivities": [
+								{
+									"name": "Delete Files students",
+									"type": "Delete",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"dataset": {
+											"referenceName": "ds_adsl_json_delete",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": "bronze",
+												"folder": {
+													"value": "@concat('lakehouse/classlife_929/students/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+													"type": "Expression"
+												}
+											}
+										},
+										"enableLogging": false,
+										"storeSettings": {
+											"type": "AzureBlobFSReadSettings",
+											"recursive": false,
+											"enablePartitionDiscovery": false
+										}
+									}
+								},
+								{
+									"name": "Delete Files students Cleaned",
+									"type": "Delete",
+									"dependsOn": [
+										{
+											"activity": "Delete Files students",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"dataset": {
+											"referenceName": "ds_adsl_json_delete",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": "bronze",
+												"folder": {
+													"value": "@concat('lakehouse/classlife_929/students/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'),'/','student_cleaned')",
+													"type": "Expression"
+												}
+											}
+										},
+										"enableLogging": false,
+										"storeSettings": {
+											"type": "AzureBlobFSReadSettings",
+											"recursive": false,
+											"enablePartitionDiscovery": false
+										}
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "Until Students",
+						"type": "Until",
+						"dependsOn": [
+							{
+								"activity": "If Condition Delete",
+								"dependencyConditions": [
+									"Completed"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@equals(variables('NextItem'), 0)\n",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "3 PageCounter",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "3 TempCounter",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "PageCounter",
+										"value": {
+											"value": "@variables('TempCounter')",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "3 TempCounter",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "ClasslifeStudents_929_cleaned",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "TempCounter",
+										"value": {
+											"value": "@add(variables('PageCounter'), 1)",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "3 Set Items",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "3 PageCounter",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "NextItem",
+										"value": {
+											"value": "@length(activity('WebClasslifeStudents').output.data.items)",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "WebClasslifeStudents",
+									"description": "Activity web that calls the endpoint Students",
+									"type": "WebActivity",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"method": "GET",
+										"headers": {
+											"apiKey": {
+												"value": "@pipeline().parameters.API_KEY",
+												"type": "Expression"
+											},
+											"clientId": {
+												"value": "@pipeline().parameters.API_CLIENT",
+												"type": "Expression"
+											}
+										},
+										"url": {
+											"value": "@concat('https://api.classlife.io/api/v1/students?showMetas=1&limit=', pipeline().parameters.limit, '&page=', variables('PageCounter'))",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "ClasslifeStudents_929",
+									"description": "ClasslifeStudents",
+									"type": "Copy",
+									"dependsOn": [
+										{
+											"activity": "WebClasslifeStudents",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "RestSource",
+											"httpRequestTimeout": "00:01:40",
+											"requestInterval": "00.00:00:00.010",
+											"requestMethod": "GET",
+											"additionalHeaders": {
+												"Content-Type": "application/json",
+												"apiKey": {
+													"value": "@pipeline().parameters.API_KEY",
+													"type": "Expression"
+												},
+												"clientId": {
+													"value": "@pipeline().parameters.API_CLIENT",
+													"type": "Expression"
+												}
+											},
+											"paginationRules": {
+												"supportRFC5988": "true"
+											}
+										},
+										"sink": {
+											"type": "JsonSink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											},
+											"formatSettings": {
+												"type": "JsonWriteSettings"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "ds_Classlife",
+											"type": "DatasetReference",
+											"parameters": {
+												"relativeUrl": {
+													"value": "@concat('students?showMetas=1&limit=', pipeline().parameters.limit, '&page=', variables('PageCounter'))",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "ds_adsl_json",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": "bronze",
+												"folder": {
+													"value": "@concat('lakehouse/classlife_929/students/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+													"type": "Expression"
+												},
+												"filename": {
+													"value": "@concat('JsaClassLifeStudents_', string(variables('PageCounter')), '.json')",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								},
+								{
+									"name": "ClasslifeStudents_929_cleaned",
+									"description": "ClasslifeStudents",
+									"type": "Copy",
+									"dependsOn": [
+										{
+											"activity": "ClasslifeStudents_929",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "JsonSource",
+											"storeSettings": {
+												"type": "AzureBlobFSReadSettings",
+												"recursive": true,
+												"enablePartitionDiscovery": false
+											},
+											"formatSettings": {
+												"type": "JsonReadSettings"
+											}
+										},
+										"sink": {
+											"type": "JsonSink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											},
+											"formatSettings": {
+												"type": "JsonWriteSettings"
+											}
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"mappings": [
+												{
+													"source": {
+														"path": "[['student_id']"
+													},
+													"sink": {
+														"path": "student_id"
+													}
+												},
+												{
+													"source": {
+														"path": "[['student_full_name']"
+													},
+													"sink": {
+														"path": "student_full_name"
+													}
+												},
+												{
+													"source": {
+														"path": "[['student_email']"
+													},
+													"sink": {
+														"path": "student_email"
+													}
+												},
+												{
+													"source": {
+														"path": "[['student_phone']"
+													},
+													"sink": {
+														"path": "student_phone"
+													}
+												},
+												{
+													"source": {
+														"path": "[['student_registration_date']"
+													},
+													"sink": {
+														"path": "student_registration_date"
+													}
+												},
+												{
+													"source": {
+														"path": "[['student_active']"
+													},
+													"sink": {
+														"path": "student_active"
+													}
+												},
+												{
+													"source": {
+														"path": "[['metas']['zoho_id']"
+													},
+													"sink": {
+														"path": "zoho_id"
+													}
+												},
+												{
+													"source": {
+														"path": "[['metas']['ciudad']"
+													},
+													"sink": {
+														"path": "ciudad"
+													}
+												},
+												{
+													"source": {
+														"path": "[['metas']['codigo']"
+													},
+													"sink": {
+														"path": "codigo"
+													}
+												},
+												{
+													"source": {
+														"path": "[['metas']['pais']"
+													},
+													"sink": {
+														"path": "pais"
+													}
+												},
+												{
+													"source": {
+														"path": "[['metas']['edad']"
+													},
+													"sink": {
+														"path": "edad"
+													}
+												},
+												{
+													"source": {
+														"path": "[['metas']['direccion']"
+													},
+													"sink": {
+														"path": "direccion"
+													}
+												},
+												{
+													"source": {
+														"path": "[['metas']['nacimiento']"
+													},
+													"sink": {
+														"path": "nacimiento"
+													}
+												},
+												{
+													"source": {
+														"path": "[['metas']['libres_expediente_alexia']"
+													},
+													"sink": {
+														"path": "libres_expediente_alexia"
+													}
+												},
+												{
+													"source": {
+														"path": "[['metas']['libres_grupo_curso_anterior']"
+													},
+													"sink": {
+														"path": "libres_grupo_curso_anterior"
+													}
+												},
+												{
+													"source": {
+														"path": "[['metas']['libres_titulacion_curso_anterior']"
+													},
+													"sink": {
+														"path": "libres_titulacion_curso_anterior"
+													}
+												}
+											],
+											"collectionReference": "$['data']['items']"
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "ds_adsl_json",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": "bronze",
+												"folder": {
+													"value": "@concat('lakehouse/classlife_929/students/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'))",
+													"type": "Expression"
+												},
+												"filename": {
+													"value": "@concat('JsaClassLifeStudents_', string(variables('PageCounter')), '.json')",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "ds_adsl_json",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": "bronze",
+												"folder": {
+													"value": "@concat('lakehouse/classlife_929/students/',formatDateTime(utcnow(),'yyyy'),'/',formatDateTime(utcnow(),'MM'),'/',formatDateTime(utcnow(),'dd'),'/','student_cleaned')",
+													"type": "Expression"
+												},
+												"filename": {
+													"value": "@concat('JsaClassLifeStudents_', string(variables('PageCounter')), '.json')",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								}
+							],
+							"timeout": "0.12:00:00"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"API_CLIENT": {
+						"type": "string",
+						"defaultValue": "929"
+					},
+					"API_KEY": {
+						"type": "string",
+						"defaultValue": "C!Fc0d63176713558"
+					},
+					"limit": {
+						"type": "string",
+						"defaultValue": "1500"
+					}
+				},
+				"variables": {
+					"PageCounter": {
+						"type": "Integer",
+						"defaultValue": 1
+					},
+					"TempCounter": {
+						"type": "Integer",
+						"defaultValue": 0
+					},
+					"NextItem": {
+						"type": "Integer"
+					},
+					"WebActivityRequest": {
+						"type": "String"
+					}
+				},
+				"folder": {
+					"name": "Lakehouse/Bronze/ISEP"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-06-09T17:21:05Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/ds_adsl_json_delete')]",
+				"[concat(variables('factoryId'), '/datasets/ds_Classlife')]",
+				"[concat(variables('factoryId'), '/datasets/ds_adsl_json')]"
 			]
 		}
 	]
