@@ -464,8 +464,6 @@
 			{
 				"name": "Classlife_ISEP_929Full",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Deleted -60 json",
