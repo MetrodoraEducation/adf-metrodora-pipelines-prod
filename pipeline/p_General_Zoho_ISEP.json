@@ -84,18 +84,6 @@
 						"dependencyConditions": [
 							"Succeeded"
 						]
-					},
-					{
-						"activity": "Execute Ciclos 34f",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "Execute Programas 34f",
-						"dependencyConditions": [
-							"Succeeded"
-						]
 					}
 				],
 				"policy": {
@@ -308,104 +296,6 @@
 				"typeProperties": {
 					"pipeline": {
 						"referenceName": "p_Parent_Users_Zoho_Isep_34f",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"client_id": {
-							"value": "@pipeline().parameters.client_id",
-							"type": "Expression"
-						},
-						"client_secret": {
-							"value": "@pipeline().parameters.client_secret",
-							"type": "Expression"
-						},
-						"refresh_token": {
-							"value": "@pipeline().parameters.refresh_token",
-							"type": "Expression"
-						},
-						"reprocessDate": {
-							"value": "@pipeline().parameters.reprocessDate",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "Execute Ciclos 34f",
-				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
-				"dependsOn": [
-					{
-						"activity": "Execute Deals 34f",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "Execute Leads 34f",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "p_Parent_Ciclos_Zoho_38b",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"client_id": {
-							"value": "@pipeline().parameters.client_id",
-							"type": "Expression"
-						},
-						"client_secret": {
-							"value": "@pipeline().parameters.client_secret",
-							"type": "Expression"
-						},
-						"refresh_token": {
-							"value": "@pipeline().parameters.refresh_token",
-							"type": "Expression"
-						},
-						"reprocessDate": {
-							"value": "@pipeline().parameters.reprocessDate",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "Execute Programas 34f",
-				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
-				"dependsOn": [
-					{
-						"activity": "Execute Deals 34f",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "Execute Leads 34f",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "p_Parent_Programas_Zoho_38b",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
