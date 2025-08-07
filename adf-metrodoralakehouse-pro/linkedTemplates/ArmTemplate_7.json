@@ -3291,12 +3291,6 @@
 								]
 							},
 							{
-								"activity": "Zoho_ISEP_34f_Full",
-								"dependencyConditions": [
-									"Completed"
-								]
-							},
-							{
 								"activity": "Classlife_ISEP_929Full",
 								"dependencyConditions": [
 									"Succeeded"
@@ -3388,8 +3382,6 @@
 					{
 						"name": "Zoho_ISEP_34f_Full",
 						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Deleted -60 json",
