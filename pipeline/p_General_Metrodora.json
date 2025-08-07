@@ -65,7 +65,13 @@
 				"type": "DatabricksNotebook",
 				"dependsOn": [
 					{
-						"activity": "Wait",
+						"activity": "Fct gold",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Budget General_FF",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -199,28 +205,6 @@
 							"type": "Expression"
 						}
 					}
-				}
-			},
-			{
-				"name": "Wait",
-				"type": "Wait",
-				"dependsOn": [
-					{
-						"activity": "Fct gold",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "Budget General_FF",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"waitTimeInSeconds": 15
 				}
 			},
 			{
@@ -396,15 +380,15 @@
 						]
 					},
 					{
-						"activity": "Classlife_ISEP_929Full",
+						"activity": "Zoho_ISEP_34f_Full",
 						"dependencyConditions": [
 							"Completed"
 						]
 					},
 					{
-						"activity": "Zoho_ISEP_34f_Full",
+						"activity": "Classlife_ISEP_929Full",
 						"dependencyConditions": [
-							"Completed"
+							"Succeeded"
 						]
 					}
 				],
