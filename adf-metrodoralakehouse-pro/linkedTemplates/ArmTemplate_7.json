@@ -1706,13 +1706,13 @@
 						"type": "ExecutePipeline",
 						"dependsOn": [
 							{
-								"activity": "Execute Deals 34f",
+								"activity": "If Modified Since Date Leads",
 								"dependencyConditions": [
 									"Succeeded"
 								]
 							},
 							{
-								"activity": "Execute Leads 34f",
+								"activity": "SetTokenStartTime",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -1780,6 +1780,18 @@
 							},
 							{
 								"activity": "Execute Users 34f",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Execute Deals 34f",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Execute Leads 34f",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -1976,13 +1988,13 @@
 						"type": "ExecutePipeline",
 						"dependsOn": [
 							{
-								"activity": "Execute Deals 34f",
+								"activity": "SetTokenStartTime",
 								"dependencyConditions": [
 									"Succeeded"
 								]
 							},
 							{
-								"activity": "Execute Leads 34f",
+								"activity": "If Modified Since Date Leads",
 								"dependencyConditions": [
 									"Succeeded"
 								]
