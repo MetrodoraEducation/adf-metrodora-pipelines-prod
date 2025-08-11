@@ -490,10 +490,7 @@
 					},
 					"waitOnCompletion": true,
 					"parameters": {
-						"reprocessDate": {
-							"value": "@pipeline().parameters.dayToLoad",
-							"type": "Expression"
-						},
+						"reprocessDate": "1",
 						"silver_storage_databricks": {
 							"value": "@pipeline().parameters.silver_storage_databricks",
 							"type": "Expression"
