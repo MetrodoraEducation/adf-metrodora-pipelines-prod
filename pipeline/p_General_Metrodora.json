@@ -380,9 +380,15 @@
 						]
 					},
 					{
+						"activity": "Zoho_ISEP_34f_Full",
+						"dependencyConditions": [
+							"Completed"
+						]
+					},
+					{
 						"activity": "Classlife_ISEP_929Full",
 						"dependencyConditions": [
-							"Succeeded"
+							"Completed"
 						]
 					}
 				],
